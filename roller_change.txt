@@ -1,0 +1,14 @@
+tooth_roller_speed
+tooth_roller_current
+smooth_roller_speed
+smooth_roller_current
+electrical_energy
+voltage_ua
+voltage_ub
+voltage_uc
+voltage_uab
+voltage_ubc
+voltage_uac
+current_ia
+current_ib
+current_ic
