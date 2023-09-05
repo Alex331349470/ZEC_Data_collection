@@ -262,7 +262,6 @@ create external table fluid_tank (
     B_bin_GF_fan string,
     settling_tank_return_valve_B018 string,
     backflush_valve string,
-
     tk01a_mixing_time_set_s string,
     tk01a_mixing_time_set_m string,
     tk01a_mixing_time_set_h string,
@@ -281,7 +280,6 @@ create external table fluid_tank (
     tk01c_mixing_timer_h string,
     tk01c_mixing_timer_m string,
     tk01c_mixing_timer_s string,
-
     tk_01a_stirrer_motor_frequency_write string,
     tk_01a_stirrer_motor_frequency_read string,
     tk_01a_stirrer_motor_current_read string,
@@ -309,7 +307,7 @@ create external table fluid_tank (
     phase_c_current string,
     power_consumption string,
     rtd_timestamp string
-    )
-    partitioned by (rtd_date string, rtd_line string, rtd_name string)
-    ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
-    location '/zec_data/fluid_tank';
+)
+partitioned by (rtd_date string, rtd_hour string, rtd_line string, rtd_name string)
+ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+location '/zec_data/fluid_tank';
