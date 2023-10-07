@@ -24,22 +24,22 @@
 
 ## 项目架构
 1. data collection
-- logstash
-- presto
-- rabbitmq
+> - logstash
+> - presto
+> - rabbitmq
 
 2. data caculate
-- presto
-- FineReport
+> - presto
+> - FineReport
 
 3. data storage
-- hdfs
-- elasticsearch
+> - hdfs
+> - elasticsearch
 
 4. data orgerlization
-- hadoop
-- zookeeper
-- kafka(TBD)
+> - hadoop
+> - zookeeper
+> - kafka(TBD)
 
 5. data visualization
-- FineBI
+> - FineBI
