@@ -24,22 +24,22 @@
 
 ## 项目架构
 1.data collection
-- __logstash__ 
-- __presto__
-- __rabbitmq__
+- [__logstash__](https://www.elastic.co/guide/en/logstash/current/index.html) 
+- [__presto__](https://prestodb.io/docs/current/)
+- [__rabbitmq__](https://www.rabbitmq.com/documentation.html)
 
 2.data caculate
-- __presto__
-- __FineReport__
+- [__presto__](https://prestodb.io/docs/current/)
+- [__FineReport__](https://help.fanruan.com/finereport/)
 
 3.data storage
-- __hdfs__
-- __elasticsearch__
+- [__hdfs__](https://hadoop.apache.org/docs/r1.2.1/hdfs_user_guide.html)
+- [__elasticsearch__](https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html)
 
 4.data orgernization
-- __hadoop__
-- __zookeeper__
-- __kafka(TBD)__
+- [__hadoop__](https://hadoop.apache.org/docs/stable/)
+- [__zookeeper__](https://zookeeper.apache.org/doc/r3.9.0/index.html)
+- [__kafka(TBD)__](https://kafka.apache.org/documentation/)
 
 5.data visualization
-- __FineBI__
+- [__FineBI__](https://help.fanruan.com/finebi/)
