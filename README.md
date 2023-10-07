@@ -23,23 +23,23 @@
 - FineReport提供复杂报表自动化
 
 ## 项目架构
-1. data collection
-> - logstash
-> - presto
-> - rabbitmq
+1.data collection
+- logstash
+- presto
+- rabbitmq
 
-2. data caculate
-> - presto
-> - FineReport
+2.data caculate
+- presto
+- FineReport
 
-3. data storage
-> - hdfs
-> - elasticsearch
+3.data storage
+- hdfs
+- elasticsearch
 
-4. data orgerlization
-> - hadoop
-> - zookeeper
-> - kafka(TBD)
+4.data orgerlization
+- hadoop
+- zookeeper
+- kafka(TBD)
 
-5. data visualization
-> - FineBI
+5.data visualization
+- FineBI
