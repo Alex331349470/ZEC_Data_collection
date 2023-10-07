@@ -12,11 +12,11 @@
 - 设备系统数据抽取（**从设备管理系统中将逻辑数据抽取至死信队列**）
 
 2.数据清洗和存储（hdfs和elasticsearch）
-- logstash数据清洗（第一次清洗，基本清洗）
-- DPI数据分片（暂无）
-- presto实时聚合（使用机器性能做内存性聚合，性能问题）
+- logstash数据清洗（__第一次清洗，基本清洗__）
+- DPI数据分片（__暂无__）
+- presto实时聚合（__使用机器性能做内存性聚合，性能问题__）
 - elasticsearch实时数据API
-- HDFS实时数据存储（读取性能问题）
+- HDFS实时数据存储（__读取性能问题__）
 
 3.数据可视化（FineReport和FineBI）
 - FineBI提供简单数据自动化
@@ -24,22 +24,22 @@
 
 ## 项目架构
 1.data collection
-- logstash
-- presto
-- rabbitmq
+- __logstash__ 
+- __presto__
+- __rabbitmq__
 
 2.data caculate
-- presto
-- FineReport
+- __presto__
+- __FineReport__
 
 3.data storage
-- hdfs
-- elasticsearch
+- __hdfs__
+- __elasticsearch__
 
-4.data orgerlization
-- hadoop
-- zookeeper
-- kafka(TBD)
+4.data orgernization
+- __hadoop__
+- __zookeeper__
+- __kafka(TBD)__
 
 5.data visualization
-- FineBI
+- __FineBI__
