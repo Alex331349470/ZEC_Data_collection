@@ -78,14 +78,11 @@ create external table iron_remover (
     material_diversion_valve_operation_Q string,
     alarm_Q string,
     automatic_operation_Q string,
-
     device_process_display string,
     blowing_frequency string,
     total_system_cycle_count string,
-
     magnetic_field_intensity string,
     magnetic_field_ratio_value string,
-
     total_active_power string,
     total_power_factor string,
     current_o string,
@@ -98,13 +95,11 @@ create external table iron_remover (
     current_b_phase string,
     current_c_phase string,
     voltage_output_midpoint string,
-
     current_value string,
     vibration_manual_input_frequency string,
     vibration_discharge_input_frequency string,
     target_current_value string,
     inverter_input_frequency_upper_limit string,
-
     blow_duration string,
     blow_stop_duration string,
     filter_runtime string,
