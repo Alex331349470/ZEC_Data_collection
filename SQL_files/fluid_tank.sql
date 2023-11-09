@@ -306,6 +306,8 @@ create external table fluid_tank (
     phase_b_current string,
     phase_c_current string,
     power_consumption string,
+    current_weight_display_for_compartment_a string,
+    current_weight_display_for_compartment_b string,
     rtd_timestamp string
 )
 partitioned by (rtd_date string, rtd_hour string, rtd_line string, rtd_name string)

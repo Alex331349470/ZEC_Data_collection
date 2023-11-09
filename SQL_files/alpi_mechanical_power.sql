@@ -149,7 +149,8 @@ create external table alpi_mechanical_powder (
 
     wi01_weight_display_2 string,
     wi02_weight_display_2 string,
-
+    warehouse_a_material_release_flag string,
+    warehouse_b_material_release_flag string,
     vibration_of_the_host string,
     return_air_temperature string,
     return_air_humidity string,
