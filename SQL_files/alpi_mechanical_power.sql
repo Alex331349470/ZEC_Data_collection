@@ -146,7 +146,12 @@ create external table alpi_mechanical_powder (
     material_discharge_fan_operating_frequency string,
     material_discharge_fan_operating_current string,
     grading_speed string,
-
+    phase_a_current string,
+    phase_b_current string,
+    phase_c_current string,
+    phase_a_voltage string,
+    phase_b_voltage string,
+    phase_c_voltage string,
     wi01_weight_display_2 string,
     wi02_weight_display_2 string,
     warehouse_a_material_release_flag string,
@@ -156,6 +161,7 @@ create external table alpi_mechanical_powder (
     return_air_humidity string,
     return_air_pressure string,
     return_air_flow_rate string,
+    energy_consumption string,
     rtd_timestamp string
 )
 partitioned by (rtd_date string, rtd_hour string, rtd_line string, rtd_name string)
