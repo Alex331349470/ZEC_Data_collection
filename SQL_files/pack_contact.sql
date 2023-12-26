@@ -178,6 +178,8 @@ create external table pack_contact (
     ld02_vibration_screen_stop_delay_s string,
     ld02_vibration_feeder_stop_delay_s string,
     ld02_close_fan_stop_delay_s string,
+    current_weight_display_for_compartment_a string,
+    current_weight_display_for_compartment_b string,
     rtd_timestamp string
 )
 partitioned by (rtd_date string, rtd_hour string, rtd_line string, rtd_name string)

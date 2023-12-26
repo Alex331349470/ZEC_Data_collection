@@ -206,6 +206,13 @@ create external table smart_200_dehumidifier (
     regeneration_heating_2_temperature string,
     regeneration_outlet_air_temperature string,
     regeneration_heating_1_temperature string,
+    a_phase_voltage string,
+    b_phase_voltage string,
+    c_phase_voltage string,
+    a_phase_current string,
+    b_phase_current string,
+    c_phase_current string,
+    electric_energy_value string,
     rtd_timestamp string
 )
 partitioned by (rtd_date string, rtd_hour string, rtd_line string, rtd_name string)

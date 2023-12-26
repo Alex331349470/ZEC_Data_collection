@@ -109,6 +109,7 @@ create external table auto_line (
     lifting_3_positioning_delay string,
     turn_1_cylinder_delay string,
     turn_2_cylinder_delay string,
+    switch_can_ab string,
     plc_alert_1 string,
     plc_alert_2 string,
     plc_alert_3 string,

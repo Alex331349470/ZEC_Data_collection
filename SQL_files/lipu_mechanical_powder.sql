@@ -173,6 +173,16 @@ create external table lipu_mechanical_powder (
     grading_speed string,
 
     humidity_display string,
+    electricity string,
+    ab_line_voltage string,
+    bc_line_voltage string,
+    ac_line_voltage string,
+    phase_a_current string,
+    phase_b_current string,
+    phase_c_current string,
+    phase_a_voltage string,
+    phase_b_voltage string,
+    phase_c_voltage string,
     rtd_timestamp string
 )
 partitioned by (rtd_date string, rtd_hour string, rtd_line string, rtd_name string)
