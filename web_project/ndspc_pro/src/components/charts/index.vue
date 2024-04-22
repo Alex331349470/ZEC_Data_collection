@@ -8,29 +8,46 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, onBeforeUnmount, nextTick} from 'vue'
 import * as echarts from 'echarts'
 import { useEventListener } from '@vueuse/core'
 const props = defineProps({
   option: Object
 })
+
 const chart = ref(null)
-// 在onMounted事件才能拿到真实dom
-onMounted(() => {
+let myChart = null
+
+onMounted(async () => {
   const dom = chart.value
-  if (dom && props.option) {
-    // 需要在页面Dom元素加载后再初始化echarts对象
-    let myChart = echarts.init(dom)
-    myChart.setOption(props.option)
-    // 自动监听加自动销毁
-    useEventListener('resize', () => myChart.resize())
+  if (dom) {
+    // nextTick等待dom渲染完成
+    await nextTick()
+    // 初始化echarts对象
+    myChart = echarts.init(dom)
+    myChart.setOption(props.option || {})
+    // 监听点击事件
+    myChart.on('click', function (params) {
+      console.log(params)
+    })
+    // 监听窗口大小变化，自动调整图表大小
+    const resizeHandler = () => {
+      myChart && myChart.resize()
+    }
+    window.addEventListener('resize', resizeHandler)
+    // 销毁时移除resize事件监听器
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', resizeHandler)
+      myChart && myChart.dispose()
+    })
   }
-  // 监听props.option的变化，变化后重新渲染
-  watch(() => props.option, (newVal) => {
-    let myChart = echarts.init(dom)
-    myChart.setOption(newVal)
-  },{ deep: true })
 })
+watch(() => props.option, (newVal) => {
+  // 当 props.option 改变时更新图表数据
+  if (myChart) {
+    myChart.setOption(newVal)
+  }
+}, { deep: true })
 </script>
 
 <style lang="scss" scoped>

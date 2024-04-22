@@ -136,15 +136,6 @@ const option = {
       lineStyle: {
         width: 2,
         type: 'solid'  //'dotted'虚线 'solid'实线
-      },
-      selectedMode: 'single',
-      select: {
-        itemStyle: {
-          color: '#e7d854',
-          borderColor: color[0],
-          shadowColor: color[0],
-          shadowBlur: 10
-        }
       }
     }, {
       type: 'bar',

@@ -74,8 +74,8 @@
       </el-table>
     </div>
     <div class="pagination">
-      <Pagination v-model:page_num="searchForm.pageNum"
-        v-model:page_size="searchForm.pageSize"
+      <Pagination :page_num="searchForm.pageNum"
+        :page_size="searchForm.pageSize"
         @update:getData="getData"
         :pageSizes="[10, 20, 30, 50]"
         :total="total"

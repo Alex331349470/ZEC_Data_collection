@@ -76,7 +76,34 @@ const route = [
         ]
       }
     ]
-  }
+  },{
+    path: '/capacity',
+    component: Layout,
+    redirect: '/manage',
+    meta: { title: 'message.menu.capacity.name', icon: 'sfont system-home' },
+    children: [
+      {
+        path: 'manage',
+        component: createNameComponent(() => import('@/views/main/capacity/manage.vue')),
+        meta: { title: 'message.menu.capacity.manage'}
+      },
+      {
+        path: 'design',
+        component: createNameComponent(() => import('@/views/main/capacity/design.vue')),
+        meta: { title: 'message.menu.capacity.design'}
+      },
+      {
+        path: 'authentication',
+        component: createNameComponent(() => import('@/views/main/capacity/authentication.vue')),
+        meta: { title: 'message.menu.capacity.authentication'}
+      },
+      {
+        path: 'demand',
+        component: createNameComponent(() => import('@/views/main/capacity/demand.vue')),
+        meta: { title: 'message.menu.capacity.demand'}
+      }
+    ]
+  },
 ]
 
 export default route

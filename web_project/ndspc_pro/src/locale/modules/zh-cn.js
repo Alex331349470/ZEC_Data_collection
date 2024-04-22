@@ -42,7 +42,13 @@ const lang = {
           integral: '异常整体看板',
           monitor: '控制图运行监控看板'
         }
-
+      },
+      capacity: {
+        name: '产能管理',
+        manage: '产能管理页面',
+        design: '设计产能',
+        authentication: '认证产能',
+        demand: '需求产能'
       }
     },
     system: {
