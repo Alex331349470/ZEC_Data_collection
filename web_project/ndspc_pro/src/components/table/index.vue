@@ -19,7 +19,7 @@
     </el-table>
     <el-pagination
       v-if="showPage"
-      v-model:current-page="page.index"
+      @current-page="page.index"
       class="system-page"
       background
       :layout="pageLayout"

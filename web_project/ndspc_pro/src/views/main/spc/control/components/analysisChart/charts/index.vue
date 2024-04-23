@@ -22,7 +22,7 @@ export default defineComponent({
       { id: 1, name: '来料合格趋势图', data: '100000', color: '#4e73df', icon: 'sfont system-yonghu', isExport: true },
       { id: 2, name: '工厂来料合格率', data: '30', color: '#1cc88a', icon: 'sfont system-xiaoxi' }
     ]
-    const zhengtaiRow = { id: 2, name: '拟合正太', data: '30', color: '#1cc88a', icon: 'sfont system-xiaoxi' }
+    const zhengtaiRow = { id: 2, name: '拟合正态', data: '30', color: '#1cc88a', icon: 'sfont system-xiaoxi' }
     const capabilityRow = { id: 2, name: '过程能力', data: '30', color: '#1cc88a', icon: 'sfont system-xiaoxi' }
     return {
       list,

@@ -11,7 +11,7 @@
       <h3>{{ $t('message.system.setting.style.name') }}</h3>
       <div class="theme-box">
         <theme-icon
-          v-model:active="state.style"
+          @active="state.style"
           v-for="(row, index) in style"
           :key="index"
           :name="index"
@@ -27,8 +27,8 @@
       <div class="theme-box">
         <theme-color
           v-for="(item, key) in themeColorArr"
-          v-model:active="state.primaryColor"
-          v-model:activeTextColor="state.primaryTextColor"
+          @active="state.primaryColor"
+          @activeTextColor="state.primaryTextColor"
           :key="key"
           :color="item.color"
           :textColor="item.textColor"

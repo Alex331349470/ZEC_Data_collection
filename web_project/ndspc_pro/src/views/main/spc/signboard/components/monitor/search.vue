@@ -84,7 +84,7 @@
   min-height: 80px;
 }
 .maxHeight {
-  height: 50px;
+  height: 0;
   overflow: hidden;
 }
 .search-box-bottom {

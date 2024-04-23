@@ -1,5 +1,21 @@
-const colors = ['#5470C6', '#91CC75', '#EE6666']
-
+const colors = ['#01a2d9', '#11586e', '#6c97aa'];
+let data={
+  x:[
+    -3,-2.6842105263157894,-2.3684210526315788, 
+    -2.052631578947368,-1.7368421052631575,-1.421052631578947,-1.1052631578947363, 
+    -0.7894736842105258,-0.47368421052631526,-0.15789473684210475,
+    0.15789473684210575,0.47368421052631626,0.7894736842105268,
+    1.1052631578947372,1.4210526315789478,1.7368421052631584,
+    2.052631578947369, 2.3684210526315796,2.6842105263157903],
+  y:[
+    0.0044318484119380075, 0.010873446008403894,   0.02414573124668899,
+    0.04852933916733306,   0.08827937454560608, 0.14534663197630093,
+    0.21659157163219764,   0.292125176410827, 0.3566048764304543,
+    0.394000182232257,   0.39400018223225697, 0.3566048764304541,
+    0.29212517641082686,  0.21659157163219742, 0.14534663197630074,
+    0.08827937454560594,   0.04852933916733297, 0.024145731246688947,
+    0.010873446008403865],
+}
 const option = {
   color: colors,
   tooltip: {
@@ -11,13 +27,6 @@ const option = {
   grid: {
     right: '20%'
   },
-  toolbox: {
-    feature: {
-      dataView: { show: true, readOnly: false },
-      restore: { show: true },
-      saveAsImage: { show: true }
-    }
-  },
   legend: {
     data: ['Evaporation', 'Precipitation', 'Temperature']
   },
@@ -27,80 +36,57 @@ const option = {
       axisTick: {
         alignWithLabel: true
       },
-      // prettier-ignore
-      data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      data: data.x
     }
   ],
   yAxis: [
     {
       type: 'value',
-      name: 'Evaporation',
+      name: 'USL',
       position: 'right',
       alignTicks: true,
       axisLine: {
         show: true,
         lineStyle: {
-          color: colors[0]
+          color: 'red'
         }
       },
-      axisLabel: {
-        formatter: '{value} ml'
-      }
+      axisLabel: false
     },
     {
       type: 'value',
-      name: 'Precipitation',
-      position: 'right',
-      alignTicks: true,
-      offset: 80,
-      axisLine: {
-        show: true,
-        lineStyle: {
-          color: colors[1]
-        }
-      },
-      axisLabel: {
-        formatter: '{value} ml'
-      }
-    },
-    {
-      type: 'value',
-      name: '温度',
+      name: 'LSL',
       position: 'left',
       alignTicks: true,
       axisLine: {
         show: true,
         lineStyle: {
-          color: colors[2]
+          color: 'red'
         }
       },
-      axisLabel: {
-        formatter: '{value} °C'
-      }
+      axisLabel: false
     }
   ],
   series: [
     {
-      name: 'Evaporation',
+      name: 'USL',
       type: 'bar',
-      data: [
-        2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3
-      ]
+      data: data.y,
+      itemStyle: {
+        borderColor: 'black', // 设置边框颜色
+        borderWidth: 0.5 // 设置边框宽度
+      },
+      barCategoryGap: '0%',
+      barGap: '0%',
     },
     {
-      name: 'Precipitation',
-      type: 'bar',
-      yAxisIndex: 1,
-      data: [
-        2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3
-      ]
-    },
-    {
-      name: 'Temperature',
+      name: 'LSL',
+      smooth: true,
       type: 'line',
-      yAxisIndex: 2,
-      data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2]
+      symbol: 'none',
+      yAxisIndex: 1,
+      data: data.y
     }
   ]
-}
+};
 export default option

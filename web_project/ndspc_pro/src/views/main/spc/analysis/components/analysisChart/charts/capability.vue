@@ -5,64 +5,142 @@
         <div class="tip-dot" />
         <span class="name">{{ row.name }}</span>
       </div>
-      <div style="display: flex; align-items: center;">
-        <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
-        <el-icon @click="handleOpen" style="margin-left: 10px"><Rank /></el-icon>
-      </div>
     </div>
-    <!-- <Chart /> -->
-    <el-dialog v-model="dialogVisible" width="80%" :before-close="handleClose" :close-on-click-modal="false">
-      <div class="charBox">
-        <div class="card-title">
-          <div class="left">
-            <div class="tip-dot" />
-            <span class="name">{{ row.name }}</span>
+    <div class="card-box">
+      <el-row :gutter="40">
+        <el-col :span="7">
+          <div class="back_writhe">过程汇总</div>
+          <el-row :gutter="20">
+            <el-col :span="14">
+              <div class="back_writhe">
+                <div>上规格线</div>
+                <div>下规格线</div>
+                <div>批次数量</div>
+                <div>样本均值</div>
+                <div>组内sigma</div>
+                <div>总sigma</div>
+                <div>稳定指标</div>
+              </div>
+            </el-col>
+            <el-col :span="10">
+              <div class="back_none">
+                <div>203</div>
+                <div>243</div>
+                <div>23</div>
+                <div>12.23</div>
+                <div>54.34</div>
+                <div>0.34</div>
+                <div>0.89</div>
+              </div>
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :span="7">
+          <div class="back_writhe">组内sigma能力</div>
+          <el-row :gutter="20">
+            <el-col :span="14">
+              <div class="back_writhe">
+                <div>Cp</div>
+                <div>Cpu</div>
+                <div>Cpl</div>
+                <div>Cpk</div>
+              </div>
+            </el-col>
+            <el-col :span="10">
+              <div class="back_none">
+                <div>12.23</div>
+                <div>54.34</div>
+                <div>0.34</div>
+                <div>0.89</div>
+              </div>
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :span="7">
+          <div class="back_writhe">总sigma能力</div>
+          <el-row :gutter="20">
+            <el-col :span="14">
+              <div class="back_writhe">
+                <div>Pp</div>
+                <div>Ppu</div>
+                <div>PpL</div>
+                <div>Ppk</div>
+              </div>
+            </el-col>
+            <el-col :span="10">
+              <div class="back_none">
+                <div>12.23</div>
+                <div>54.34</div>
+                <div>0.34</div>
+                <div>0.89</div>
+              </div>
+            </el-col>
+          </el-row>
+        </el-col>
+      </el-row>
+      <el-row :gutter="40">
+        <el-col :span="7">
+          <div class="back_writhe">不合格</div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="16">
+        <el-col :span="5">
+          <div class="back_writhe">
+            <div>对应部分</div>
+            <div>低于下规格线</div>
+            <div>高于上规格线</div>
+            <div>规格外合计</div>
           </div>
-          <div style="display: flex; align-items: center;">
-          <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
-        </div>
-        </div>
-        <!-- <Chart v-if="showChart"/> -->
-      </div>
-    </el-dialog>
+        </el-col>
+        <el-col :span="5">
+          <div class="back_writhe text-right">观测百分比</div>
+          <div class="back_none1">
+            <div>12.2</div>
+            <div>12.2</div>
+            <div>12.2</div>
+          </div>
+        </el-col>
+        <el-col :span="5">
+          <div class="back_writhe text-right">期望组内百分比</div>
+          <div class="back_none1">
+            <div>12.2</div>
+            <div>12.2</div>
+            <div>12.2</div>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="back_writhe text-right">期望总提百分比</div>
+          <div class="back_none1">
+            <div>12.2</div>
+            <div>12.2</div>
+            <div>12.2</div>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="10">
+        <el-col :span="5">
+          <div class="back_writhe">cov</div>
+        </el-col>
+        <el-col :span="5">
+          <div class="back_none text-left">0.009</div>
+        </el-col>
+        <el-col :span="5">
+          <div class="back_writhe">Mean偏移</div>
+        </el-col>
+        <el-col :span="6">
+          <div class="back_none">0.1096</div>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
-<script lang="js">
-import { defineComponent, ref, nextTick } from 'vue'
-import {Rank} from '@element-plus/icons-vue'
-import Chart from './myCharts/zhengtaiChart.vue'
-export default defineComponent({
-  components: {Rank, Chart},
-  props: {
-    row: {
-      type: Object,
-      default: () => {
-        return {
-
-        }
-      }
-    }
-  },
-  setup(props) {
-    let dialogVisible = ref(false)
-    let showChart = ref(false)
-    const handleClose = () => {
-      dialogVisible.value = false
-      showChart.value = false
-    }
-    const handleOpen = () => {
-      dialogVisible.value = true
-      nextTick(() => {
-        showChart.value = true
-      })
-    }
-    return {
-      dialogVisible,
-      handleOpen,
-      handleClose,
-      showChart
-    }
+<script setup>
+import {ref} from 'vue'
+const props = defineProps({
+  row: {
+    type: Object,
+    default: {}
   }
 })
 </script>
@@ -96,20 +174,37 @@ export default defineComponent({
     width: 100%;
     height: 400px;
   }
-  :deep( .el-dialog__header) {
-    padding: var(--el-dialog-padding-primary)!important;
-    margin-right: 10px!important;
-    display: block!important;
-    justify-content: unset;
-    background: #fff!important;
-    color: #333;
+  .back_writhe {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 5px;
+    width: 100%;
+    text-align: left;
+    margin: 0 0 5px 5px;
+    >div {
+      margin-bottom: 5px;
+    }
   }
-  :deep( .el-dialog__body) {
-    padding: 10!important;
+  .back_none {
+    padding: 5px;
+    width: 100%;
+    text-align: right;
+    margin: 0 0 5px 5px;
+    >div {
+      margin-bottom: 5px;
+    }
   }
-  :deep(.el-button--info) {
-    border-color: #014D64!important;
-    background: #014D64!important;
+  .back_none1 {
+    margin-top: -5px;
+    text-align: right;
+    >div {
+      margin-bottom: 5px;
+    }
+  }
+  .text-right {
+    text-align: right;
+  }
+  .text-left {
+    text-align: left;
   }
   @media screen and ( max-width: 1200px ) {
     .card {

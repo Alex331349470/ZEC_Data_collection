@@ -20,7 +20,7 @@ import { DefaultApolloClient } from "@vue/apollo-composable"
 if (import.meta.env.MODE !== 'development') { // 非开发环境调用百度统计
   baidu()
 }
-const link = createHttpLink({ uri: "http://localhost:3000/graphql" })
+const link = createHttpLink({ uri: "http://10.0.45.20:4000/" })
 const cache = new InMemoryCache();
 const apolloClient = new ApolloClient({ link, cache })
 

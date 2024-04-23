@@ -37,7 +37,7 @@ const option = {
       show: false, // 是否显示滑动条，不影响使用 滚动条样式调不好很丑
       type: "slider", // 这个 dataZoom 组件是 slider 型 dataZoom 组件
       startValue: 0, // 从头开始。
-      endValue: 4, // 一次性展示几个。
+      endValue: 8, // 一次性展示几个。
       moveHandleSize: 6, // 高度
       fillerColor: "#023661", // 选中范围的填充颜色
       borderColor: "#023661", // 边框颜色。

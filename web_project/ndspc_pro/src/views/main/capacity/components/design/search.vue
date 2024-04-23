@@ -1,6 +1,6 @@
 <template>
   <div class="search-box">
-    <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="mini">
+    <el-form :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="mini">
       <el-form-item label="投产时间：" size="mini">
         <el-radio-group v-model="searchForm.timeArea" @change="radioChange" style="margin-top: -3px;">
           <el-radio :label="1">全部时间</el-radio>
@@ -53,17 +53,17 @@
         <el-form-item label="工序" label-width="80px" size="mini">
           <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
         </el-form-item>
-          <el-button type="success" size="small" style="margin-left: 25px">查询</el-button>
-          <el-button type="success" size="small">重置</el-button>
+          <el-button type="success" size="small" style="margin-left: 25px" @click="handleSearch">查询</el-button>
+          <el-button type="success" size="small" @click="handleReset">重置</el-button>
       </el-form-item>
       <div class="control-panel">
-        <el-button type="success" size="small" style="margin-left: 25px">数据录入</el-button>
-        <el-button type="success" size="small">数据导入</el-button>
-        <el-button type="warning" size="small">修改数据</el-button>
-        <el-button type="danger" size="small">删除数据</el-button>
-        <el-button type="success" size="small">导入模板下载</el-button>
-          <el-button type="success" size="small">导出当前数据</el-button>
-      </div>
+        <el-button type="success" size="small" style="margin-left: 25px" @click="handleAdd">数据录入</el-button>
+        <el-button type="success" size="small" @click="handleImport">数据导入</el-button>
+        <el-button type="warning" size="small" :disabled="isdisabed" @click="handleEdit">修改数据</el-button>
+        <el-button type="danger" size="small" :disabled="isdisabed" @click="handleDelete">删除数据</el-button>
+        <el-button type="success" size="small" @click="handleDownload">导入模板下载</el-button>
+          <el-button type="success" size="small" @click="handleExport">导出当前数据</el-button>
+      </div> 
     </el-form>
     <div class="search-box-bottom">
       <el-icon color="#fff" size="22" v-show="!isExpand" @click="expandSearch(true)"><ArrowDown /></el-icon>
@@ -73,8 +73,23 @@
 </template>
 
 <script setup>
-  import { defineComponent, onMounted, reactive, ref } from 'vue'
+  import { defineComponent, onMounted, ref,watch } from 'vue'
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
+  const emit = defineEmits([
+  'handleAdd',
+  'handleEdit',
+  'handleDelete',
+  'handleSearch',
+  'handleImport',
+  'handleExport',
+  'handleDownload'
+])
+  const props = defineProps({
+  selectionItem: {
+    type: Array,
+    default: []
+  }
+  })
   // parmas
   const searchForm = ref({
     timeArea: 2,
@@ -85,6 +100,7 @@
     gongchang: '',
     jisuanArea: ''
   })
+  const isdisabed = ref(false)
   const isExpand = ref(true)
   const DateOptions = ref(['年', '季', '月', '周', '日'])
   // function
@@ -93,6 +109,42 @@
   }
   function radioChange() {}
   function handleCheckedDateArea() {}
+  // 检查表格选中变化
+  watch(() => props.selectionItem, (newVal) => {
+    isdisabed.value = newVal.length === 0
+  }, { deep: true })
+  // 数据录入
+  function handleAdd() {
+    emit('handleAdd')
+  }
+  // 修改数据
+  function handleEdit() {
+    emit('handleEdit')
+  }
+  // 删除数据
+  function handleDelete() {
+    emit('handleDelete')
+  }
+  // 查询
+  function handleSearch() {
+    emit('handleSearch')
+  }
+  // 重置
+  function handleReset() {
+    // 重置
+  }
+  // 数据导入
+  function handleImport() {
+    emit('handleImport')
+  }
+  // 导出当前数据
+  function handleExport() {
+    emit('handleExport')
+  }
+  // 导入模板下载
+  function handleDownload() {
+    emit('handleDownload')
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -109,7 +161,7 @@
   min-height: 80px;
 }
 .maxHeight {
-  height: 50px;
+  height: 0;
   overflow: hidden;
 }
 .search-box-bottom {
