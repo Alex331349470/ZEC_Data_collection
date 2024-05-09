@@ -1,6 +1,6 @@
 var xAxis_data = ["01月", "02月", "03月", "04月", "05月", "06月", "07月", "08月", "09月", "10月", "11月", "12月"]
 var data_A = [820, 932, 901, 934, 1290, 1330, 1320, 720, 832, 501, 334, 990]
-var names = ['2018用']
+var names = ['2018']
 var color = ['#014D64']
 
 const option = {
@@ -124,7 +124,7 @@ const option = {
   series: [
     {
       type: 'bar',
-      name: names[1],
+      name: names[0],
       data: data_A,
       symbolSize: 9, //设置拐点大小
       itemStyle: {

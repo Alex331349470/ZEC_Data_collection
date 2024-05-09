@@ -11,7 +11,7 @@
       </div>
     </div>
     <BarChart />
-    <el-dialog v-model="dialogVisible" width="80%" :before-close="handleClose" :close-on-click-modal="false">
+    <el-dialog v-model="dialogVisible" width="80%" :before-close="handleClose" :close-on-click-modal="false" :fullscreen="true">
       <div class="charBox">
         <div class="card-title">
           <div class="left">
@@ -22,7 +22,7 @@
           <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
         </div>
         </div>
-        <BarChart v-if="showChart"/>
+        <BarChart v-if="showChart" boxHeight="calc(100vh - 110px)" />
       </div>
     </el-dialog>
   </div>

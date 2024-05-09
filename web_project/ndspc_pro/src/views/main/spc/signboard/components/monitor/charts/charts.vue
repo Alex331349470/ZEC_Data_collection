@@ -103,7 +103,6 @@ function renderItem(params, api) {
 
   let nodePath = api.value('id')
   const nodeValue = api.value('value')
-  console.log('nodePath',nodeValue)
   let nodeName = nodeValue
   let node = context.nodes[nodePath]
   if (node.id === 'city') {

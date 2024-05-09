@@ -2,7 +2,7 @@
   <div class="">
     <el-pagination
       @current-page="currentPage"
-      @page-size="pageSize"
+      :page-size="pageSize"
       :page-sizes="pageSizes"
       mini
       background
@@ -37,7 +37,7 @@ const props = defineProps({
   },
   pageSizes: {
     type: Array,
-    default: () => [10, 20, 30, 50],
+    default: () => [1,2,10, 20, 30, 50],
   },
   layout: {
     type: String,

@@ -1,44 +1,44 @@
 <template>
   <div class="search-box">
-    <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="mini">
-      <el-form-item label="SPC分类：" size="mini">
+    <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="default">
+      <el-form-item label="SPC分类：">
         <el-radio-group v-model="searchForm.fenlei">
           <el-radio :label="1">过程特性</el-radio>
           <el-radio :label="2">产品特性（中间品）</el-radio>
           <el-radio :label="3">产品特性（成品）</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="生产信息：" size="mini">
-        <el-form-item label="工厂" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+      <el-form-item label="生产信息：">
+        <el-form-item label="工厂" label-width="80px">
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
-        <el-form-item label="车间" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+        <el-form-item label="车间" label-width="80px">
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
-        <el-form-item label="产线" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+        <el-form-item label="产线" label-width="80px">
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
-        <el-form-item label="设备编码" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
-        </el-form-item>
-      </el-form-item>
-      <el-form-item label="物料信息：" size="mini">
-        <el-form-item label="工序" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
-        </el-form-item>
-        <el-form-item label="物料类型" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
-        </el-form-item>
-        <el-form-item label="物料编码" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+        <el-form-item label="设备编码" label-width="80px">
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
       </el-form-item>
-      <el-form-item label="检测信息：" size="mini">
-        <el-form-item label="特性类型" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+      <el-form-item label="物料信息：">
+        <el-form-item label="工序" label-width="80px">
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
-        <el-form-item label="检测项目" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+        <el-form-item label="物料类型" label-width="80px">
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+        </el-form-item>
+        <el-form-item label="物料编码" label-width="80px">
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="检测信息：">
+        <el-form-item label="特性类型" label-width="80px">
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+        </el-form-item>
+        <el-form-item label="检测项目" label-width="80px">
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
         <el-button type="success" size="small" style="margin-left: 20px">查询</el-button>
         <el-button type="success" size="small">重置</el-button>

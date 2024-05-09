@@ -23,7 +23,6 @@
       <Pagination @page_num="searchForm.pageNum"
         @page_size="searchForm.pageSize"
         @update:getData="getData"
-        :pageSizes="[10, 20, 30, 50]"
         :total="total"
       />
     </div> -->

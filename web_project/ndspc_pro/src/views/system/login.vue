@@ -16,7 +16,7 @@
               size="large"
               v-model="form.name"
               :placeholder="$t('message.system.userName')"
-              type="text"
+              link type="primary"
               maxlength="50"
           >
             <template #prepend>

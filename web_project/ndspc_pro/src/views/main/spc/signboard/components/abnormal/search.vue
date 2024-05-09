@@ -1,14 +1,14 @@
 <template>
   <div class="search-box">
-    <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="mini">
-      <el-form-item label="SPC分类：" size="mini">
+    <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="default">
+      <el-form-item label="SPC分类：" >
         <el-radio-group v-model="searchForm.fenlei">
           <el-radio :label="1">过程特性</el-radio>
           <el-radio :label="2">产品特性（中间品）</el-radio>
           <el-radio :label="3">产品特性（成品）</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="时间范围：" size="mini">
+      <el-form-item label="时间范围：" >
         <el-radio-group v-model="searchForm.timeArea" @change="radioChange" style="margin-top: -3px;">
           <el-radio :label="1">全部时间</el-radio>
           <el-radio :label="2">本年度</el-radio>
@@ -17,53 +17,53 @@
           <el-radio :label="5">当天</el-radio>
           <el-radio :label="6">自定义</el-radio>
         </el-radio-group>
-        <el-form-item label="开始时间：" size="mini">
-          <el-date-picker v-model="searchForm.startTime" type="date" size="mini" placeholder="选择日期" style="width: 150px" />
+        <el-form-item label="开始时间：" >
+          <el-date-picker v-model="searchForm.startTime" type="date"  placeholder="选择日期" style="width: 150px" />
         </el-form-item>
-        <el-form-item label="结束时间：" size="mini">
-          <el-date-picker v-model="searchForm.endTime" type="date" size="mini" placeholder="选择日期" style="width: 150px" />
+        <el-form-item label="结束时间：" >
+          <el-date-picker v-model="searchForm.endTime" type="date"  placeholder="选择日期" style="width: 150px" />
         </el-form-item>
       </el-form-item>
-      <el-form-item label="时间维度：" size="mini">
+      <el-form-item label="时间维度：" >
         <el-checkbox-group v-model="searchForm.dateArea" @change="handleCheckedDateArea">
           <el-checkbox v-for="date in DateOptions" :label="date" :key="date">{{date}}</el-checkbox >
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="来料信息：" size="mini">
+      <el-form-item label="来料信息：" >
         <el-form-item label="工厂" label-width="80px">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
-        <el-form-item label="车间" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+        <el-form-item label="车间" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
-        <el-form-item label="产线" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+        <el-form-item label="产线" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
-        <el-form-item label="设备编号" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+        <el-form-item label="设备编号" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
       </el-form-item>
-      <el-form-item label="物料信息：" size="mini">
+      <el-form-item label="物料信息：" >
         <el-form-item label="工序" label-width="80px">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
-        <el-form-item label="物料类型" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+        <el-form-item label="物料类型" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
-        <el-form-item label="物料编码" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
-        </el-form-item>
-      </el-form-item>
-      <el-form-item label="检测信息：" size="mini">
-        <el-form-item label="特性类型" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
-        </el-form-item>
-        <el-form-item label="检测项目" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+        <el-form-item label="物料编码" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
       </el-form-item>
-      <el-form-item label="判异准则：" size="mini">
-        <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini" style="width: 150px;"></el-input>
+      <el-form-item label="检测信息：" >
+        <el-form-item label="特性类型" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+        </el-form-item>
+        <el-form-item label="检测项目" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="判异准则：" >
+        <el-input v-model="searchForm.gongchang" placeholder="请输入内容"  style="width: 150px;"></el-input>
         <el-button type="success" size="small" style="margin-left: 20px">查询</el-button>
         <el-button type="success" size="small">重置</el-button>
       </el-form-item>
@@ -79,7 +79,7 @@
   import { defineComponent, onMounted, reactive, ref } from 'vue'
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
   // parmas
-  const searchForm = ref({
+  const searchForm = reactive({
     timeArea: 2,
     dateArea: ['年', '月'],
     kaifaArea: 1,

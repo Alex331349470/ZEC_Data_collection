@@ -4,44 +4,43 @@
       @handleDelete="handleDelete" @handleSearch="getData" @handleImport="handleImport" 
       @handleExport="handleExport" @handleDownload="handleDownload" />
     <div class="content-box">
-      <el-table :data="tableData" style="width: 100%" ref="multipleTable" show-summary @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
-        <el-table-column type="selection" width="40" align="center" fixed="left" />
-        <el-table-column prop="bianma" label="加工类型" :show-overflow-tooltip="true" sortable width="100" align="center" />
-        <el-table-column prop="status" label="公司名称" sortable :show-overflow-tooltip="true" width="100" align="center" />
-        <el-table-column prop="bianNum" label="工厂" sortable :show-overflow-tooltip="true" width="100" align="center" />
-        <el-table-column prop="status" label="车间" sortable :show-overflow-tooltip="true" width="100" align="center" />
-        <el-table-column prop="bianNum" label="工序" sortable :show-overflow-tooltip="true" width="100" align="center" />
-        <el-table-column prop="status" label="产线" sortable :show-overflow-tooltip="true" width="100" align="center" />
-        <el-table-column prop="bianNum" label="设备类型" sortable :show-overflow-tooltip="true" width="100" align="center" />
-        <el-table-column prop="status" label="设备代码" sortable :show-overflow-tooltip="true" width="100" align="center" />
-        <el-table-column prop="bianNum" label="理论产能" sortable :show-overflow-tooltip="true" width="100" align="center" />
-        <el-table-column prop="status" label="综合收率" sortable :show-overflow-tooltip="true" width="100" align="center" />
-        <el-table-column prop="bianNum" label="综合优率" sortable :show-overflow-tooltip="true" width="100" align="center" />
-        <el-table-column prop="status" label="综合产能" sortable :show-overflow-tooltip="true" width="100" align="center" />
-        <el-table-column prop="bianNum" label="投产状态" sortable :show-overflow-tooltip="true" width="100" align="center" />
+      <el-table :data="tableData" style="width: 110%" size="default" ref="multipleTable" show-summary @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
+        <el-table-column type="selection" width="80" align="center" fixed="left" />
+        <el-table-column prop="bianma" label="加工类型" :show-overflow-tooltip="true" sortable width="110" align="center" />
+        <el-table-column prop="status" label="公司名称" sortable :show-overflow-tooltip="true" width="110" align="center" />
+        <el-table-column prop="bianNum" label="工厂" sortable :show-overflow-tooltip="true" width="110" align="center" />
+        <el-table-column prop="status" label="车间" sortable :show-overflow-tooltip="true" width="110" align="center" />
+        <el-table-column prop="bianNum" label="工序" sortable :show-overflow-tooltip="true" width="110" align="center" />
+        <el-table-column prop="status" label="产线" sortable :show-overflow-tooltip="true" width="110" align="center" />
+        <el-table-column prop="bianNum" label="设备类型" sortable :show-overflow-tooltip="true" width="110" align="center" />
+        <el-table-column prop="status" label="设备代码" sortable :show-overflow-tooltip="true" width="110" align="center" />
+        <el-table-column prop="bianNum" label="理论产能" sortable :show-overflow-tooltip="true" width="110" align="center" />
+        <el-table-column prop="status" label="综合收率" sortable :show-overflow-tooltip="true" width="110" align="center" />
+        <el-table-column prop="bianNum" label="综合优率" sortable :show-overflow-tooltip="true" width="110" align="center" />
+        <el-table-column prop="status" label="综合产能" sortable :show-overflow-tooltip="true" width="110" align="center" />
+        <el-table-column prop="bianNum" label="投产状态" sortable :show-overflow-tooltip="true" width="110" align="center" />
         <el-table-column prop="status" label="投产时间" sortable :show-overflow-tooltip="true" width="120" align="center" />
         <el-table-column prop="status" label="最后更新时间" sortable :show-overflow-tooltip="true" width="140" align="center" />
-        <el-table-column label="变更履历" width="100" align="center" fixed="right">
+        <el-table-column label="变更履历" width="110" align="center" fixed="right">
           <template #default="scope">
-            <el-button @click.prevent="checkDetail(scope.$index, tableData)" type="text" size="small">查看</el-button>
+            <el-button @click.prevent="checkDetail(scope.$index, tableData)" link type="primary" size="small">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="pagination">
-        <Pagination @page_num="searchForm.pageNum"
-          @page_size="searchForm.pageSize"
+        <Pagination :page_num="searchForm.pageNum"
+          :page_size="searchForm.pageSize"
           @update:getData="getData"
-          :pageSizes="[10, 20, 30, 50]"
           :total="total"
         />
       </div>
     </div>
     <ComDialog ref="dialogRef" :dialogTitle="dialogTitle" @confirmEmitBtn="confirmBtn" >
       <el-form ref="workRef" :model="addForm" width="400px" :rules="rules" style="margin-top: 15px;">
-        <el-form-item label="开始时间" prop="bianma" label-width="100px">
+        <el-form-item label="开始时间" prop="bianma" label-width="110px">
           <el-input v-model="addForm.bianma" placeholder="请输入内容" size="mini"></el-input>
         </el-form-item>
-        <el-form-item label="结束时间" prop="status" label-width="100px">
+        <el-form-item label="结束时间" prop="status" label-width="110px">
           <el-input v-model="addForm.status" placeholder="请输入内容" size="mini"></el-input>
         </el-form-item>
       </el-form>
@@ -156,12 +155,12 @@ function confirmBtn() {
 .box {
   padding-top: 8px;
   background: #fff;
-  height: 100%;
+  height: 110%;
 }
 .pagination {
   position: fixed;
   bottom: 0;
-  width: 100%;
+  width: 110%;
   background: #fff;
   padding-top: 7px;
   padding-bottom: 7px;

@@ -4,27 +4,26 @@
       @handleDelete="handleDelete" @handleSearch="getData" @handleImport="handleImport" 
       @handleExport="handleExport" @handleDownload="handleDownload" />
     <div class="content-box">
-      <el-table :data="tableData" style="width: 100%" ref="multipleTable" show-summary @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
-        <el-table-column type="selection" width="40" align="center" fixed="left" />
+      <el-table :data="tableData" style="width: 100%" size="default" ref="multipleTable" show-summary @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
+        <el-table-column type="selection" width="80" align="center" fixed="left" />
         <el-table-column prop="bianma" label="需求时间" :show-overflow-tooltip="true" sortable align="center" />
         <el-table-column prop="status" label="客户名称" sortable :show-overflow-tooltip="true" align="center" />
         <el-table-column prop="bianNum" label="客户代码" sortable :show-overflow-tooltip="true" align="center" />
         <el-table-column prop="status" label="物料类型" sortable :show-overflow-tooltip="true" align="center" />
-        <el-table-column prop="bianNum" label="CATL物料编码" sortable :show-overflow-tooltip="true" align="center" />
+        <el-table-column prop="bianNum" label="CATL物料编码" sortable :show-overflow-tooltip="true" align="center" width="150" />
         <el-table-column prop="status" label="物料编码" sortable :show-overflow-tooltip="true" align="center" />
         <el-table-column prop="bianNum" label="需求产能" sortable :show-overflow-tooltip="true" align="center" />
         <el-table-column prop="bianNum" label="最后更新时间" sortable :show-overflow-tooltip="true" align="center" />
         <el-table-column label="变更履历" width="120" align="center" fixed="right">
           <template #default="scope">
-            <el-button @click.prevent="checkDetail(scope.$index, tableData)" type="text" size="small">查看</el-button>
+            <el-button @click.prevent="checkDetail(scope.$index, tableData)" link type="primary" size="small">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="pagination">
-        <Pagination @page_num="searchForm.pageNum"
-          @page_size="searchForm.pageSize"
+        <Pagination :page_num="searchForm.pageNum"
+          :page_size="searchForm.pageSize"
           @update:getData="getData"
-          :pageSizes="[10, 20, 30, 50]"
           :total="total"
         />
       </div>

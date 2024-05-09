@@ -1,7 +1,7 @@
 <template>
   <div class="search-box">
-    <el-form :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="mini">
-      <el-form-item label="投产时间：" size="mini">
+    <el-form :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="default">
+      <el-form-item label="投产时间：" >
         <el-radio-group v-model="searchForm.timeArea" @change="radioChange" style="margin-top: -3px;">
           <el-radio :label="1">全部时间</el-radio>
           <el-radio :label="2">本年度</el-radio>
@@ -9,62 +9,62 @@
           <el-radio :label="4">本月度</el-radio>
           <el-radio :label="6">自定义</el-radio>
         </el-radio-group>
-        <el-form-item label="开始时间：" size="mini">
-          <el-date-picker v-model="searchForm.startTime" type="date" size="mini" placeholder="选择日期" style="width: 150px" />
+        <el-form-item label="开始时间：" >
+          <el-date-picker v-model="searchForm.startTime" type="date"  placeholder="选择日期" style="width: 150px" />
         </el-form-item>
-        <el-form-item label="结束时间：" size="mini">
-          <el-date-picker v-model="searchForm.endTime" type="date" size="mini" placeholder="选择日期" style="width: 150px" />
-        </el-form-item>
-      </el-form-item>
-      <el-form-item label="客户信息：" size="mini">
-        <el-form-item label="客户名称" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
-        </el-form-item>
-        <el-form-item label="客户代码" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+        <el-form-item label="结束时间：" >
+          <el-date-picker v-model="searchForm.endTime" type="date"  placeholder="选择日期" style="width: 150px" />
         </el-form-item>
       </el-form-item>
-      <el-form-item label="认证信息：" size="mini">
-        <el-form-item label="认证状态" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+      <el-form-item label="客户信息：" >
+        <el-form-item label="客户名称" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+        </el-form-item>
+        <el-form-item label="客户代码" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
       </el-form-item>
-      <el-form-item label="生产信息：" size="mini">
-        <el-form-item label="公司名称" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini" ></el-input>
-        </el-form-item>
-        <el-form-item label="工厂" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini" ></el-input>
-        </el-form-item>
-        <el-form-item label="车间" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini" ></el-input>
-        </el-form-item>
-        <el-form-item label="产线" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini" ></el-input>
+      <el-form-item label="认证信息：" >
+        <el-form-item label="认证状态" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
       </el-form-item>
-      <el-form-item label="设备信息：" size="mini">
-        <el-form-item label="设备类型" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini" ></el-input>
+      <el-form-item label="生产信息：" >
+        <el-form-item label="公司名称" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容"  ></el-input>
         </el-form-item>
-        <el-form-item label="设备代码" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini" ></el-input>
+        <el-form-item label="工厂" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容"  ></el-input>
+        </el-form-item>
+        <el-form-item label="车间" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容"  ></el-input>
+        </el-form-item>
+        <el-form-item label="产线" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容"  ></el-input>
         </el-form-item>
       </el-form-item>
-      <el-form-item label="工序信息：" size="mini">
-        <el-form-item label="工序" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini"></el-input>
+      <el-form-item label="设备信息：" >
+        <el-form-item label="设备类型" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容"  ></el-input>
+        </el-form-item>
+        <el-form-item label="设备代码" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容"  ></el-input>
         </el-form-item>
       </el-form-item>
-      <el-form-item label="物料信息：" size="mini">
-        <el-form-item label="物料类型" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini" ></el-input>
+      <el-form-item label="工序信息：" >
+        <el-form-item label="工序" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
-        <el-form-item label="物料编码" label-width="80px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini" ></el-input>
+      </el-form-item>
+      <el-form-item label="物料信息：" >
+        <el-form-item label="物料类型" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容"  ></el-input>
         </el-form-item>
-        <el-form-item label="CATL物料编码" label-width="130px" size="mini">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" size="mini" ></el-input>
+        <el-form-item label="物料编码" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容"  ></el-input>
+        </el-form-item>
+        <el-form-item label="CATL物料编码" label-width="130px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容"  ></el-input>
         </el-form-item>
         <el-button type="success" size="small" style="margin-left: 25px" @click="handleSearch">查询</el-button>
         <el-button type="success" size="small" @click="handleReset">重置</el-button>

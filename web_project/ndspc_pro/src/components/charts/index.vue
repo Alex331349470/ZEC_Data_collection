@@ -30,17 +30,17 @@ onMounted(async () => {
     myChart.on('click', function (params) {
       console.log(params)
     })
-    // 监听窗口大小变化，自动调整图表大小
-    const resizeHandler = () => {
-      myChart && myChart.resize()
-    }
     window.addEventListener('resize', resizeHandler)
-    // 销毁时移除resize事件监听器
-    onBeforeUnmount(() => {
-      window.removeEventListener('resize', resizeHandler)
-      myChart && myChart.dispose()
-    })
   }
+})
+// 监听窗口大小变化，自动调整图表大小
+const resizeHandler = () => {
+  myChart && myChart.resize()
+}
+// 销毁时移除resize事件监听器
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', resizeHandler)
+  myChart && myChart.dispose()
 })
 watch(() => props.option, (newVal) => {
   // 当 props.option 改变时更新图表数据

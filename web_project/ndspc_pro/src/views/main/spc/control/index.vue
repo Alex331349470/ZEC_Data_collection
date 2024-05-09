@@ -1,55 +1,55 @@
 <template>
   <div class="box">
     <div class="search-box">
-      <el-form ref="form" :model="searchForm" label-width="100px" size="mini">
+      <el-form ref="form" :model="searchForm" label-width="100px" size="small">
         <el-row :gutter="10">
           <el-col :span="4">
-            <el-form-item label="SPC分类：" size="mini">
-              <el-select v-model="searchForm.fenlei" placeholder="请选择" size="small">
+            <el-form-item label="SPC分类：" >
+              <el-select v-model="searchForm.fenlei" placeholder="请选择" >
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="4">
-            <el-form-item label="物料类型：" size="mini">
-              <el-select v-model="searchForm.leixing" placeholder="请选择" size="small">
+            <el-form-item label="物料类型：" >
+              <el-select v-model="searchForm.leixing" placeholder="请选择" >
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="4">
-            <el-form-item label="分析型控制编码：" label-width="130px" size="mini">
-              <el-select v-model="searchForm.bianma" placeholder="请选择" size="small">
+            <el-form-item label="分析型控制编码：" label-width="130px" >
+              <el-select v-model="searchForm.bianma" placeholder="请选择" >
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="4">
-            <el-form-item label="物料代码：" size="mini">
-              <el-select v-model="searchForm.daima" placeholder="请选择" size="small">
+            <el-form-item label="物料代码：" >
+              <el-select v-model="searchForm.daima" placeholder="请选择" >
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="项目：" label-width="80px" size="mini">
-              <el-select v-model="searchForm.xiangmu" placeholder="请选择" size="small" style="width: 100px">
+            <el-form-item label="项目：" label-width="80px" >
+              <el-select v-model="searchForm.xiangmu" placeholder="请选择"  style="width: 100px">
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
-              <el-button class="system-btn" type="success" size="small" style="margin-left: 10px;">查询</el-button>
+              <el-button class="system-btn" type="success"  style="margin-left: 10px;">查询</el-button>
             </el-form-item>
           </el-col>
         </el-row>
         <div class="search-contral">
-          <el-button class="system-btn" type="success" size="small" @click="checkCarts">查看分析型控制图</el-button>
-          <el-button  class="system-btn" type="success" size="small" @click="addFile">新增控制图</el-button>
-          <el-button class="system-btn" type="success" size="small" @click="editFile">修改</el-button>
-          <el-button type="danger" size="small">删除</el-button>
+          <el-button class="system-btn" type="success"  @click="checkCarts">查看分析型控制图</el-button>
+          <el-button  class="system-btn" type="success"  @click="addFile">新增控制图</el-button>
+          <el-button class="system-btn" type="success"  @click="editFile">修改</el-button>
+          <el-button type="danger" >删除</el-button>
         </div>
       </el-form>
     </div>
     <div class="content-box">
-      <el-table :data="tableData" style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
+      <el-table :data="tableData" style="width: 100%" size="default" ref="multipleTable" @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
         <el-table-column type="selection" width="40" align="center" fixed="left" />
         <el-table-column prop="bianma" label="分析控制图编码" :show-overflow-tooltip="true" sortable width="160" align="center" />
         <el-table-column prop="status" label="分析状态" sortable :show-overflow-tooltip="true" width="120" align="center" />
@@ -67,8 +67,8 @@
         <el-table-column prop="status" label="特性类型" sortable :show-overflow-tooltip="true" width="120" align="center" />
         <el-table-column label="操作" width="160" align="center" fixed="right">
           <template #default="scope">
-            <el-button @click.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">关联</el-button>
-            <el-button @click.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">明细</el-button>
+            <el-button @click.prevent="deleteRow(scope.$index, tableData)" link type="primary" >关联</el-button>
+            <el-button @click.prevent="deleteRow(scope.$index, tableData)" link type="primary" >明细</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -77,17 +77,16 @@
       <Pagination @page_num="searchForm.pageNum"
         @page_size="searchForm.pageSize"
         @update:getData="getData"
-        :pageSizes="[10, 20, 30, 50]"
         :total="total"
       />
     </div>
     <ComDialog ref="dialogRef" :dialogTitle="dialogTitle" @confirmEmitBtn="confirmBtn" >
       <el-form ref="workRef" :model="addForm" width="400px" :rules="rules" style="margin-top: 15px;">
         <el-form-item label="开始时间" prop="data1" label-width="100px">
-          <el-input v-model="addForm.data1" placeholder="请输入内容" size="mini"></el-input>
+          <el-input v-model="addForm.data1" placeholder="请输入内容" ></el-input>
         </el-form-item>
         <el-form-item label="结束时间" prop="data2" label-width="100px">
-          <el-input v-model="addForm.data2" placeholder="请输入内容" size="mini"></el-input>
+          <el-input v-model="addForm.data2" placeholder="请输入内容" ></el-input>
         </el-form-item>
       </el-form>
     </ComDialog>
@@ -158,6 +157,7 @@ function checkCarts() {
   chartDialogRef.value.visible = true
 }
 function getData() {}
+function handleSelectionChange() {}
 </script>
 
 <style lang="scss" scoped>

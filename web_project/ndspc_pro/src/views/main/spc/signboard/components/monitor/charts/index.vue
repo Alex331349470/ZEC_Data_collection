@@ -9,19 +9,25 @@
       <div class="charBox flex" v-for="(item, index) in list" :key="index">
         <div class="chart" :style="{width: boxWidth +'px'}">
           <div class="tip">{{item.name}}</div>
-          <BarChart :boxWidth="300"/>
+          <div class="center-flex">
+            <BarChart :boxWidth="300"/>
+          </div>
         </div>
         <div>
           <div class="charBox flex" v-for="(row, idx) in item.workshop" :key="idx">
             <div class="chart" :style="{width: boxWidth +'px'}">
               <div class="tip">{{row.name}}</div>
-              <BarChart :boxWidth="300"/>
+              <div class="center-flex">
+                <BarChart :boxWidth="300"/>
+              </div>
             </div>
             <div :style="{width: autoWidth +'px', overflow: 'auto'}" class="flex">
               <div v-for="(row1, idx1) in row.producLine" :key="idx1">
                 <div class="chart" >
                     <div class="tip">{{row1.name}}</div>
-                    <BarChart :boxWidth="300"/>
+                    <div class="center-flex">
+                      <BarChart :boxWidth="300"/>
+                    </div>
                 </div>
               </div>
             </div>
@@ -35,7 +41,9 @@
 <script setup>
 import Row from './row.vue'
 import BarChart from './charts.vue'
-import {ref, onMounted,nextTick } from 'vue'
+import { useStore } from "vuex";
+import {ref, onMounted, nextTick, onBeforeUnmount, watch, computed } from 'vue'
+const store = useStore()
 const list = [
   {id: 1, name: '1000', workshop: [{id: 1-1, name: 'M15', producLine: [{id: 1-1-1, name: 'Bo1'}]}]},
   {id: 2, name: 'FST', workshop: [{id: 2-1, name: 'SJ1', producLine: [{id: 2-1-1, name: 'Ao1'}, {id: 2-1-2, name: 'Ao2'},{id: 2-1-3, name: 'Ao5'}]},{id: 2-2, name: 'SJ2', producLine: [{id: 2-2-1, name: 'Ao3'},{id: 2-2-2, name: 'Ao4'}]}]},
@@ -44,16 +52,30 @@ let boxWidth = ref(0)
 let boxRef = ref(null)
 let autoRef = ref(null)
 let autoWidth = ref(0)
-onMounted(() => {
-  const resizeHandler = () => {
-    boxWidth.value = boxRef.value.offsetWidth
-    autoWidth.value = autoRef.value.offsetWidth
-  }
-  window.addEventListener('resize', resizeHandler)
+const isCollapse = computed(() => store.state.app.isCollapse)
+
+watch(isCollapse, (newVal) => {
+  setTimeout(() => {
+    resizeHandler()
+  }, 300)
+})
+function resizeHandler() {
   nextTick(() => {
-    boxWidth.value = boxRef.value.offsetWidth
     autoWidth.value = autoRef.value.offsetWidth
+    boxWidth.value = boxRef.value.offsetWidth
   })
+}
+onMounted(() => {
+  if(boxRef.value && autoRef.value) {
+    window.addEventListener('resize', resizeHandler)
+    nextTick(() => {
+      boxWidth.value = boxRef.value.offsetWidth
+      autoWidth.value = autoRef.value.offsetWidth
+    })
+  }
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', resizeHandler)
 })
 </script>
 
@@ -113,6 +135,12 @@ onMounted(() => {
       background-color: #ebffea;
       margin-left: 10px;
     }
+  }
+  .center-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60%;
   }
   .tip {
     padding: 4px;
