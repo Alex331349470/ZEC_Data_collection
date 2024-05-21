@@ -1,68 +1,42 @@
 <template>
-  <div ref="chart" :style="{'width': boxWidth+'px', 'height': '100px'}"></div>
+  <div class="box">
+    <div ref="chart" :style="{'width': boxWidth+'px', 'height': '100px'}"></div>
+    <ComDialog ref="dialogRef" dialogTitle="控制图清单" :fullScreen="true" :hiddenFooter="true" >
+      <TableData :data="tableData"/>
+    </ComDialog>
+  </div>
 </template>
 
 <script setup>
-import * as echarts from 'echarts/core'
-import { DatasetComponent, TooltipComponent, VisualMapComponent } from 'echarts/components'
-import { CustomChart } from 'echarts/charts'
-import { CanvasRenderer } from 'echarts/renderers'
-echarts.use([DatasetComponent, TooltipComponent, VisualMapComponent, CustomChart, CanvasRenderer])
+import * as echarts from 'echarts'
 import * as d3 from 'd3'
-import { ref, onMounted,nextTick } from 'vue'
-
+import ComDialog from '@/components/comDialog/index.vue'
+import TableData from './tableData.vue'
+import { ref, onMounted,nextTick,reactive } from 'vue'
 const props = defineProps({
   boxWidth: {
     type: Number,
     default: 300
-  },
+  }
 })
+const dialogRef = ref(false)
 const chart = ref(null)
-
 const colorList = [
   '#10904a',
   '#2fc06f',
   '#da998c',
-  '#f7e89b',
-  '#fff000',
+  '#f7e89b'
 ]
-
 let option = {}
 let seriesData = [
-  {
-    depth: 1,
-    id: 'city',
-    index: 0,
-    value: 2
-  },
-  {
-    depth: 1,
-    id: 'city.孝感',
-    index: 6,
-    value: 6
-  },
-  {
-    depth: 1,
-    id: 'city.武汉',
-    index: 1,
-    value: 36
-  },
-  {
-    depth: 1,
-    id: 'city.荆州',
-    index: 2,
-    value: 26
-  },
-  {
-    depth: 1,
-    id: 'city.咸宁',
-    index: 3,
-    value: 16
-  }
+  { depth: 1, id: 'name', index: 0, value: 2 },
+  { depth: 1, id: 'name.总数',index: 0,value: 20},
+  { depth: 1, id: 'name.正常运行',index: 1,value: 5},
+  { depth: 1, id: 'name.停止运行',index: 2,value: 10},
+  { depth: 1, id: 'name.未运行',index: 3,value: 5},
 ]
-
 let displayRoot = stratify1()
-
+const tableData = reactive([])
 function stratify1() {
   return d3
     .stratify()
@@ -105,22 +79,19 @@ function renderItem(params, api) {
   const nodeValue = api.value('value')
   let nodeName = nodeValue
   let node = context.nodes[nodePath]
-  if (node.id === 'city') {
+  if (node.id === 'name') {
     node.r = 0
   }
   if (!node) {
     // Reder nothing.
     return
   }
-
-  let colorTop = colorList[idx % colorList.length]
-
+  let colorTop = colorList[node.data.index]
   // 创建对象
   let linearGradient = new echarts.graphic.LinearGradient(0, 0, 0, 1, [
     { offset: 0, color: colorTop },
     { offset: 1, color: colorTop }
   ])
-
   let z2 = api.value('depth') * 2
   return {
     type: 'circle',
@@ -171,7 +142,19 @@ option = {
   dataset: {
     source: seriesData
   },
-  tooltip: {},
+  tooltip: {
+    formatter: function (param, ticket, callback) {
+      var htmlStr = '';
+      var seriesName = param.name.split('.')[1];//图例名称
+      var value = param.data.value;//y轴值
+      var color = colorList[param.data.index];//图例颜色
+      htmlStr += '<div>';
+      htmlStr += '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:' + color + ';"></span>';//一个点
+      htmlStr += seriesName + '：' + value + '<br/>';//图例名称：y轴值圆点后面显示的文本
+      htmlStr += '</div>';
+      return htmlStr;
+    }
+  },
   hoverLayerThreshold: Infinity,
   series: [
     {
@@ -180,6 +163,7 @@ option = {
       renderItem: renderItem,
       progressive: 0,
       coordinateSystem: 'none',
+      selectedMode: 'single',
       encode: {
         tooltip: 'value',
         itemName: 'id'
@@ -191,6 +175,11 @@ option = {
 const initEcharts = () => {
   const myChart = echarts.init(chart.value)
   myChart.setOption(option)
+  // 监听点击事件
+  myChart.on('click', function (params) {
+    console.log('点击',params)
+    dialogRef.value.visible = true
+  })
 }
 
 onMounted(() => {

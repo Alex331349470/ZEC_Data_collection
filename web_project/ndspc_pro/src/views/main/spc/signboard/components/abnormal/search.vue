@@ -9,7 +9,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="时间范围：" >
-        <el-radio-group v-model="searchForm.timeArea" @change="radioChange" style="margin-top: -3px;">
+        <el-radio-group v-model="searchForm.timeArea" style="margin-top: -3px;">
           <el-radio :label="1">全部时间</el-radio>
           <el-radio :label="2">本年度</el-radio>
           <el-radio :label="3">本季度</el-radio>
@@ -25,7 +25,7 @@
         </el-form-item>
       </el-form-item>
       <el-form-item label="时间维度：" >
-        <el-checkbox-group v-model="searchForm.dateArea" @change="handleCheckedDateArea">
+        <el-checkbox-group v-model="searchForm.dateArea">
           <el-checkbox v-for="date in DateOptions" :label="date" :key="date">{{date}}</el-checkbox >
         </el-checkbox-group>
       </el-form-item>
@@ -64,7 +64,7 @@
       </el-form-item>
       <el-form-item label="判异准则：" >
         <el-input v-model="searchForm.gongchang" placeholder="请输入内容"  style="width: 150px;"></el-input>
-        <el-button type="success" size="small" style="margin-left: 20px">查询</el-button>
+        <el-button type="success" size="small" style="margin-left: 20px" @click="handleSearch">查询</el-button>
         <el-button type="success" size="small">重置</el-button>
       </el-form-item>
     </el-form>
@@ -78,6 +78,7 @@
 <script setup>
   import { defineComponent, onMounted, reactive, ref } from 'vue'
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
+  const emit = defineEmits(['handleSearch'])
   // parmas
   const searchForm = reactive({
     timeArea: 2,
@@ -90,12 +91,16 @@
   })
   const isExpand = ref(true)
   const DateOptions = ref(['年', '季', '月', '周', '日'])
+  onMounted(() => {
+    handleSearch()
+  })
   // function
+  function handleSearch() {
+    emit('handleSearch', searchForm)
+  }
   function expandSearch(val) {
     isExpand.value = val
   }
-  function radioChange() {}
-  function handleCheckedDateArea() {}
 </script>
 <style lang="scss" scoped>
 .search-box {

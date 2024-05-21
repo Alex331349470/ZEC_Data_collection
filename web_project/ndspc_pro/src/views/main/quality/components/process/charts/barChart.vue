@@ -1,38 +1,46 @@
 <template>
-  <div class="box">
-    <Chart :option="options" />
+  <div class="box" :style="{height: boxHeight}">
+    <el-empty :image-size="100" v-if="chartData.yAxis_data == null" />
+    <Chart :option="options" @onSelect="onSelect" v-else />
   </div>
 </template>
 
-<script>
-import { defineComponent, onBeforeUnmount, onMounted, reactive } from 'vue'
-import Chart from '@/components/charts/index.vue'
-import option from './modules/bar'
-export default defineComponent({
-  components: { Chart },
-  setup() {
-    const datar = [100,200,300,400,500,600,700,800,900,1000,1100,1200]
-    const datar1 = [130,230,300,400,500,600,700,800,900,1000,1100,1200]
-    const options = reactive(option)
-    onMounted(() => {
-      options.series[0].data = datar
-    })
-    const initChart = () => {
-      options.series[0].data = datar1
+<script setup>
+  import { defineComponent, onBeforeUnmount, onMounted, reactive,ref } from 'vue'
+  import Chart from '@/components/charts/index.vue'
+  import {getOption} from './modules/bar.js'
+  const options = ref(null)
+  const emit = defineEmits(['changeSelect'])
+  const props = defineProps({
+    boxHeight: {
+      type: String,
+      default: '350px'
+    },
+    chartData: {
+      type: Object,
+      default: {}
+    },
+    isExport: {
+      type: Boolean,
+      default: false
     }
-    return {
-      options,
-      initChart
+  })
+  onMounted(() => {
+    if(props.chartData.yAxis_data) {
+      options.value = getOption(props.chartData, props.isExport)
     }
+  })
+  function onSelect(parmas) {
+    emit('changeSelect', parmas)
   }
-})
 </script>
 
 <style lang="scss" scoped>
   .box {
     width: 100%;
-    height: 350px;
     background: #c6d3df;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
   }
 </style>

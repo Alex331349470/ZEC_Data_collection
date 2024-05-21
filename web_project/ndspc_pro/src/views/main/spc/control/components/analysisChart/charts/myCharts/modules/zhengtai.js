@@ -26,7 +26,7 @@ const option = {
   },
   grid: {
     right: '20%'
-  },
+  },        
   legend: {
     data: ['Evaporation', 'Precipitation', 'Temperature']
   },

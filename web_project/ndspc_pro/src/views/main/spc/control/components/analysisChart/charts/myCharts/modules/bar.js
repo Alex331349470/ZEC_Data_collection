@@ -1,10 +1,11 @@
 var xAxis_data = ["01月", "02月", "03月", "04月", "05月", "06月", "07月", "08月", "09月", "10月", "11月", "12月"]
-var data_A = [820, 932, 901, 934, 1290, 1330, 1320, 720, 832, 501, 334, 990]
-var data_B = [720, 832, 501, 334, 990, 830, 720, 620, 732, 801, 1134, 908]
-var data_C = [620, 732, 801, 1134, 908, 930, 920, 820, 932, 901, 934, 1290]
-var data_D = [720, 720, 720, 720, 720, 720, 720, 720, 720, 720, 720, 720]
-var names = ['2018用', '预算费用', '使用预算', '目标']
-var color = ['#014D64', '#01A2D9', '#7AD2F6', '#7C260B']
+var data_A = [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
+var data_B = [0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04]
+var data_C = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+var data_D = [0.03, 0.06, 0.02, 0.03, 0.04, 0.02, 0.03, 0.04, 0.02, 0.03, 0.04, 0.02]
+var data_E = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+var names = ['I值', 'UCL', 'CL', 'LCL', 'USL']
+var color = ['#014d64', '#20a9d9', '#782d19']
 
 const option = {
   backgroundColor: '#c6d3df',
@@ -72,6 +73,7 @@ const option = {
   },
   xAxis: {
     type: 'category',
+    boundaryGap: false,
     data: xAxis_data,
     axisLine: {//坐标线
       lineStyle: {
@@ -126,45 +128,58 @@ const option = {
   },
   series: [
     {
-      type: 'bar',
-      name: names[1],
-      data: data_A,
-      symbolSize: 9, //设置拐点大小
-      itemStyle: {
-        color: color[0]
-      },
-      lineStyle: {
-        width: 2,
-        type: 'solid'  //'dotted'虚线 'solid'实线
-      }
-    }, {
-      type: 'bar',
-      name: names[2],
-      data: data_B,
-      symbolSize: 9, //设置拐点大小
-      itemStyle: {
-        color: color[1]
-      },
-      lineStyle: {
-        width: 2,
-        type: 'solid'  //'dotted'虚线 'solid'实线
-      }
-    }, {
       type: 'line',
       name: names[0],
-      data: data_C,
+      data: data_D,
       symbolSize: 9, //设置拐点大小
       symbol: 'circle',
-      color: color[2], //设置颜色
+      color: color[0], //设置颜色
       lineStyle: {
         width: 2,
         type: 'solid'  //'dotted'虚线 'solid'实线
+      },
+      itemStyle: {
+        normal: {
+            color: function(params) {
+                // 根据数据值设置颜色条件
+                if (params.value > data_A[0]) {
+                    return color[2]  // 数据大于1000时为红色
+                } else {
+                    return color[0] // 其他数据为绿色
+                }
+            }
+        }
+      },
+    }, 
+    {
+      type: 'line',
+      name: names[1],
+      data: data_B,
+      color: color[1], //设置颜色
+      smooth: false, // 是否平滑曲线显示
+      symbolSize: 0, //设置拐点大小
+      lineStyle: {
+        width: 3,
+        type: 'dashed'  //'dotted'虚线 'solid'实线
       }
-    }, {
+    },
+    {
+      type: 'line',
+      name: names[2],
+      data: data_E,
+      color: color[1], //设置颜色
+      smooth: false, // 是否平滑曲线显示
+      symbolSize: 0, //设置拐点大小
+      lineStyle: {
+        width: 3,
+        type: 'dashed'  //'dotted'虚线 'solid'实线
+      }
+    },
+    {
       type: 'line',
       name: names[3],
-      data: data_D,
-      color: color[3], //设置颜色
+      data: data_A,
+      color: color[2], //设置颜色
       smooth: false, // 是否平滑曲线显示
       symbolSize: 0, //设置拐点大小
       lineStyle: {

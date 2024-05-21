@@ -14,9 +14,11 @@ import { useEventListener } from '@vueuse/core'
 const props = defineProps({
   option: Object
 })
-
+const seriesName = ['来料数量']
 const chart = ref(null)
 let myChart = null
+
+const emit = defineEmits(['onSelect'])
 
 onMounted(async () => {
   const dom = chart.value
@@ -28,7 +30,9 @@ onMounted(async () => {
     myChart.setOption(props.option || {})
     // 监听点击事件
     myChart.on('click', function (params) {
-      console.log(params)
+      if(seriesName.includes(params.seriesName)) {
+        emit('onSelect', params)
+      }
     })
     window.addEventListener('resize', resizeHandler)
   }

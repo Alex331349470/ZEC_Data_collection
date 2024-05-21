@@ -206,14 +206,4 @@ const props = defineProps({
   .text-left {
     text-align: left;
   }
-  @media screen and ( max-width: 1200px ) {
-    .card {
-      width: calc(50% - 26px);
-    }
-  }
-  @media screen and ( max-width: 500px ) {
-    .card {
-      width: calc(100% - 26px);
-    }
-  }
 </style>

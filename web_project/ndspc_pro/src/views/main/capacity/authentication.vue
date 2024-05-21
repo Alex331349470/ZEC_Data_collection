@@ -63,8 +63,6 @@ import Search from './components/authentication/search.vue'
 import Pagination from '@/components/pagination/index.vue'
 import ComDialog from '@/components/comDialog/index.vue'
 import HistoryTable from './components/authentication/table.vue'
-import {testQuery} from '@/api/graphql'
-import {useQuery} from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 
 const searchForm = reactive({
@@ -99,9 +97,7 @@ const rules = ref({
 function handleSelectionChange(val) {
   selectionItem.value = val
 }
-onMounted(() => {
-  const {result,error,loading } = useQuery(testQuery, searchForm)
-})
+onMounted(() => {})
 // 数据录入
 function handleAdd() {
   addForm.value = {}

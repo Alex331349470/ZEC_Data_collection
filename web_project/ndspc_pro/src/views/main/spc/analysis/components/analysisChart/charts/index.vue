@@ -1,36 +1,30 @@
 <template>
   <div class="card-list">
     <div class="card-left">
-      <Row v-for="row in list" :key="row.id" :row="row" />
+      <Row v-for="row in list" :key="row.id" :row="row" v-loading="loading"/>
     </div>
     <div class="card-right">
-      <CapabilityRow :row="capabilityRow" />
-      <ZhengtaiRow :row="zhengtaiRow" />
+      <CapabilityRow :row="capabilityRow" v-loading="loading"/>
+      <ZhengtaiRow :row="zhengtaiRow" v-loading="loading"/>
     </div>
   </div>
 </template>
 
-<script lang="js">
-import { defineComponent } from 'vue'
+<script setup>
 import Row from './row.vue'
 import ZhengtaiRow from './zhengtaiBox.vue'
 import CapabilityRow from './capability.vue'
-export default defineComponent({
-  components: { Row, ZhengtaiRow, CapabilityRow },
-  setup() {
-    const list = [
-      { id: 1, name: '来料合格趋势图', data: '100000', color: '#4e73df', icon: 'sfont system-yonghu', isExport: true },
-      { id: 2, name: '工厂来料合格率', data: '30', color: '#1cc88a', icon: 'sfont system-xiaoxi' }
-    ]
-    const zhengtaiRow = { id: 2, name: '拟合正态', data: '30', color: '#1cc88a', icon: 'sfont system-xiaoxi' }
-    const capabilityRow = { id: 2, name: '过程能力', data: '30', color: '#1cc88a', icon: 'sfont system-xiaoxi' }
-    return {
-      list,
-      zhengtaiRow,
-      capabilityRow
-    }
-  }
-})
+import {reactive, ref} from 'vue'
+defineExpose({ handleSearch })
+const list = reactive([{ id: 1, name: '来料合格趋势图'},{ id: 2, name: '工厂来料合格率'}])
+const zhengtaiRow = reactive({ id: 1, name: '拟合正态'})
+const capabilityRow = reactive({ id: 1, name: '过程能力'})
+const loading = ref(true)
+async function handleSearch(params) {
+  setTimeout(() => {
+    loading.value = false
+  }, 1000);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -44,7 +38,7 @@ export default defineComponent({
     width: 55%;
   }
   .card-right {
-    width: 44%;
+    width: calc(45% - 30px);
     margin-left: 5px;
   }
 </style>

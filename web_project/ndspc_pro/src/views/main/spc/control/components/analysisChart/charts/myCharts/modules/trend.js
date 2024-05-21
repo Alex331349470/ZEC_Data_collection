@@ -1,10 +1,8 @@
 var xAxis_data = ["01月", "02月", "03月", "04月", "05月", "06月", "07月", "08月", "09月", "10月", "11月", "12月"]
-var data_A = [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
-var data_B = [0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04]
-var data_C = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-var data_D = [0.03, 0.06, 0.02, 0.03, 0.04, 0.02, 0.03, 0.04, 0.02, 0.03, 0.04, 0.02]
-var data_E = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-var names = ['I值', 'UCL', 'CL', 'LCL', 'USL']
+var data_A = [2, 3, 2, 5, 8, 6, 3, 7, 1, 3, 6, 2]
+var data_B = [3, 4, 1, 2, 6, 1, 3, 4, 1, 2, 0, 5]
+var data_C = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+var names = ['Cp', 'Cpk', '目标']
 var color = ['#014d64', '#20a9d9', '#782d19']
 
 const option = {
@@ -130,55 +128,29 @@ const option = {
     {
       type: 'line',
       name: names[0],
-      data: data_D,
-      symbolSize: 9, //设置拐点大小
-      symbol: 'circle',
+      data: data_A,
+      areaStyle: {},
       color: color[0], //设置颜色
       lineStyle: {
         width: 2,
-        type: 'solid'  //'dotted'虚线 'solid'实线
-      },
-      itemStyle: {
-        normal: {
-            color: function(params) {
-                // 根据数据值设置颜色条件
-                if (params.value > data_A[0]) {
-                    return color[2]  // 数据大于1000时为红色
-                } else {
-                    return color[0] // 其他数据为绿色
-                }
-            }
-        }
-      },
+        type: 'solid'
+      }
     }, 
     {
       type: 'line',
       name: names[1],
       data: data_B,
+      areaStyle: {},
       color: color[1], //设置颜色
-      smooth: false, // 是否平滑曲线显示
-      symbolSize: 0, //设置拐点大小
       lineStyle: {
-        width: 3,
-        type: 'dashed'  //'dotted'虚线 'solid'实线
+        width: 2,
+        type: 'solid'
       }
-    },
+    }, 
     {
       type: 'line',
       name: names[2],
-      data: data_E,
-      color: color[1], //设置颜色
-      smooth: false, // 是否平滑曲线显示
-      symbolSize: 0, //设置拐点大小
-      lineStyle: {
-        width: 3,
-        type: 'dashed'  //'dotted'虚线 'solid'实线
-      }
-    },
-    {
-      type: 'line',
-      name: names[3],
-      data: data_A,
+      data: data_C,
       color: color[2], //设置颜色
       smooth: false, // 是否平滑曲线显示
       symbolSize: 0, //设置拐点大小
@@ -186,7 +158,7 @@ const option = {
         width: 3,
         type: 'dashed'  //'dotted'虚线 'solid'实线
       }
-    },
+    }
   ]
 }
 

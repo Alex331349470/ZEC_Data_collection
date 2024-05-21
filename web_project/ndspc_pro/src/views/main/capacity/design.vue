@@ -1,8 +1,7 @@
 <template>
   <div class="box">
     <Search :selectionItem="selectionItem" @handleAdd="handleAdd" @handleEdit="handleEdit" 
-      @handleDelete="handleDelete" @handleSearch="getData" @handleImport="handleImport" 
-      @handleExport="handleExport" @handleDownload="handleDownload" />
+      @handleDelete="handleDelete" @handleSearch="getData" @handleExport="handleExport" @handleDownload="handleDownload" />
     <div class="content-box">
       <el-table :data="tableData" style="width: 110%" size="default" ref="multipleTable" show-summary @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
         <el-table-column type="selection" width="80" align="center" fixed="left" />
@@ -113,17 +112,13 @@ function handleDelete() {
     })
   })
 }
-// 数据导入
-function handleImport() {
-  // 导入操作
-}
 // 导出当前数据
 function handleExport() {
-  // 导出操作
+
 }
 // 下载模板
 function handleDownload() {
-  //下载操作
+
 }
 // 查看变更履历
 function checkDetail(index, rows) {

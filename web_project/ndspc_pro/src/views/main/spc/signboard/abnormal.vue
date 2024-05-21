@@ -1,27 +1,20 @@
 <template>
   <div class="box">
-    <Search />
-    <Charts />
+    <Search @handleSearch="handleSearch"/>
+    <Charts ref="chartsRef"/>
   </div>
 </template>
 
-<script lang="js">
-import { defineComponent } from 'vue'
+<script setup>
 import Search from './components/abnormal/search.vue'
 import Charts from './components/abnormal/charts/index.vue'
-export default defineComponent({
-  components: {
-    Search,
-    Charts,
-  },
-  setup() {
-    return {
-      
+import { ref } from 'vue'
+  const chartsRef = ref(null)
+  function handleSearch(params) {
+    if(chartsRef.value) {
+      chartsRef.value.handleSearch(params)
     }
-  },
-  methods: {
   }
-})
 </script>
 
 <style lang="scss" scoped>

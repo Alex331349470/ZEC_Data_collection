@@ -40,7 +40,7 @@
         <el-form-item label="检测项目" label-width="80px">
           <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
         </el-form-item>
-        <el-button type="success" size="small" style="margin-left: 20px">查询</el-button>
+        <el-button type="success" size="small" style="margin-left: 20px" @click="handleSearch">查询</el-button>
         <el-button type="success" size="small">重置</el-button>
       </el-form-item>
     </el-form>
@@ -54,6 +54,7 @@
 <script setup>
   import { defineComponent, onMounted, reactive, ref } from 'vue'
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
+  const emit = defineEmits(['handleSearch'])
   // parmas
   const searchForm = ref({
     timeArea: 2,
@@ -66,12 +67,16 @@
   })
   const isExpand = ref(true)
   const DateOptions = ref(['年', '季', '月', '周', '日'])
+  onMounted(() => {
+    handleSearch()
+  })
   // function
+  function handleSearch() {
+    emit('handleSearch', searchForm)
+  }
   function expandSearch(val) {
     isExpand.value = val
   }
-  function radioChange() {}
-  function handleCheckedDateArea() {}
 </script>
 
 <style lang="scss" scoped>

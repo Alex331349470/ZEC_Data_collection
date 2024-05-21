@@ -1,6 +1,6 @@
 <template>
   <div class="my-dialog">
-    <el-dialog v-model="visible" :close-on-click-modal="false" :width="popupWidth" :close-on-press-escape="false" :show-close="false" :fullscreen="isExpand || fullScreen">
+    <el-dialog v-model="visible" :close-on-click-modal="false" :width="popupWidth" :close-on-press-escape="false" :show-close="false" :fullscreen="isExpand || fullScreen" :top="top">
       <template #header>
         <div class="title">{{dialogTitle}}</div>
         <div class="icon">
@@ -11,8 +11,8 @@
       <slot />
       <template #footer v-if="!hiddenFooter">
         <span class="dialog-footer">
-          <el-button @click="handleClose" size="mini">取 消</el-button>
-          <el-button type="success" :loading="addLoading" @click="Save" size="mini">确 定</el-button>
+          <el-button @click="handleClose" size="small">取 消</el-button>
+          <el-button type="success" :loading="addLoading" @click="Save" size="small">确 定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -28,7 +28,7 @@ const props = defineProps({
   },
   popupWidth: {
     type: String,
-    default: '550px'
+    default: '60%'
   },
   fullScreen: {
     type:Boolean,
@@ -37,6 +37,10 @@ const props = defineProps({
   hiddenFooter: {
     type: Boolean,
     default: false
+  },
+  top: {
+    type: String,
+    default: '15vh'
   }
 });
 const visible = ref(false)
@@ -45,6 +49,7 @@ const addLoading = ref(false)
 const emit = defineEmits(['confirmEmitBtn'])
 function handleClose() {
   visible.value = false
+  isExpand.value = false
 }
 function openDialog(val) {
   isExpand.value = !val

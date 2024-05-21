@@ -2,7 +2,7 @@
   <div class="search-box">
     <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="default">
       <el-form-item label="时间范围：" >
-        <el-radio-group v-model="searchForm.timeArea" @change="radioChange" style="margin-top: -3px;">
+        <el-radio-group v-model="searchForm.timeArea" style="margin-top: -3px;">
           <el-radio :label="1">全部时间</el-radio>
           <el-radio :label="2">本年度</el-radio>
           <el-radio :label="3">本季度</el-radio>
@@ -18,7 +18,7 @@
         </el-form-item>
       </el-form-item>
       <el-form-item label="时间维度：" >
-        <el-checkbox-group v-model="searchForm.dateArea" @change="handleCheckedDateArea">
+        <el-checkbox-group v-model="searchForm.dateArea">
           <el-checkbox v-for="date in DateOptions" :label="date" :key="date">{{date}}</el-checkbox >
         </el-checkbox-group>
       </el-form-item>
@@ -45,12 +45,12 @@
         </el-form-item>
       </el-form-item>
       <el-form-item label="计算纬度：" >
-        <el-radio-group v-model="searchForm.jisuanArea" @change="radioChange">
+        <el-radio-group v-model="searchForm.jisuanArea" >
           <el-radio :label="1">按批次数量计算</el-radio>
           <el-radio :label="2">按批次重量计算</el-radio>
         </el-radio-group>
-        <el-button type="success" size="small" style="margin-left: 20px">查询</el-button>
-        <el-button type="success" size="small">重置</el-button>
+        <el-button type="success" size="small" style="margin-left: 20px" @click="reset">重置</el-button>
+        <el-button type="success" size="small"  @click="handleSearch">查询</el-button>
       </el-form-item>
     </el-form>
     <div class="search-box-bottom">
@@ -63,24 +63,36 @@
 <script setup>
   import { defineComponent, onMounted, reactive, ref } from 'vue'
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
+  const emit = defineEmits(['handleSearch'])
   // parmas
-  const searchForm = ref({
+  const defaultParmas = {
     timeArea: 2,
-    dateArea: ['年', '月'],
+    dateArea: ['年', '月'], 
     kaifaArea: 1,
     startTime: '',
     endTime: '',
     gongchang: '',
     jisuanArea: ''
-  })
+  }
+  const searchForm = reactive({...defaultParmas})
   const isExpand = ref(true)
   const DateOptions = ref(['年', '季', '月', '周', '日'])
   // function
   function expandSearch(val) {
     isExpand.value = val
   }
-  function radioChange() {}
-  function handleCheckedDateArea() {}
+  // onmounted
+  onMounted(() => {
+    handleSearch()
+  })
+  // function
+  function handleSearch() {
+    emit('handleSearch', searchForm)
+  }
+  function reset() {
+    Object.assign(searchForm, { ...defaultParmas })
+    handleSearch()
+  }
 </script>
 
 <style lang="scss" scoped>

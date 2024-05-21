@@ -1,185 +1,70 @@
 <template>
   <div class="search-box">
-    <el-form ref="form" :model="searchForm" label-width="140px" :class="isExpand ? 'height' : 'maxHeight'"  label-position="left" size="small">
-      <el-row :gutter="10">
-        <el-col :span="7">
-          <el-form-item label="物料编码：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="检测项目：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="工厂：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="车间：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="工序：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="特性类型：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="控制图类型：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="分析控制图编码：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="下限值：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="Cpk目标线：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="上控制限：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="7">
-          <el-form-item label="物料名称：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="检测项目名称：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="工厂名称：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="产线：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="物料类型：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="特性类型：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="负责人：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="子组大小：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="上限值：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="Mean偏移目标线：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-          <el-form-item label="cov目标线：" >
-            <el-input v-model="searchForm.bianma" placeholder="请输入内容" ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <div class="flex pane-input">
-            <el-checkbox v-model="checked1" />
-            <div class="flex input">
-              <span>判异准则①:1个点距离中心线大于</span>
-              <el-input v-model="searchForm.bianma" placeholder="请输入内容"  style="width: 80px;margin: 0 8px;"></el-input>
-              <span>个标准差</span> 
-            </div>
-          </div>
-          <div class="flex pane-input">
-            <el-checkbox v-model="checked1" />
-            <div class="flex input">
-              <span>判异准则①:1个点距离中心线大于</span>
-              <el-input v-model="searchForm.bianma" placeholder="请输入内容"  style="width: 80px;margin: 0 8px;"></el-input>
-              <span>个标准差</span> 
-            </div>
-          </div>
-          <div class="flex pane-input">
-            <el-checkbox v-model="checked1" />
-            <div class="flex input">
-              <span>判异准则①:1个点距离中心线大于</span>
-              <el-input v-model="searchForm.bianma" placeholder="请输入内容"  style="width: 80px;margin: 0 8px;"></el-input>
-              <span>个标准差</span> 
-            </div>
-          </div>
-          <div class="flex pane-input">
-            <el-checkbox v-model="checked1" />
-            <div class="flex input">
-              <span>判异准则①:1个点距离中心线大于</span>
-              <el-input v-model="searchForm.bianma" placeholder="请输入内容"  style="width: 80px;margin: 0 8px;"></el-input>
-              <span>个标准差</span> 
-            </div>
-          </div>
-          <div class="flex pane-input">
-            <el-checkbox v-model="checked1" />
-            <div class="flex input">
-              <span>判异准则①:1个点距离中心线大于</span>
-              <el-input v-model="searchForm.bianma" placeholder="请输入内容"  style="width: 80px;margin: 0 8px;"></el-input>
-              <span>个标准差</span> 
-            </div>
-          </div>
-          <div class="flex pane-input">
-            <el-checkbox v-model="checked1" />
-            <div class="flex input">
-              <span>判异准则①:1个点距离中心线大于</span>
-              <el-input v-model="searchForm.bianma" placeholder="请输入内容"  style="width: 80px;margin: 0 8px;"></el-input>
-              <span>个标准差</span> 
-            </div>
-          </div>
-          <div class="flex pane-input">
-            <el-checkbox v-model="checked1" />
-            <div class="flex input">
-              <span>判异准则①:1个点距离中心线大于</span>
-              <el-input v-model="searchForm.bianma" placeholder="请输入内容"  style="width: 80px;margin: 0 8px;"></el-input>
-              <span>个标准差</span> 
-            </div>
-          </div>
-          <div class="flex pane-input">
-            <el-checkbox v-model="checked1" />
-            <div class="flex input">
-              <span>判异准则①:1个点距离中心线大于</span>
-              <el-input v-model="searchForm.bianma" placeholder="请输入内容"  style="width: 80px;margin: 0 8px;"></el-input>
-              <span>个标准差</span> 
-            </div>
-          </div>
-          <div class="flex pane-input">
-            <el-checkbox v-model="checked1" />
-            <div class="flex input">
-              <span>判异准则①:1个点距离中心线大于</span>
-              <el-input v-model="searchForm.bianma" placeholder="请输入内容"  style="width: 80px;margin: 0 8px;"></el-input>
-              <span>个标准差</span> 
-            </div>
-          </div>
-          <div class="flex pane-input">
-            <el-checkbox v-model="checked1" />
-            <div class="flex input">
-              <span>判异准则①:1个点距离中心线大于</span>
-              <el-input v-model="searchForm.bianma" placeholder="请输入内容"  style="width: 80px;margin: 0 8px;"></el-input>
-              <span>个标准差</span> 
-            </div>
-          </div>
-          <div class="flex pane-input">
-            <el-checkbox v-model="checked1" />
-            <div class="flex input">
-              <span>判异准则①:1个点距离中心线大于</span>
-              <el-input v-model="searchForm.bianma" placeholder="请输入内容"  style="width: 80px;margin: 0 8px;"></el-input>
-              <span>个标准差</span> 
-            </div>
-          </div>
-          <div class="flex pane-input">
-            <el-checkbox v-model="checked1" />
-            <div class="flex input">
-              <span>判异准则①:1个点距离中心线大于</span>
-              <el-input v-model="searchForm.bianma" placeholder="请输入内容"  style="width: 80px;margin: 0 8px;"></el-input>
-              <span>个标准差</span> 
-            </div>
-          </div>
-          <div class="pane-bottom">
-            <div>分析控制图编码:FQC-20230617-0005</div>
-            <div style="margin-top: 10px;">
-              <el-button type="success"  style="margin-left: 8px">重新分析</el-button>
-              <el-button type="success"  style="margin-left: 8px">保存并结束分析</el-button>
-              <el-button type="success"  style="margin-left: 8px">更改数据</el-button>
-              <el-button type="success"  @click="clickHistory">查看变更履历</el-button>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
+    <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="default">
+      <el-form-item label="时间范围：" >
+        <el-radio-group v-model="searchForm.timeArea" @change="radioChange" style="margin-top: -3px;">
+          <el-radio :label="1">全部时间</el-radio>
+          <el-radio :label="2">本年度</el-radio>
+          <el-radio :label="3">本季度</el-radio>
+          <el-radio :label="4">本月度</el-radio>
+          <el-radio :label="5">当天</el-radio>
+          <el-radio :label="6">自定义</el-radio>
+        </el-radio-group>
+        <el-form-item label="开始时间：" >
+          <el-date-picker v-model="searchForm.startTime" type="date"  placeholder="选择日期" style="width: 150px" />
+        </el-form-item>
+        <el-form-item label="结束时间：" >
+          <el-date-picker v-model="searchForm.endTime" type="date"  placeholder="选择日期" style="width: 150px" />
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="时间维度：" >
+        <el-checkbox-group v-model="searchForm.dateArea" @change="handleCheckedDateArea">
+          <el-checkbox v-for="date in DateOptions" :label="date" :key="date">{{date}}</el-checkbox >
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="开发纬度：" >
+        <el-radio-group v-model="searchForm.kaifaArea">
+          <el-radio :label="1">量产+开发</el-radio>
+          <el-radio :label="2">量产</el-radio>
+          <el-radio :label="3">开发</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="物料信息：" >
+        <el-form-item label="工厂" label-width="80px">
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+        </el-form-item>
+        <el-form-item label="供应商" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+        </el-form-item>
+        <el-form-item label="物料类型" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+        </el-form-item>
+        <el-form-item label="物料编码" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="检测信息：" >
+        <el-form-item label="特性类型" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+        </el-form-item>
+        <el-form-item label="检测项目" label-width="80px" >
+          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+        </el-form-item>
+      </el-form-item>
+      <div class="flex-row">
+        <el-form-item label="计算纬度：">
+          <el-radio-group v-model="searchForm.jisuanArea" @change="radioChange">
+              <el-radio :label="1">按批次数量计算</el-radio>
+              <el-radio :label="2">按批次重量计算</el-radio>
+            </el-radio-group>
+            <el-button type="success" size="small" style="margin-left: 20px" @click="reset">重置</el-button>
+            <el-button type="success" size="small"  @click="handleSearch">查询</el-button> 
+        </el-form-item>
+        <div class="flex" style="align-items: center;">
+          <div style="margin-right: 20px;">分析控制图编码:FQC-20230617-0005</div>
+          <el-button type="success" size="small" @click="clickHistory">查看变更履历</el-button>
+        </div>
+      </div>
     </el-form>
     <div class="search-box-bottom">
       <el-icon color="#fff" size="22" v-show="!isExpand" @click="expandSearch(true)"><ArrowDown /></el-icon>
@@ -196,6 +81,7 @@ import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { ArrowDown, ArrowUp } from '@element-plus/icons'
 import ComDialog from '@/components/comDialog/index.vue'
 import HistoryTable from './components/historyTable.vue'
+const emit = defineEmits(['handleSearch'])
 // parmas
 const searchForm = ref({
   timeArea: 2,
@@ -213,7 +99,14 @@ const historyList = [
 const historyRef = ref(false)
 const isExpand = ref(true)
 const DateOptions = ref(['年', '季', '月', '周', '日'])
+// onmounted
+onMounted(() => {
+  handleSearch()
+})
 // function
+function handleSearch() {
+  emit('handleSearch', searchForm)
+}
 function expandSearch(val) {
   isExpand.value = val
 }
@@ -248,8 +141,12 @@ function clickHistory() {
   .input {
     align-items: center;
     margin-left: 8px;
-    font-size: 12px;
   }
+}
+.flex-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .pane-bottom {
   padding-right: 25px;

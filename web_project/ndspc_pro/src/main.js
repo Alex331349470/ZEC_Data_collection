@@ -11,29 +11,13 @@ import store from './store'
 import router from './router'
 import { getAuthRoutes } from './router/permission'
 import i18n from './locale'
-import {
-  ApolloClient,
-  createHttpLink,
-  InMemoryCache,
-} from "@apollo/client/core"
-import { DefaultApolloClient } from "@vue/apollo-composable"
 if (import.meta.env.MODE !== 'development') { // 非开发环境调用百度统计
   baidu()
 }
-const link = createHttpLink({ uri: "http://10.0.45.20:4000/" })
-const cache = new InMemoryCache();
-const apolloClient = new ApolloClient({ link, cache })
 
 /** 权限路由处理主方法 */
 getAuthRoutes().then(() => {
-  const app = createApp({
-    setup() {
-      provide(DefaultApolloClient, apolloClient);
-    },
-    render() {
-      return h(App);
-    },
-  })
+  const app = createApp(App)
   app.use(ElementPlus, { size: store.state.app.elementSize })
   app.use(store)
   app.use(router)
