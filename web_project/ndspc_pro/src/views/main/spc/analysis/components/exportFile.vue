@@ -22,6 +22,7 @@
 import {reactive} from 'vue'
 import { UploadFilled } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import {uploadFile} from '@/api/spc/analysis'
 defineExpose({
   handleUpload
 })
@@ -31,12 +32,17 @@ function handleChange(file, fileList) {
 	fileLists.value = fileList
 }
 function handleUpload() {
-	if(fileLists.value?.length) {
+	console.log(fileLists.value)
+	let formData = new FormData()
+		fileLists.value.forEach(file => {
+			formData.append('name', file.raw)
+		})
+		console.log(formData.get('name'));
+		uploadFile(formData).then(res => {
+			console.log(res)
+		})
+		fileLists.value = []
 		emit('closeAllDialog')
-		ElMessage({ message: '上传成功', type: 'success'})
-	} else {
-		ElMessage({ message: '请至少选择一个文件', type: 'warning'})
-	}
 }
 </script>
 <style scoped>
