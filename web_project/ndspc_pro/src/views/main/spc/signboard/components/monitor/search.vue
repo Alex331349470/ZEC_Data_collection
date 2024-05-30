@@ -1,6 +1,6 @@
 <template>
   <div class="search-box">
-    <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="default">
+    <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="small">
       <el-form-item label="SPC分类：">
         <el-radio-group v-model="searchForm.fenlei">
           <el-radio :label="1">过程特性</el-radio>

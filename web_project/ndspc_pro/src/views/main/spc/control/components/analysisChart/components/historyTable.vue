@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div class="content-box">
-      <el-table :data="tableData" style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
+      <el-table :data="tableData" style="width: 100%; font-size: 13px" ref="multipleTable" @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
         <el-table-column type="selection" width="40" align="center" fixed="left" />
         <el-table-column prop="bianma" label="分析控制图编码" :show-overflow-tooltip="true" sortable width="160" align="center" />
         <el-table-column prop="status" label="分析状态" sortable :show-overflow-tooltip="true" width="120" align="center" />

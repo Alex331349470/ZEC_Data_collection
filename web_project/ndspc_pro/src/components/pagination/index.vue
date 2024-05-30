@@ -4,7 +4,7 @@
       @current-page="currentPage"
       :page-size="pageSize"
       :page-sizes="pageSizes"
-      mini
+      small
       background
       :layout="layout"
       :total="total"

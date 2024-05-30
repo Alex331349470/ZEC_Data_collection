@@ -4,7 +4,7 @@
       @handleDelete="handleDelete" @handleSearch="getData" @handleImport="handleImport" 
       @handleExport="handleExport" @handleDownload="handleDownload" />
     <div class="content-box">
-      <el-table :data="tableData" style="width: 100%" size="default" ref="multipleTable" show-summary @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
+      <el-table :data="tableData" style="width: 100%; font-size: 13px" size="default" ref="multipleTable" show-summary @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
         <el-table-column type="selection" width="80" align="center" fixed="left" />
         <el-table-column prop="bianma" label="需求时间" :show-overflow-tooltip="true" sortable align="center" />
         <el-table-column prop="status" label="客户名称" sortable :show-overflow-tooltip="true" align="center" />

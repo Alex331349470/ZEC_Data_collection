@@ -1,6 +1,6 @@
 <template>
   <div class="content-box">
-    <el-table :data="tableData" style="width: 100%" ref="multipleTable" :header-cell-style="{background:'#f0f2f5'}">
+    <el-table :data="tableData" style="width: 100%; font-size: 13px" ref="multipleTable" :header-cell-style="{background:'#f0f2f5'}">
       <el-table-column type="index" label="序号" width="50" fixed="left" align="center"  />
       <el-table-column prop="bianma" label="加工类型" :show-overflow-tooltip="true" sortable width="160" align="center" />
       <el-table-column prop="status" label="公司名称" sortable :show-overflow-tooltip="true" width="120" align="center" />

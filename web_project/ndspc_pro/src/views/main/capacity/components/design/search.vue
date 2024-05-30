@@ -66,8 +66,8 @@
       </div> 
     </el-form>
     <!-- 数据导入 -->
-    <ComDialog ref="exportDialogRef" dialogTitle="数据导入" @confirmEmitBtn="confirmExport" >
-      <ExportFile ref="exportRef" @closeAllDialog="closeAllDialog"/>
+    <ComDialog ref="importDialogRef" dialogTitle="数据导入" @confirmEmitBtn="confirmExport" >
+      <ImportFile ref="importRef" @closeAllDialog="closeAllDialog"/>
     </ComDialog>
     <div class="search-box-bottom">
       <el-icon color="#fff" size="22" v-show="!isExpand" @click="expandSearch(true)"><ArrowDown /></el-icon>
@@ -79,7 +79,7 @@
 <script setup>
   import { defineComponent, onMounted, ref,watch } from 'vue'
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
-  import ExportFile from './exportFile.vue'
+  import ImportFile from './importFile.vue'
   import ComDialog from '@/components/comDialog/index.vue'
   const emit = defineEmits([
   'handleAdd',
@@ -95,8 +95,8 @@
     default: []
   }
   })
-  const exportDialogRef = ref(false)
-  const exportRef = ref(null)
+  const importDialogRef = ref(false)
+  const importRef = ref(null)
   // parmas
   const searchForm = ref({
     timeArea: 2,
@@ -136,7 +136,7 @@
   }
   // 数据导入
   function handleImport() {
-    exportDialogRef.value.visible = true
+    importDialogRef.value.visible = true
   }
   // 导出当前数据
   function handleExport() {
@@ -147,10 +147,10 @@
     emit('handleDownload')
   }
   function confirmExport() {
-    exportRef.value.handleUpload()
+    importRef.value.handleUpload()
   }
   function closeAllDialog() {
-    exportDialogRef.value.visible = false
+    importDialogRef.value.visible = false
     emit('handleSearch')
   }
 </script>

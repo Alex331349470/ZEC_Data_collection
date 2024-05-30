@@ -13,7 +13,7 @@
       </div>
     </div>
     <BarChart v-if="chartData" @changeSelect="changeSelect" :chartData="chartData" :isExport="row.isExport"/>
-    <el-dialog v-model="dialogVisible" width="80%" :before-close="handleClose" :close-on-click-modal="false" :fullscreen="true">
+    <ComDialog ref="chartDialogRef" :dialogTitle="row.name" :fullScreen="true" :hiddenFooter="true">
       <div class="charBox">
         <div class="card-title">
           <div class="left">
@@ -21,12 +21,14 @@
             <span class="name">{{ row.name }}</span>
           </div>
           <div style="display: flex; align-items: center;">
-          <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
+            <el-button size="small" type="info" v-if="row.isExport && selectItem">已选择{{selectItem}}</el-button>
+            <el-button size="small" type="info" v-if="row.isExport && selectItem">导出选中</el-button>
+            <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
+          </div>
         </div>
-        </div>
-        <BarChart v-if="showChart" boxHeight="calc(100vh - 110px)" @changeSelect="changeSelect" :chartData="chartData" />
+        <BarChart v-if="showChart" boxHeight="calc(100vh - 110px)" @changeSelect="changeSelect" :chartData="chartData" :isExport="row.isExport" />
       </div>
-    </el-dialog>
+    </ComDialog>
   </div>
 </template>
 
@@ -34,6 +36,7 @@
 import {ref,reactive, nextTick, onMounted } from 'vue'
 import {Rank} from '@element-plus/icons-vue'
 import BarChart from './barChart.vue'
+import ComDialog from '@/components/comDialog/index.vue'
   const props = defineProps({
     row: {
       type: Object,
@@ -42,16 +45,16 @@ import BarChart from './barChart.vue'
   })
   const selectItem = ref(null)
   defineExpose({ handleSearch })
-  const dialogVisible = ref(false)
+  const chartDialogRef = ref(false)
   const showChart = ref(false)
   const chartData = ref(null)
   const loading = ref(true)
   function handleClose() {
-    dialogVisible.value = false
+    chartDialogRef.value.visible = false
     showChart.value = false
   }
   function handleOpen() {
-    dialogVisible.value = true
+    chartDialogRef.value.visible = true
     nextTick(() => {
       showChart.value = true
     })
@@ -93,6 +96,7 @@ import BarChart from './barChart.vue'
     background-color: #c6d3df;
     margin: 5px;
     box-shadow: 3px 3px 10px 0 rgba(58, 59, 69, 0.15);
+    font-size: 14px;
     &-title {
       margin: 10px;
       display: flex;
@@ -117,6 +121,7 @@ import BarChart from './barChart.vue'
   :deep(.el-button--info) {
     border-color: #014D64!important;
     background: #014D64!important;
+    padding: 5px;
   }
   @media screen and ( max-width: 1200px ) {
     .card {

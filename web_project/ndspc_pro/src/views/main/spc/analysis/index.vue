@@ -42,7 +42,7 @@
         </el-row>
         <div class="search-contral">
           <el-button class="system-btn" type="success"  @click="addFile">新增控制图</el-button>
-          <el-button class="system-btn" type="success"  @click="exportFile" >数据导入</el-button>
+          <el-button class="system-btn" type="success"  @click="importFile" >数据导入</el-button>
           <el-button class="system-btn" type="success"  @click="editFile" :disabled="!selectionItem || selectionItem.length !== 1">修改</el-button>
           <el-button class="system-btn" type="success"  @click="checkCarts" :disabled="!selectionItem || selectionItem.length !== 1">查看分析型控制图</el-button>
           <el-button type="danger" @click="handleDelete" :disabled="!selectionItem || selectionItem.length === 0">删除</el-button>
@@ -50,7 +50,7 @@
       </el-form>
     </div>
     <div class="content-box">
-      <el-table :data="tableData" style="width: 100%" size="default" ref="multipleTable" @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
+      <el-table :data="tableData" style="width: 100%; font-size: 13px; font-size: 13px" ref="multipleTable" @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
         <el-table-column type="selection" width="40" align="center" fixed="left" />
         <el-table-column prop="bianma" label="分析控制图编码" :show-overflow-tooltip="true" sortable width="160" align="center" />
         <el-table-column prop="status" label="分析状态" sortable :show-overflow-tooltip="true" width="120" align="center" />
@@ -358,8 +358,8 @@
       <DetailForm />
     </ComDialog>
     <!-- 数据导入 -->
-    <ComDialog ref="exportDialogRef" dialogTitle="数据导入" @confirmEmitBtn="confirmExport" >
-      <ExportFile ref="exportRef" @closeAllDialog="closeAllDialog"/>
+    <ComDialog ref="importDialogRef" dialogTitle="数据导入" @confirmEmitBtn="confirmImport" >
+      <ImportFile ref="importRef" @closeAllDialog="closeAllDialog"/>
     </ComDialog>
   </div>
 </template>
@@ -371,7 +371,7 @@ import Pagination from '@/components/pagination/index.vue'
 import AnalysisChart from './components/analysisChart.vue'
 import AssociationTable from './components/associationTable.vue'
 import DetailForm from './components/detailForm.vue'
-import ExportFile from './components/exportFile.vue'
+import ImportFile from './components/importFile.vue'
 /* ------parmas--------- */
 const searchForm = ref({
   pageSize: 2,
@@ -384,8 +384,8 @@ const dialogRef = ref(false)
 const chartDialogRef = ref(false)
 const drawer = ref(false)
 const detailDialogRef = ref(false)
-const exportDialogRef = ref(false)
-const exportRef = ref(null)
+const importDialogRef = ref(false)
+const importRef = ref(null)
 const total = ref(10)
 const options = ref([{value: '1', label: '全部'}, {value: '2', label: '未分析'}, {value: '3', label: '已分析'}])
 const tableData = ref([
@@ -440,14 +440,14 @@ function handleAssociation(row) {
 function handleDetail(row) {
   detailDialogRef.value.visible = true
 }
-function exportFile() {
-  exportDialogRef.value.visible = true
+function importFile() {
+  importDialogRef.value.visible = true
 }
-function confirmExport() {
-  exportRef.value.handleUpload()
+function confirmImport() {
+  importRef.value.handleUpload()
 }
 function closeAllDialog() {
-  exportDialogRef.value.visible = false
+  importDialogRef.value.visible = false
 }
 function getData() {}
 function handleSelectionChange(val) {

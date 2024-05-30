@@ -1,6 +1,6 @@
 <template>
   <div class="search-box">
-    <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="default">
+    <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="small">
       <el-form-item label="时间范围：" >
         <el-radio-group v-model="searchForm.timeArea" style="margin-top: -3px;">
           <el-radio :label="1">全部时间</el-radio>

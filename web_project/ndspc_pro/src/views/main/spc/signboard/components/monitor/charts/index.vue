@@ -121,6 +121,7 @@ function handleSearch(params) {
     margin: 5px;
     box-shadow: 3px 3px 10px 0 rgba(58, 59, 69, 0.15);
     width: 100%;
+    font-size: 14px;;
     &-title {
       text-align: center;
       background: #10904a;
