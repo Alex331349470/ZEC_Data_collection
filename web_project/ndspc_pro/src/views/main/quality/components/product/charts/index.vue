@@ -6,7 +6,7 @@
 
 <script setup>
 import { reactive,defineExpose,ref, nextTick } from 'vue'
-import {questionById} from '@/api/quality/incoming'
+import {productQC} from '@/api/quality/product'
 import Row from './row.vue'
 defineExpose({ handleSearch })
 const componentRefs = ref([])// 用于存储组件引用的数组
@@ -25,11 +25,19 @@ function setComponentRef(el, index) {
   componentRefs.value[index] = el
 }
 async function handleSearch(params) {
+  getData(params)
   nextTick// 等待 Vue 渲染完成后再进行操作
   await nextTick()
   componentRefs.value.map(item => {
     item.handleSearch(params)
   })
+}
+function getData(params) {
+  productQC({input: params}).then(res => {
+    console.log(res)
+  }).catch(error => {
+    console.log(error)
+  });
 }
 </script>
 

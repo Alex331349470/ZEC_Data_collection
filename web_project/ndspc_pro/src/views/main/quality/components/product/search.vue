@@ -2,12 +2,12 @@
   <div class="search-box">
     <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="small">
       <el-form-item label="时间范围：" >
-        <el-radio-group v-model="searchForm.timeArea" style="margin-top: -3px;">
-          <el-radio :label="1">全部时间</el-radio>
-          <el-radio :label="2">本年度</el-radio>
-          <el-radio :label="3">本季度</el-radio>
-          <el-radio :label="4">本月度</el-radio>
-          <el-radio :label="5">当天</el-radio>
+        <el-radio-group v-model="searchForm.selectedTime" style="margin-top: -3px;">
+          <el-radio :label="5">全部时间</el-radio>
+          <el-radio :label="1">本年度</el-radio>
+          <el-radio :label="2">本季度</el-radio>
+          <el-radio :label="3">本月度</el-radio>
+          <el-radio :label="4">当天</el-radio>
           <el-radio :label="6">自定义</el-radio>
         </el-radio-group>
         <el-form-item label="开始时间：" >
@@ -18,29 +18,42 @@
         </el-form-item>
       </el-form-item>
       <el-form-item label="时间维度：" >
-        <el-checkbox-group v-model="searchForm.dateArea">
-          <el-checkbox v-for="date in DateOptions" :label="date" :key="date">{{date}}</el-checkbox >
-        </el-checkbox-group>
+        <el-checkbox v-model="searchForm[date.value]" v-for="(date, index) in DateOptions" :key="index">{{date.label}}</el-checkbox>
       </el-form-item>
       <el-form-item label="产出类型：" >
-        <el-radio-group v-model="searchForm.chanchuArea">
-          <el-radio :label="1">一次合格+返工</el-radio>
-          <el-radio :label="2">一次合格</el-radio>
-          <el-radio :label="3">返工</el-radio>
+        <el-radio-group v-model="searchForm.productType">
+          <el-radio label="一次合格+返工">一次合格+返工</el-radio>
+          <el-radio label="一次合格">一次合格</el-radio>
+          <el-radio label="返工">返工</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="物料信息：" >
         <el-form-item label="工厂" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <el-select v-model="searchForm.factory" multiple placeholder="请选择">
+            <el-option v-for="(item, index) in options.factory" :key="index" :label="item" :value="item"/>
+          </el-select>
         </el-form-item>
-        <el-form-item label="供应商" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+        <el-form-item label="车间" label-width="80px" >
+          <el-select v-model="searchForm.workshop" multiple placeholder="请选择">
+            <el-option v-for="(item, index) in options.workshop" :key="index" :label="item" :value="item"/>
+          </el-select>
         </el-form-item>
+        <el-form-item label="产线" label-width="80px" >
+          <el-select v-model="searchForm.line" multiple placeholder="请选择">
+            <el-option v-for="(item, index) in options.line" :key="index" :label="item" :value="item"/>
+          </el-select>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="物料信息：" >
         <el-form-item label="物料类型" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <el-select v-model="searchForm.materialType" multiple placeholder="请选择">
+            <el-option v-for="(item, index) in options.materialType" :key="index" :label="item" :value="item"/>
+          </el-select>
         </el-form-item>
         <el-form-item label="物料编码" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <el-select v-model="searchForm.materialCode" multiple placeholder="请选择">
+            <el-option v-for="(item, index) in options.materialCode" :key="index" :label="item" :value="item"/>
+          </el-select>
         </el-form-item>
       </el-form-item>
       <el-form-item label="检测信息：" >
@@ -52,9 +65,9 @@
         </el-form-item>
       </el-form-item>
       <el-form-item label="计算纬度：" >
-        <el-radio-group v-model="searchForm.jisuanArea">
-          <el-radio :label="1">按批次数量计算</el-radio>
-          <el-radio :label="2">按批次重量计算</el-radio>
+        <el-radio-group v-model="searchForm.quantityCalcSwitch">
+          <el-radio :label="true">按批次数量计算</el-radio>
+          <el-radio :label="false">按批次重量计算</el-radio>
         </el-radio-group>
         <el-button type="success" size="small" style="margin-left: 20px" @click="reset">重置</el-button>
         <el-button type="success" size="small"  @click="handleSearch">查询</el-button>
@@ -73,17 +86,53 @@
   const emit = defineEmits(['handleSearch'])
   // parmas
   const defaultParmas = {
-    timeArea: 2,
-    dateArea: ['年', '月'],
-    kaifaArea: 1,
+    selectedTime: 5,
     startTime: '',
     endTime: '',
-    gongchang: '',
-    jisuanArea: ''
+    yearDemintion: true,
+    seasonDemintion: false,
+    monthDemintion: true,
+    weekDemintion: false,
+    dayDemintion: false,
+    quantityCalcSwitch: true,
+    factory: [],
+    productType: '一次合格+返工',
+    workshop: [],
+    line: [],
+    materialType: [],
+    materialCode: []
   }
   const searchForm = reactive({...defaultParmas})
+  const DateOptions = reactive([
+    {
+      value: 'yearDemintion',
+      label: '年'
+    },
+    {
+      value: 'seasonDemintion',
+      label: '季度'
+    },
+    {
+      value: 'monthDemintion',
+      label: '月'
+    },
+    {
+      value: 'weekDemintion',
+      label: '周'
+    },
+    {
+      value: 'dayDemintion',
+      label: '日'
+    }
+  ]) // 时间维度数组
+  const options = reactive({
+    factory: ['贵阳', '义龙'],
+    workshop: ['一期'],
+    line: ['01'],
+    materialType: ['五系'],
+    materialCode: ['ZH5000BDH']
+  })// 下拉框数据
   const isExpand = ref(true)
-  const DateOptions = ref(['年', '季', '月', '周', '日'])
   // onmounted
   onMounted(() => {
     handleSearch()

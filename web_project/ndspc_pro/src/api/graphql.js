@@ -6,7 +6,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloLink } from 'apollo-link'
 
 const httpLink = createHttpLink({
-  uri: "http://10.0.45.20:4000/graphql", //配置api调用连接
+  uri: "http://10.0.45.20:6453/graphql", //配置api调用连接
 })
 
 const middlewareLink = new ApolloLink((operation, forward) => {
