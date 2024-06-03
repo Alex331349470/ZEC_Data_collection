@@ -11,10 +11,10 @@
           <el-radio :label="6">自定义</el-radio>
         </el-radio-group>
         <el-form-item label="开始时间：" >
-          <el-date-picker v-model="searchForm.startTime" type="date"  placeholder="选择日期" style="width: 150px" />
+          <el-date-picker v-model="searchForm.startTime" type="date" value-format="YYYY-MM-DD" :disabled="searchForm.selectedTime !== 6"  placeholder="选择日期" style="width: 150px" />
         </el-form-item>
         <el-form-item label="结束时间：" >
-          <el-date-picker v-model="searchForm.endTime" type="date"  placeholder="选择日期" style="width: 150px" />
+          <el-date-picker v-model="searchForm.endTime" type="date" value-format="YYYY-MM-DD" :disabled="searchForm.selectedTime !== 6" placeholder="选择日期" style="width: 150px" />
         </el-form-item>
       </el-form-item>
       <el-form-item label="时间维度：" >
@@ -27,31 +27,31 @@
           <el-radio label="返工">返工</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="物料信息：" >
+      <el-form-item label="来料信息：" >
         <el-form-item label="工厂" label-width="80px" >
-          <el-select v-model="searchForm.factory" multiple placeholder="请选择">
+          <el-select v-model="searchForm.factory" multiple placeholder="请选择" filterable remote reserve-keyword :remote-method="getFactory">
             <el-option v-for="(item, index) in options.factory" :key="index" :label="item" :value="item"/>
           </el-select>
         </el-form-item>
         <el-form-item label="车间" label-width="80px" >
-          <el-select v-model="searchForm.workshop" multiple placeholder="请选择">
+          <el-select v-model="searchForm.workshop" multiple placeholder="请选择" filterable remote reserve-keyword :remote-method="getWorkshop">
             <el-option v-for="(item, index) in options.workshop" :key="index" :label="item" :value="item"/>
           </el-select>
         </el-form-item>
         <el-form-item label="产线" label-width="80px" >
-          <el-select v-model="searchForm.line" multiple placeholder="请选择">
+          <el-select v-model="searchForm.line" multiple placeholder="请选择" filterable remote reserve-keyword :remote-method="getLine">
             <el-option v-for="(item, index) in options.line" :key="index" :label="item" :value="item"/>
           </el-select>
         </el-form-item>
       </el-form-item>
       <el-form-item label="物料信息：" >
         <el-form-item label="物料类型" label-width="80px" >
-          <el-select v-model="searchForm.materialType" multiple placeholder="请选择">
+          <el-select v-model="searchForm.materialType" multiple placeholder="请选择" filterable remote reserve-keyword :remote-method="getMaterialType">
             <el-option v-for="(item, index) in options.materialType" :key="index" :label="item" :value="item"/>
           </el-select>
         </el-form-item>
         <el-form-item label="物料编码" label-width="80px" >
-          <el-select v-model="searchForm.materialCode" multiple placeholder="请选择">
+          <el-select v-model="searchForm.materialCode" multiple placeholder="请选择" filterable remote reserve-keyword :remote-method="getMaterialCode">
             <el-option v-for="(item, index) in options.materialCode" :key="index" :label="item" :value="item"/>
           </el-select>
         </el-form-item>
@@ -83,6 +83,7 @@
 <script setup>
   import { defineComponent, onMounted, reactive, ref } from 'vue'
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
+  import {ProductSelect} from '@/api/quality/product'
   const emit = defineEmits(['handleSearch'])
   // parmas
   const defaultParmas = {
@@ -125,19 +126,57 @@
       label: '日'
     }
   ]) // 时间维度数组
-  const options = reactive({
-    factory: ['贵阳', '义龙'],
-    workshop: ['一期'],
-    line: ['01'],
-    materialType: ['五系'],
-    materialCode: ['ZH5000BDH']
-  })// 下拉框数据
+  const options = ref({})// 下拉框数据
+  const searchInput = reactive({// 下拉框搜索条件
+    factory: '',
+    workshop: '',
+    line: '',
+    materialType: '',
+    materialCode: ''
+  })
   const isExpand = ref(true)
   // onmounted
   onMounted(() => {
+    getProductSelect()
     handleSearch()
   })
   // function
+  function getProductSelect() {// 获取下拉框数据
+    ProductSelect({input: searchInput}).then(res => {
+      options.value = res.data.productSelect
+    })
+  }
+  function getFactory(query) {
+    searchInput.factory = query
+    debounce(getProductSelect(), 100)
+  }
+  function getWorkshop(query) {
+    searchInput.workshop = query
+    debounce(getProductSelect(), 100)
+  }
+  function getLine(query) {
+    searchInput.line = query
+    debounce(getProductSelect(), 100)
+  }
+  function getMaterialType(query) {
+    searchInput.materialType = query
+    debounce(getProductSelect(), 100)
+  }
+  function getMaterialCode(query) {
+    searchInput.materialCode = query
+    debounce(getProductSelect(), 100)
+  }
+  function debounce(fn, delay) {
+    let timeoutID
+    return function(...args) {
+      if (timeoutID) {
+        clearTimeout(timeoutID)
+      }
+      timeoutID = setTimeout(() => {
+        fn.apply(this, args)
+      }, delay);
+    };
+  }
   function expandSearch(val) {
     isExpand.value = val
   }

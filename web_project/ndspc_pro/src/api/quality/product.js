@@ -2,8 +2,8 @@ import apolloClient from '../graphql'
 import gql from 'graphql-tag'
 //query方式的请求
 export function productQC(params) {
-	return apolloClient.query({
-		query: gql`mutation ProductQC($input: ProductQCInput) {
+	return apolloClient.mutate({
+		mutation: gql`mutation ProductQC($input: ProductQCInput) {
 			productQC(input: $input) {
 				trendRate {
 					quantityYearTrend {
@@ -177,6 +177,34 @@ export function productQC(params) {
 						purpose
 					}
 				}
+				materialCodePlato {
+					quantityMaterialCodePlato {
+						materialCode
+						poorAmount
+						proportion
+						purpose
+					}
+					weightMaterialCodePlato {
+						materialCode
+						poorAmount
+						proportion
+						purpose
+					}
+				}
+			}
+		}`,
+		variables: params
+	})
+}
+export function ProductSelect(params) {
+	return apolloClient.mutate({
+		mutation: gql`mutation ProductSelect($input: ProductSelectInput) {
+			productSelect(input: $input) {
+				factory
+				workshop
+				line
+				materialCode
+				materialType
 			}
 		}`,
 		variables: params

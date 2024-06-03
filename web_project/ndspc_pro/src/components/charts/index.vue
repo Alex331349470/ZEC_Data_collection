@@ -14,7 +14,7 @@ import { useEventListener } from '@vueuse/core'
 const props = defineProps({
   option: Object
 })
-const seriesName = ['来料数量']
+const seriesName = ['生产数量','生产重量']
 const chart = ref(null)
 let myChart = null
 
