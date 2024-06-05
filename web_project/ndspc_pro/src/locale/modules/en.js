@@ -29,7 +29,7 @@ const lang = {
       },
     },
     system: {
-      title: 'backendsystem',
+      title: 'ZEC Data platform',
       subTitle: 'few lines to write beautiful admin',
       welcome: 'welcome login',
       login: 'login',

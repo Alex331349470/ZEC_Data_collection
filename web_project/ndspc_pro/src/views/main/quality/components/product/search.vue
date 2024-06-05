@@ -30,55 +30,48 @@
       <el-form-item label="来料信息：" >
         <el-form-item label="工厂" label-width="80px" >
           <MultipleSelect 
-            :options="options.factory" 
             :selectNameArr="searchForm.factory" 
-            @getProductSelectPlato="getProductSelectPlato" 
+            selectTypeName="factory"
             @handleChange='searchForm.factory=$event' />
         </el-form-item>
         <el-form-item label="车间" label-width="80px" >
           <MultipleSelect 
-            :options="options.workshop" 
             :selectNameArr="searchForm.workshop" 
-            @getProductSelectPlato="getProductSelectPlato" 
+            selectTypeName="workshop"
             @handleChange='searchForm.workshop=$event' />
         </el-form-item>
         <el-form-item label="产线" label-width="80px" >
           <MultipleSelect 
-            :options="options.line" 
-            :selectNameArr="searchForm.line" 
-            @getProductSelectPlato="getProductSelectPlato" 
+            :selectNameArr="searchForm.line"
+            selectTypeName="line" 
             @handleChange='searchForm.line=$event' />
         </el-form-item>
       </el-form-item>
       <el-form-item label="物料信息：" >
         <el-form-item label="物料类型" label-width="80px" >
           <MultipleSelect 
-            :options="options.materialType" 
             :selectNameArr="searchForm.materialType" 
-            @getProductSelectPlato="getProductSelectPlato" 
+            selectTypeName="materialType"
             @handleChange='searchForm.materialType=$event' />
         </el-form-item>
         <el-form-item label="物料编码" label-width="80px" >
           <MultipleSelect 
-            :options="options.materialCode" 
             :selectNameArr="searchForm.materialCode" 
-            @getProductSelectPlato="getProductSelectPlato" 
+            selectTypeName="materialCode"
             @handleChange='searchForm.materialCode=$event' />
         </el-form-item>
       </el-form-item>
       <el-form-item label="检测信息：" >
         <el-form-item label="特性类型" label-width="80px" >
           <MultipleSelect 
-            :options="options.propertyType" 
             :selectNameArr="searchForm.propertyType" 
-            @getProductSelectPlato="getProductSelectPlato" 
+            selectTypeName="propertyType"
             @handleChange='searchForm.propertyType=$event' />
         </el-form-item>
         <el-form-item label="检测项目" label-width="80px" >
           <MultipleSelect 
-            :options="options.testItem" 
             :selectNameArr="searchForm.testItem" 
-            @getProductSelectPlato="getProductSelectPlato" 
+            selectTypeName="testItem"
             @handleChange='searchForm.testItem=$event' />
         </el-form-item>
       </el-form-item>
@@ -103,7 +96,6 @@
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
   import { Search } from '@element-plus/icons-vue'
   import MultipleSelect from '@/components/multipleSelect/index.vue'
-  import {productSelectPlato} from '@/api/quality/product'
   const emit = defineEmits(['handleSearch'])
   // parmas
   const defaultParmas = {
@@ -126,7 +118,6 @@
     propertyType: []
   }
   const searchForm = reactive({...defaultParmas})
-  const loading = ref(false)
   const DateOptions = reactive([
     {
       value: 'yearDemintion',
@@ -149,7 +140,6 @@
       label: '日'
     }
   ]) // 时间维度数组
-  const options = ref({})// 下拉框数据
   const searchInput = reactive({// 下拉框搜索条件
     factory: '',
     workshop: '',
@@ -162,19 +152,8 @@
   const isExpand = ref(true)
   // onmounted
   onMounted(() => {
-    getProductSelectPlato()
     handleSearch()
   })
-  // function
-  function getProductSelectPlato(query) {// 检测项检索
-    productSelectPlato({input: query || searchInput}).then(res => {
-      loading.value = false
-      options.value = res.data.productSelectPlato
-    }).catch(error => {
-      console.log(error)
-      loading.value = false
-    })
-  }
   function expandSearch(val) {
     isExpand.value = val
   }
