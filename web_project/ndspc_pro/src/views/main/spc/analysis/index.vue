@@ -42,10 +42,10 @@
         </el-row>
         <div class="search-contral">
           <el-button class="system-btn" type="success"  @click="addFile">新增控制图</el-button>
-          <el-button class="system-btn" type="success"  @click="importFile" >数据导入</el-button>
           <el-button class="system-btn" type="success"  @click="editFile" :disabled="!selectionItem || selectionItem.length !== 1">修改</el-button>
+          <el-button class="system-btn" type="success"  @click="importFile" >数据导入</el-button>
           <el-button class="system-btn" type="success"  @click="checkCarts" :disabled="!selectionItem || selectionItem.length !== 1">查看分析型控制图</el-button>
-          <el-button type="danger" @click="handleDelete" :disabled="!selectionItem || selectionItem.length === 0">删除</el-button>
+          <!-- <el-button type="danger" @click="handleDelete" :disabled="!selectionItem || selectionItem.length === 0">删除</el-button> -->
         </div>
       </el-form>
     </div>

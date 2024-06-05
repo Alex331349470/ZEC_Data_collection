@@ -1,20 +1,18 @@
 <template>
-  <el-select v-model="selectNameArr" multiple placeholder="请选择" collapse-tags popper-class="select-popover-class">
-    <!-- 当下拉框搜索为空时展现的内容 -->
-    <template slot="empty"> 
+  <el-select popper-class="select-popover-class" style="width: 200px"
+    v-model="selectNameArr" 
+    multiple 
+    placeholder="请选择" 
+    collapse-tags 
+    :max-collapse-tags="1" 
+  >
+    <template #header>
       <el-input v-model="searchInput.propertyType" placeholder="关键字搜索">
         <template #append>
           <el-button :icon="Search" @click="handleSearch()"/>
         </template>
       </el-input>
-      <div class="el-select-dropdown__empty">无匹配数据</div>
     </template>
-    <!-- 当下拉框不为空时展现的内容 -->
-    <el-input v-model="searchInput.propertyType" placeholder="关键字搜索">
-      <template #append>
-        <el-button :icon="Search" @click="handleSearch()"/>
-      </template>
-    </el-input>
     <el-option 
       v-for="(item, index) in options" 
       :key="index" 
@@ -71,18 +69,18 @@
 .select-popover-class .el-scrollbar__view > li::after {
     display: none;
 }
-:deep .select-popover-class .el-scrollbar {
+:deep(.select-popover-class .el-scrollbar) {
   display: block!important;
 }
 .select-popover-class .el-checkbox__input.is-checked+.el-checkbox__label {
   color: #fff;
 }
 /* 取消多选框触发事件 */
-:deep .is-box-checked .el-checkbox__inner {
+:deep(.is-box-checked .el-checkbox__inner) {
     background: var(--system-primary-color)!important;
     border-color: #ffffff;
 }
-:deep .is-box-checked .el-checkbox__label{
+:deep(.is-box-checked .el-checkbox__label){
    color: var(--system-primary-color) !important; /* 改变选中状态下的边框颜色 */
 }
 </style>

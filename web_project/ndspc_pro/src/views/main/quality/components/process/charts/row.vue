@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import {ref,reactive, nextTick, onMounted } from 'vue'
+import {ref,reactive, nextTick, onMounted,defineExpose } from 'vue'
 import {Rank} from '@element-plus/icons-vue'
 import BarChart from './barChart.vue'
 import ComDialog from '@/components/comDialog/index.vue'

@@ -73,7 +73,11 @@ defineExpose({
   background: var(--el-color-success-dark-2);
   color: #fff;
 }
-:deep( .el-dialog__body) {
+:deep( .el-dialog) {
   padding: 0!important;
+}
+:deep(.el-dialog__footer ){
+  padding: 10px;
+  border-top: 1px solid #eee;
 }
 </style>
