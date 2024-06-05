@@ -29,39 +29,57 @@
       </el-form-item>
       <el-form-item label="来料信息：" >
         <el-form-item label="工厂" label-width="80px" >
-          <el-select v-model="searchForm.factory" multiple placeholder="请选择" filterable remote reserve-keyword :remote-method="getFactory">
-            <el-option v-for="(item, index) in options.factory" :key="index" :label="item" :value="item"/>
-          </el-select>
+          <MultipleSelect 
+            :options="options.factory" 
+            :selectNameArr="searchForm.factory" 
+            @getProductSelectPlato="getProductSelectPlato" 
+            @handleChange='searchForm.factory=$event' />
         </el-form-item>
         <el-form-item label="车间" label-width="80px" >
-          <el-select v-model="searchForm.workshop" multiple placeholder="请选择" filterable remote reserve-keyword :remote-method="getWorkshop">
-            <el-option v-for="(item, index) in options.workshop" :key="index" :label="item" :value="item"/>
-          </el-select>
+          <MultipleSelect 
+            :options="options.workshop" 
+            :selectNameArr="searchForm.workshop" 
+            @getProductSelectPlato="getProductSelectPlato" 
+            @handleChange='searchForm.workshop=$event' />
         </el-form-item>
         <el-form-item label="产线" label-width="80px" >
-          <el-select v-model="searchForm.line" multiple placeholder="请选择" filterable remote reserve-keyword :remote-method="getLine">
-            <el-option v-for="(item, index) in options.line" :key="index" :label="item" :value="item"/>
-          </el-select>
+          <MultipleSelect 
+            :options="options.line" 
+            :selectNameArr="searchForm.line" 
+            @getProductSelectPlato="getProductSelectPlato" 
+            @handleChange='searchForm.line=$event' />
         </el-form-item>
       </el-form-item>
       <el-form-item label="物料信息：" >
         <el-form-item label="物料类型" label-width="80px" >
-          <el-select v-model="searchForm.materialType" multiple placeholder="请选择" filterable remote reserve-keyword :remote-method="getMaterialType">
-            <el-option v-for="(item, index) in options.materialType" :key="index" :label="item" :value="item"/>
-          </el-select>
+          <MultipleSelect 
+            :options="options.materialType" 
+            :selectNameArr="searchForm.materialType" 
+            @getProductSelectPlato="getProductSelectPlato" 
+            @handleChange='searchForm.materialType=$event' />
         </el-form-item>
         <el-form-item label="物料编码" label-width="80px" >
-          <el-select v-model="searchForm.materialCode" multiple placeholder="请选择" filterable remote reserve-keyword :remote-method="getMaterialCode">
-            <el-option v-for="(item, index) in options.materialCode" :key="index" :label="item" :value="item"/>
-          </el-select>
+          <MultipleSelect 
+            :options="options.materialCode" 
+            :selectNameArr="searchForm.materialCode" 
+            @getProductSelectPlato="getProductSelectPlato" 
+            @handleChange='searchForm.materialCode=$event' />
         </el-form-item>
       </el-form-item>
       <el-form-item label="检测信息：" >
         <el-form-item label="特性类型" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            :options="options.propertyType" 
+            :selectNameArr="searchForm.propertyType" 
+            @getProductSelectPlato="getProductSelectPlato" 
+            @handleChange='searchForm.propertyType=$event' />
         </el-form-item>
         <el-form-item label="检测项目" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            :options="options.testItem" 
+            :selectNameArr="searchForm.testItem" 
+            @getProductSelectPlato="getProductSelectPlato" 
+            @handleChange='searchForm.testItem=$event' />
         </el-form-item>
       </el-form-item>
       <el-form-item label="计算纬度：" >
@@ -83,7 +101,9 @@
 <script setup>
   import { defineComponent, onMounted, reactive, ref } from 'vue'
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
-  import {ProductSelect} from '@/api/quality/product'
+  import { Search } from '@element-plus/icons-vue'
+  import MultipleSelect from '@/components/multipleSelect/index.vue'
+  import {productSelectPlato} from '@/api/quality/product'
   const emit = defineEmits(['handleSearch'])
   // parmas
   const defaultParmas = {
@@ -101,9 +121,12 @@
     workshop: [],
     line: [],
     materialType: [],
-    materialCode: []
+    materialCode: [],
+    testItem: [],
+    propertyType: []
   }
   const searchForm = reactive({...defaultParmas})
+  const loading = ref(false)
   const DateOptions = reactive([
     {
       value: 'yearDemintion',
@@ -132,50 +155,25 @@
     workshop: '',
     line: '',
     materialType: '',
-    materialCode: ''
+    materialCode: '',
+    propertyType: '',
+    testItem: ''
   })
   const isExpand = ref(true)
   // onmounted
   onMounted(() => {
-    getProductSelect()
+    getProductSelectPlato()
     handleSearch()
   })
   // function
-  function getProductSelect() {// 获取下拉框数据
-    ProductSelect({input: searchInput}).then(res => {
-      options.value = res.data.productSelect
+  function getProductSelectPlato(query) {// 检测项检索
+    productSelectPlato({input: query || searchInput}).then(res => {
+      loading.value = false
+      options.value = res.data.productSelectPlato
+    }).catch(error => {
+      console.log(error)
+      loading.value = false
     })
-  }
-  function getFactory(query) {
-    searchInput.factory = query
-    debounce(getProductSelect(), 100)
-  }
-  function getWorkshop(query) {
-    searchInput.workshop = query
-    debounce(getProductSelect(), 100)
-  }
-  function getLine(query) {
-    searchInput.line = query
-    debounce(getProductSelect(), 100)
-  }
-  function getMaterialType(query) {
-    searchInput.materialType = query
-    debounce(getProductSelect(), 100)
-  }
-  function getMaterialCode(query) {
-    searchInput.materialCode = query
-    debounce(getProductSelect(), 100)
-  }
-  function debounce(fn, delay) {
-    let timeoutID
-    return function(...args) {
-      if (timeoutID) {
-        clearTimeout(timeoutID)
-      }
-      timeoutID = setTimeout(() => {
-        fn.apply(this, args)
-      }, delay);
-    };
   }
   function expandSearch(val) {
     isExpand.value = val
@@ -207,14 +205,14 @@
   width: 100%;
   height: 25px;
 }
-:deep(.el-form-item__label), :deep(.el-form-item__content), :deep(.el-checkbox__label),:deep(.el-radio__label){
+:deep(.el-form-item__label), :deep(.el-form-item__content), .search-box :deep(.el-checkbox__label),:deep(.el-radio__label){
   color: #fff;
 }
-:deep(.el-radio__input.is-checked+.el-radio__label), :deep(.el-checkbox__input.is-checked+.el-checkbox__label){
+.search-box :deep(.el-radio__input.is-checked+.el-radio__label), .search-box :deep(.el-checkbox__input.is-checked+.el-checkbox__label){
   color: var(--system-primary-color)!important;
   
 }
-:deep(.el-radio__input.is-checked .el-radio__inner), :deep(.el-checkbox__input.is-checked .el-checkbox__inner), :deep(.el-button--success){
+:deep(.el-radio__input.is-checked .el-radio__inner), .search-box :deep(.el-checkbox__input.is-checked .el-checkbox__inner), :deep(.el-button--success){
   border-color: var(--system-primary-color)!important;;
   background: var(--system-primary-color)!important;
 }

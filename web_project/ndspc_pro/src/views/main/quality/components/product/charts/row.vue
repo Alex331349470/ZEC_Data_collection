@@ -1,5 +1,5 @@
 <template>
-  <div class="card" v-loading="loading">
+  <div class="card">
     <div class="card-title">
       <div class="left">
         <div class="tip-dot" />
@@ -37,6 +37,7 @@ import {ref,reactive, nextTick, onMounted } from 'vue'
 import {Rank} from '@element-plus/icons-vue'
 import BarChart from './barChart.vue'
 import ComDialog from '@/components/comDialog/index.vue'
+import {prodcutQCTestItemPlato} from '@/api/quality/product'
   const props = defineProps({
     row: {
       type: Object,
@@ -47,7 +48,6 @@ import ComDialog from '@/components/comDialog/index.vue'
   defineExpose({ refreshData })
   const chartDialogRef = ref(false)
   const showChart = ref(false)
-  const loading = ref(true)
   const chartRef = ref(null)
   const chartsRef = ref(null)
   const productQC = ref(null)
@@ -71,7 +71,6 @@ import ComDialog from '@/components/comDialog/index.vue'
     }
   }
   function refreshData(params) {
-    loading.value = true
     productQC.value = params
     switch (props.row.name) {
       case '成品合格趋势图':
@@ -92,12 +91,13 @@ import ComDialog from '@/components/comDialog/index.vue'
       case '物料编码合格率':
         getMaterialCodeRate(params)
         break
+      case '检测项目合格率':
+        break
       case '物料编码不良数量柏拉图':
         getMaterialCodePlato(params)
         break
       case '检测项目不良数量柏拉图':
-        loading.value = false
-        chartRef.value.initChart(null)
+        getProdcutQCTestItemPlato(params)
         break
     }
   }
@@ -116,7 +116,7 @@ import ComDialog from '@/components/comDialog/index.vue'
           xAxis_data.push(item.year+'年')
           amount.push(item.amount)
           poorAmount.push(item.poorAmount)
-          rate.push(item.rate * 100)
+          rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
         })
       }
@@ -125,7 +125,7 @@ import ComDialog from '@/components/comDialog/index.vue'
           xAxis_data.push(item.year+'年-'+item.season+'季度')
           amount.push(item.amount)
           poorAmount.push(item.poorAmount)
-          rate.push(item.rate * 100)
+          rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
         })
       }
@@ -134,7 +134,7 @@ import ComDialog from '@/components/comDialog/index.vue'
           xAxis_data.push(item.year+'年-'+item.month+'月')
           amount.push(item.amount)
           poorAmount.push(item.poorAmount)
-          rate.push(item.rate * 100)
+          rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
         })
         console.log('月')
@@ -144,7 +144,7 @@ import ComDialog from '@/components/comDialog/index.vue'
           xAxis_data.push(item.year+'年-'+item.week+'周')
           amount.push(item.amount)
           poorAmount.push(item.poorAmount)
-          rate.push(item.rate * 100)
+          rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
         })
       }
@@ -153,7 +153,7 @@ import ComDialog from '@/components/comDialog/index.vue'
           xAxis_data.push(item.year+'年-'+item.month+'月-'+item.day+'日')
           amount.push(item.amount)
           poorAmount.push(item.poorAmount)
-          rate.push(item.rate * 100)
+          rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
         })
       }
@@ -163,7 +163,7 @@ import ComDialog from '@/components/comDialog/index.vue'
           xAxis_data.push(item.year+'年')
           amount.push(item.amount)
           poorAmount.push(item.poorAmount)
-          rate.push(item.rate * 100)
+          rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
         })
       }
@@ -172,7 +172,7 @@ import ComDialog from '@/components/comDialog/index.vue'
           xAxis_data.push(item.year+'年-'+item.season+'季度')
           amount.push(item.amount)
           poorAmount.push(item.poorAmount)
-          rate.push(item.rate * 100)
+          rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
         })
       }
@@ -181,7 +181,7 @@ import ComDialog from '@/components/comDialog/index.vue'
           xAxis_data.push(item.year+'年-'+item.month+'月')
           amount.push(item.amount)
           poorAmount.push(item.poorAmount)
-          rate.push(item.rate * 100)
+          rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
         })
         console.log('月')
@@ -191,7 +191,7 @@ import ComDialog from '@/components/comDialog/index.vue'
           xAxis_data.push(item.year+'年-'+item.week+'周')
           amount.push(item.amount)
           poorAmount.push(item.poorAmount)
-          rate.push(item.rate * 100)
+          rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
         })
       }
@@ -200,7 +200,7 @@ import ComDialog from '@/components/comDialog/index.vue'
           xAxis_data.push(item.year+'年-'+item.month+'月-'+item.day+'日')
           amount.push(item.amount)
           poorAmount.push(item.poorAmount)
-          rate.push(item.rate * 100)
+          rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
         })
       }
@@ -221,7 +221,7 @@ import ComDialog from '@/components/comDialog/index.vue'
     } else {
       chartRef.value.initChart(chartData)
     }
-    loading.value = false
+
   }
   // 工厂合格率处理方法
   function getFactoryRate(val) {
@@ -237,7 +237,7 @@ import ComDialog from '@/components/comDialog/index.vue'
         xAxis_data.push(item.factory)
         amount.push(item.amount)
         poorAmount.push(item.poorAmount)
-        rate.push(item.rate * 100)
+        rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
         purpose.push(item.purpose)
       })
     } else {
@@ -245,7 +245,7 @@ import ComDialog from '@/components/comDialog/index.vue'
         xAxis_data.push(item.factory)
         amount.push(item.amount)
         poorAmount.push(item.poorAmount)
-        rate.push(item.rate * 100)
+        rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
         purpose.push(item.purpose)
       })
     }
@@ -265,7 +265,7 @@ import ComDialog from '@/components/comDialog/index.vue'
     } else {
       chartRef.value.initChart(chartData)
     }
-    loading.value = false
+
   }
   // 车间合格率处理方法
   function getWorkshopRate(val) {
@@ -281,7 +281,7 @@ import ComDialog from '@/components/comDialog/index.vue'
         xAxis_data.push(item.workshop)
         amount.push(item.amount)
         poorAmount.push(item.poorAmount)
-        rate.push(item.rate * 100)
+        rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
         purpose.push(item.purpose)
       })
     } else {
@@ -289,7 +289,7 @@ import ComDialog from '@/components/comDialog/index.vue'
         xAxis_data.push(item.workshop)
         amount.push(item.amount)
         poorAmount.push(item.poorAmount)
-        rate.push(item.rate * 100)
+        rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
         purpose.push(item.purpose)
       })
     }
@@ -309,7 +309,7 @@ import ComDialog from '@/components/comDialog/index.vue'
     } else {
       chartRef.value.initChart(chartData)
     }
-    loading.value = false
+
   }
   // 产线合格率处理方法
   function getLineRate(val) {
@@ -325,7 +325,7 @@ import ComDialog from '@/components/comDialog/index.vue'
         xAxis_data.push(item.line)
         amount.push(item.amount)
         poorAmount.push(item.poorAmount)
-        rate.push(item.rate * 100)
+        rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
         purpose.push(item.purpose)
       })
     } else {
@@ -333,7 +333,7 @@ import ComDialog from '@/components/comDialog/index.vue'
         xAxis_data.push(item.line)
         amount.push(item.amount)
         poorAmount.push(item.poorAmount)
-        rate.push(item.rate * 100)
+        rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
         purpose.push(item.purpose)
       })
     }
@@ -353,9 +353,9 @@ import ComDialog from '@/components/comDialog/index.vue'
     } else {
       chartRef.value.initChart(chartData)
     }
-    loading.value = false
+
   }
-  // 物料类型合格率
+  // 物料类型合格率处理方法
   function getMaterialTypeRate(val) {
     let xAxis_data = []
     let amount = []
@@ -369,7 +369,7 @@ import ComDialog from '@/components/comDialog/index.vue'
         xAxis_data.push(item.materialType)
         amount.push(item.amount)
         poorAmount.push(item.poorAmount)
-        rate.push(item.rate * 100)
+        rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
         purpose.push(item.purpose)
         })
     } else {
@@ -377,7 +377,7 @@ import ComDialog from '@/components/comDialog/index.vue'
         xAxis_data.push(item.materialType)
         amount.push(item.amount)
         poorAmount.push(item.poorAmount)
-        rate.push(item.rate * 100)
+        rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
         purpose.push(item.purpose)
       })
     }
@@ -397,9 +397,9 @@ import ComDialog from '@/components/comDialog/index.vue'
     } else {
       chartRef.value.initChart(chartData)
     }
-    loading.value = false
+
   }
-  // 物料编码合格率
+  // 物料编码合格率处理方法
   function getMaterialCodeRate(val) {
     let xAxis_data = []
     let amount = []
@@ -413,7 +413,7 @@ import ComDialog from '@/components/comDialog/index.vue'
         xAxis_data.push(item.materialCode)
         amount.push(item.amount)
         poorAmount.push(item.poorAmount)
-        rate.push(item.rate * 100)
+        rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
         purpose.push(item.purpose)
       })
     } else {
@@ -421,7 +421,7 @@ import ComDialog from '@/components/comDialog/index.vue'
         xAxis_data.push(item.materialCode)
         amount.push(item.amount)
         poorAmount.push(item.poorAmount)
-        rate.push(item.rate * 100)
+        rate.push(item.rate?item.rate.toFixed(2) * 100 : 0)
         purpose.push(item.purpose)
       })
     }
@@ -441,9 +441,9 @@ import ComDialog from '@/components/comDialog/index.vue'
     } else {
       chartRef.value.initChart(chartData)
     }
-    loading.value = false
+
   }
-  // 物料编码不良数量柏拉图
+  // 物料编码不良数量柏拉图处理方法
   function getMaterialCodePlato(val) {
     let xAxis_data = []
     let amount = []
@@ -456,13 +456,13 @@ import ComDialog from '@/components/comDialog/index.vue'
       data.quantityMaterialCodePlato.map(item => {
         xAxis_data.push(item.materialCode)
         amount.push(item.poorAmount)
-        rate.push(item.proportion * 100)
+        rate.push(item.proportion?item.proportion.toFixed(2) * 100 : 0)
       })
     } else {
       data.weightMaterialCodePlato.map(item => {
         xAxis_data.push(item.materialCode)
         amount.push(item.poorAmount)
-        rate.push(item.proportion * 100)
+        rate.push(item.proportion?item.proportion.toFixed(2) * 100 : 0)
       })
     }
     const chartData = {
@@ -481,7 +481,54 @@ import ComDialog from '@/components/comDialog/index.vue'
     } else {
       chartRef.value.initChart(chartData)
     }
-    loading.value = false
+
+  }
+  // 检测项目不良数量柏拉图处理方法
+  function reduceProdcutQCTestItemPlato(val) {
+    let xAxis_data = []
+    let amount = []
+    let poorAmount = []
+    let rate = []
+    let purpose = []
+    const data = val.chartData.prodcutQCTestItemPlato.testItemPlato
+    const parmas = val.params
+    if(parmas.quantityCalcSwitch) { //按批次数量
+      data.quantityTestItemPlato.map(item => {
+        xAxis_data.push(item.testItem)
+        amount.push(item.poorAmount)
+        rate.push(item.proportion ? item.proportion.toFixed(2)* 100 : 0)
+      })
+    } else {
+      data.weightTestItemPlato.map(item => {
+        xAxis_data.push(item.testItem)
+        amount.push(item.poorAmount)
+        rate.push(item.proportion ? item.proportion.toFixed(2)* 100 : 0)
+      })
+    }
+    const chartData = {
+      xAxis_data: xAxis_data,
+      yAxis_data: {
+        amount: amount,
+        poorAmount: poorAmount,
+        rate: rate,
+        purpose: purpose
+      },  
+      names: [parmas.quantityCalcSwitch ? '不合格数量' : '不合格重量', '累计占比'],
+      type: parmas.quantityCalcSwitch ? '数量' : '重量'
+    }
+    if(chartDialogRef.value.visible) { // 弹窗内的
+      chartsRef.value.initChart(chartData)
+    } else {
+      chartRef.value.initChart(chartData)
+    }
+  }
+  // 获取检测项目不良数量柏拉图数据
+  function getProdcutQCTestItemPlato(val) {
+    prodcutQCTestItemPlato({input: val.params}).then(res => {
+      reduceProdcutQCTestItemPlato({chartData: res.data, params: val.params})
+    }).catch(error => {
+    console.log(error)
+  });
   }
 </script>
 

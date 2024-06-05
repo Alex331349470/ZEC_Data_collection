@@ -182,13 +182,32 @@ export function productQC(params) {
 						materialCode
 						poorAmount
 						proportion
-						purpose
 					}
 					weightMaterialCodePlato {
 						materialCode
 						poorAmount
 						proportion
-						purpose
+					}
+				}
+			}
+		}`,
+		variables: params
+	})
+}
+export function prodcutQCTestItemPlato(params) {
+	return apolloClient.mutate({
+		mutation: gql`mutation ProdcutQCTestItemPlato($input: ProductQCInput) {
+			prodcutQCTestItemPlato(input: $input) {
+				testItemPlato {
+					quantityTestItemPlato {
+						testItem
+						poorAmount
+						proportion
+					}
+					weightTestItemPlato {
+						testItem
+						poorAmount
+						proportion
 					}
 				}
 			}
@@ -205,6 +224,22 @@ export function ProductSelect(params) {
 				line
 				materialCode
 				materialType
+			}
+		}`,
+		variables: params
+	})
+}
+export function productSelectPlato(params) {
+	return apolloClient.mutate({
+		mutation: gql`mutation ProductSelectPlato($input: ProductQCInput) {
+			productSelectPlato(input: $input) {
+				factory
+				workshop
+				line
+				materialCode
+				materialType
+				propertyType
+				testItem
 			}
 		}`,
 		variables: params

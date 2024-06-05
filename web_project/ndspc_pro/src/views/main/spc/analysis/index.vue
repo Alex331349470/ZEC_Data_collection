@@ -364,7 +364,7 @@
   </div>
 </template>
 <script setup>
-import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { defineComponent, onMounted, reactive, ref, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import ComDialog from '@/components/comDialog/index.vue'
 import Pagination from '@/components/pagination/index.vue'
@@ -442,6 +442,9 @@ function handleDetail(row) {
 }
 function importFile() {
   importDialogRef.value.visible = true
+  nextTick(() => {
+    importRef.value.openImport()
+  })
 }
 function confirmImport() {
   importRef.value.handleUpload()

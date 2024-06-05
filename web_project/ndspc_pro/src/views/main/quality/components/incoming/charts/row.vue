@@ -1,5 +1,5 @@
 <template>
-  <div class="card" v-loading="loading">
+  <div class="card">
     <div class="card-title">
       <div class="left">
         <div class="tip-dot" />
@@ -12,7 +12,7 @@
         <el-icon @click="handleOpen" style="margin-left: 10px"><Rank /></el-icon>
       </div>
     </div>
-    <BarChart v-if="chartData" @changeSelect="changeSelect" :chartData="chartData" :isExport="row.isExport"/>
+    <BarChart ref="chartRef" @changeSelect="changeSelect" :isExport="row.isExport" />
     <ComDialog ref="chartDialogRef" :dialogTitle="row.name" :fullScreen="true" :hiddenFooter="true">
       <div class="charBox">
         <div class="card-title">
@@ -26,7 +26,7 @@
             <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
           </div>
         </div>
-        <BarChart v-if="showChart" boxHeight="calc(100vh - 110px)" @changeSelect="changeSelect" :chartData="chartData" :isExport="row.isExport" />
+        <BarChart v-if="showChart" ref="chartsRef" boxHeight="calc(100vh - 110px)" @changeSelect="changeSelect"  :isExport="row.isExport"/>
       </div>
     </ComDialog>
   </div>
@@ -40,23 +40,27 @@ import ComDialog from '@/components/comDialog/index.vue'
   const props = defineProps({
     row: {
       type: Object,
-      default: {}
+      default: {} 
     }
   })
   const selectItem = ref(null)
-  defineExpose({ handleSearch })
+  defineExpose({ refreshData })
   const chartDialogRef = ref(false)
   const showChart = ref(false)
-  const chartData = ref(null)
-  const loading = ref(true)
+  const chartRef = ref(null)
+  const chartsRef = ref(null)
+  const productQC = ref(null)
   function handleClose() {
     chartDialogRef.value.visible = false
     showChart.value = false
   }
   function handleOpen() {
     chartDialogRef.value.visible = true
+    showChart.value = true
     nextTick(() => {
-      showChart.value = true
+      nextTick(() => {
+      refreshData(productQC.value)
+    })
     })
   }
   // echart选择事件
@@ -67,25 +71,371 @@ import ComDialog from '@/components/comDialog/index.vue'
       selectItem.value = parmas.name
     }
   }
-  function handleSearch(params) {
-    loading.value = true
-    setTimeout(() => {
-      chartData.value = {
-        xAxis_data: ["01月", "02月", "03月", "04月", "05月", "06月", "07月", "08月", "09月", "10月", "11月", "12月"],
-        yAxis_data: {
-          data_A: [820, 932, 901, 934, 1290, 1330, 1320, 720, 832, 501, 334, 990],
-          data_B: [720, 832, 501, 334, 990, 830, 720, 620, 732, 801, 1134, 908],
-          data_C: [68, 73, 80, 34, 98, 30, 20, 80, 32, 91, 34, 29],
-          data_D: [85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85],
-        },
-        // yAxis_data: null,
-        names: ['来料数量', '不良数量', '合格率', '目标'],
-        // names: ['不合格数量', '累计百分比'],
-        units: ['', '', '%', '%']
-      }
-      loading.value = false
-    }, 800)
+  function refreshData(params) {
+    productQC.value = params
+    switch (props.row.name) {
+      case '来料合格率趋势图':
+        getTrendRate(params)
+        break
+      case '工厂来料合格率':
+        getFactoryRate(params)
+        break
+      case '供应商来料合格率':
+        getSupplierRate(params)
+        break
+      case '物料类型合格率':
+        getMaterialTypeRate(params)
+        break
+      case '物料编码合格率':
+        getMaterialCodeRate(params)
+        break
+      case '物料编码不良数量柏拉图':
+        getMaterialCodePlato(params)
+        break
+      case '检测项目不良数量柏拉图':
+        getProdcutQCTestItemPlato(params)
+        break
+    }
   }
+  // 来料合格率处理方法
+  function getTrendRate(val) {
+    const xAxis_data = []
+    const amount = [] // 生产数量
+    const poorAmount = [] // 不良数量
+    const rate = [] // 合格率
+    const purpose = [] // 目标
+    const data = val.chartData.materialQC.trendRate
+    const parmas = val.params
+    if(parmas.quantityCalcSwitch) { //按批次数量
+      if(parmas.yearDemintion) { // 时间维度年
+        data.quantityYearTrend.map(item => {
+          xAxis_data.push(item.year+'年')
+          amount.push(item.amount)
+          poorAmount.push(item.poorAmount)
+          rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+          purpose.push(item.purpose)
+        })
+      }
+      if(parmas.seasonDemintion) { // 时间维度季
+        data.quantitySeasonTrend.map(item => {
+          xAxis_data.push(item.year+'年-'+item.season+'季度')
+          amount.push(item.amount)
+          poorAmount.push(item.poorAmount)
+          rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+          purpose.push(item.purpose)
+        })
+      }
+      if(parmas.monthDemintion) { // 时间维度月
+        data.quantityMonthTrend.map(item => {
+          xAxis_data.push(item.year+'年-'+item.month+'月')
+          amount.push(item.amount)
+          poorAmount.push(item.poorAmount)
+          rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+          purpose.push(item.purpose)
+        })
+        console.log('月')
+      }
+      if(parmas.weekDemintion) { // 时间维度周
+        data.quantityWeekTrend.map(item => {
+          xAxis_data.push(item.year+'年-'+item.week+'周')
+          amount.push(item.amount)
+          poorAmount.push(item.poorAmount)
+          rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+          purpose.push(item.purpose)
+        })
+      }
+      if(parmas.dayDemintion) { // 时间维度日
+        data.quantityDayTrend.map(item => {
+          xAxis_data.push(item.year+'年-'+item.month+'月-'+item.day+'日')
+          amount.push(item.amount)
+          poorAmount.push(item.poorAmount)
+          rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+          purpose.push(item.purpose)
+        })
+      }
+    } else { //按批次重量
+      if(parmas.yearDemintion) { // 时间维度年
+        data.weightYearTrend.map(item => {
+          xAxis_data.push(item.year+'年')
+          amount.push(item.amount)
+          poorAmount.push(item.poorAmount)
+          rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+          purpose.push(item.purpose)
+        })
+      }
+      if(parmas.seasonDemintion) { // 时间维度季
+        data.weightSeasonTrend.map(item => {
+          xAxis_data.push(item.year+'年-'+item.season+'季度')
+          amount.push(item.amount)
+          poorAmount.push(item.poorAmount)
+          rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+          purpose.push(item.purpose)
+        })
+      }
+      if(parmas.monthDemintion) { // 时间维度月
+        data.weightMonthTrend.map(item => {
+          xAxis_data.push(item.year+'年-'+item.month+'月')
+          amount.push(item.amount)
+          poorAmount.push(item.poorAmount)
+          rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+          purpose.push(item.purpose)
+        })
+        console.log('月')
+      }
+      if(parmas.weekDemintion) { // 时间维度周
+        data.weightWeekTrend.map(item => {
+          xAxis_data.push(item.year+'年-'+item.week+'周')
+          amount.push(item.amount)
+          poorAmount.push(item.poorAmount)
+          rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+          purpose.push(item.purpose)
+        })
+      }
+      if(parmas.dayDemintion) { // 时间维度日
+        data.weightDayTrend.map(item => {
+          xAxis_data.push(item.year+'年-'+item.month+'月-'+item.day+'日')
+          amount.push(item.amount)
+          poorAmount.push(item.poorAmount)
+          rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+          purpose.push(item.purpose)
+        })
+      }
+    }
+    const chartData = {
+      xAxis_data: xAxis_data,
+      yAxis_data: {
+        amount: amount,
+        poorAmount: poorAmount,
+        rate: rate,
+        purpose: purpose
+      },
+      names: [parmas.quantityCalcSwitch ? '生产数量' : '生产重量', parmas.quantityCalcSwitch ? '不良数量' : '不良重量', '合格率', '目标'],
+      type: parmas.quantityCalcSwitch ? '数量' : '重量'
+    }
+    console.log(chartData)
+    if(chartDialogRef.value.visible) { // 弹窗内的
+      chartsRef.value.initChart(chartData)
+    } else {
+      chartRef.value.initChart(chartData)
+    }
+  }
+  // 工厂来料合格率处理方法
+  function getFactoryRate(val) {
+    let xAxis_data = []
+    let amount = []
+    let poorAmount = []
+    let rate = []
+    let purpose = []
+    const data = val.chartData.materialQC.factoryRate
+    const parmas = val.params
+    if(parmas.quantityCalcSwitch) { //按批次数量
+      data.quantityFactory.map(item => {
+        xAxis_data.push(item.factory)
+        amount.push(item.amount)
+        poorAmount.push(item.poorAmount)
+        rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+        purpose.push(item.purpose)
+      })
+    } else {
+      data.weightFactory.map(item => {
+        xAxis_data.push(item.factory)
+        amount.push(item.amount)
+        poorAmount.push(item.poorAmount)
+        rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+        purpose.push(item.purpose)
+      })
+    }
+    const chartData = {
+      xAxis_data: xAxis_data,
+      yAxis_data: {
+        amount: amount,
+        poorAmount: poorAmount,
+        rate: rate,
+        purpose: purpose
+      },
+      names: [parmas.quantityCalcSwitch ? '生产数量' : '生产重量', parmas.quantityCalcSwitch ? '不良数量' : '不良重量', '合格率', '目标'],
+      type: parmas.quantityCalcSwitch ? '数量' : '重量'
+    }
+    if(chartDialogRef.value.visible) { // 弹窗内的
+      chartsRef.value.initChart(chartData)
+    } else {
+      chartRef.value.initChart(chartData)
+    }
+  }
+  // 供应商来料合格率处理方法
+  function getSupplierRate(val) {
+    let xAxis_data = []
+    let amount = []
+    let poorAmount = []
+    let rate = []
+    let purpose = []
+    const data = val.chartData.materialQC.supplierRate
+    const parmas = val.params
+    if(parmas.quantityCalcSwitch) { //按批次数量
+      data.quantitySupplier.map(item => {
+        xAxis_data.push(item.supplier)
+        amount.push(item.amount)
+        poorAmount.push(item.poorAmount)
+        rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+        purpose.push(item.purpose)
+      })
+    } else {
+      data.weightSupplier.map(item => {
+        xAxis_data.push(item.supplier)
+        amount.push(item.amount)
+        poorAmount.push(item.poorAmount)
+        rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+        purpose.push(item.purpose)
+      })
+    }
+    const chartData = {
+      xAxis_data: xAxis_data,
+      yAxis_data: {
+        amount: amount,
+        poorAmount: poorAmount,
+        rate: rate,
+        purpose: purpose
+      },
+      names: [parmas.quantityCalcSwitch ? '生产数量' : '生产重量', parmas.quantityCalcSwitch ? '不良数量' : '不良重量', '合格率', '目标'],
+      type: parmas.quantityCalcSwitch ? '数量' : '重量'
+    }
+    if(chartDialogRef.value.visible) { // 弹窗内的
+      chartsRef.value.initChart(chartData)
+    } else {
+      chartRef.value.initChart(chartData)
+    }
+  }
+  // 物料类型合格率处理方法
+  function getMaterialTypeRate(val) {
+    let xAxis_data = []
+    let amount = []
+    let poorAmount = []
+    let rate = []
+    let purpose = []
+    const data = val.chartData.materialQC.materialTypeRate
+    const parmas = val.params
+    if(parmas.quantityCalcSwitch) { //按批次数量
+      data.quantityMaterialType.map(item => {
+        xAxis_data.push(item.materialType)
+        amount.push(item.amount)
+        poorAmount.push(item.poorAmount)
+        rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+        purpose.push(item.purpose)
+        })
+    } else {
+      data.weightMaterialType.map(item => {
+        xAxis_data.push(item.materialType)
+        amount.push(item.amount)
+        poorAmount.push(item.poorAmount)
+        rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+        purpose.push(item.purpose)
+      })
+    }
+    const chartData = {
+      xAxis_data: xAxis_data,
+      yAxis_data: {
+        amount: amount,
+        poorAmount: poorAmount,
+        rate: rate,
+        purpose: purpose
+      },
+      names: [parmas.quantityCalcSwitch ? '生产数量' : '生产重量', parmas.quantityCalcSwitch ? '不良数量' : '不良重量', '合格率', '目标'],
+      type: parmas.quantityCalcSwitch ? '数量' : '重量'
+    }
+    if(chartDialogRef.value.visible) { // 弹窗内的
+      chartsRef.value.initChart(chartData)
+    } else {
+      chartRef.value.initChart(chartData)
+    }
+
+  }
+  // 物料编码合格率处理方法
+  function getMaterialCodeRate(val) {
+    let xAxis_data = []
+    let amount = []
+    let poorAmount = []
+    let rate = []
+    let purpose = []
+    const data = val.chartData.materialQC.materialCodeRate
+    const parmas = val.params
+    if(parmas.quantityCalcSwitch) { //按批次数量
+      data.quantityMaterialCode.map(item => {
+        xAxis_data.push(item.materialCode)
+        amount.push(item.amount)
+        poorAmount.push(item.poorAmount)
+       rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+        purpose.push(item.purpose)
+      })
+    } else {
+      data.weightMaterialCode.map(item => {
+        xAxis_data.push(item.materialCode)
+        amount.push(item.amount)
+        poorAmount.push(item.poorAmount)
+       rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+        purpose.push(item.purpose)
+      })
+    }
+    const chartData = {
+      xAxis_data: xAxis_data,
+      yAxis_data: {
+        amount: amount,
+        poorAmount: poorAmount,
+        rate: rate,
+        purpose: purpose
+      },
+      names: [parmas.quantityCalcSwitch ? '生产数量' : '生产重量', parmas.quantityCalcSwitch ? '不良数量' : '不良重量', '合格率', '目标'],
+      type: parmas.quantityCalcSwitch ? '数量' : '重量'
+    }
+    if(chartDialogRef.value.visible) { // 弹窗内的
+      chartsRef.value.initChart(chartData)
+    } else {
+      chartRef.value.initChart(chartData)
+    }
+
+  }
+  // 物料编码不良数量柏拉图处理方法
+  function getMaterialCodePlato(val) {
+    let xAxis_data = []
+    let amount = []
+    let poorAmount = []
+    let rate = []
+    let purpose = []
+    const data = val.chartData.materialQC.materialCodePlato
+    const parmas = val.params
+    if(parmas.quantityCalcSwitch) { //按批次数量
+      data.quantityMaterialCodePlato.map(item => {
+        xAxis_data.push(item.materialCode)
+        amount.push(item.poorAmount)
+        rate.push(item.proportion?item.proportion.toFixed(2) * 100 : 0)
+      })
+    } else {
+      data.weightMaterialCodePlato.map(item => {
+        xAxis_data.push(item.materialCode)
+        amount.push(item.poorAmount)
+        item.proportion?item.proportion.toFixed(2) * 100 : 0
+      })
+    }
+    const chartData = {
+      xAxis_data: xAxis_data,
+      yAxis_data: {
+        amount: amount,
+        poorAmount: poorAmount,
+        rate: rate,
+        purpose: purpose
+      },  
+      names: [parmas.quantityCalcSwitch ? '不合格数量' : '不合格重量', '累计占比'],
+      type: parmas.quantityCalcSwitch ? '数量' : '重量'
+    }
+    if(chartDialogRef.value.visible) { // 弹窗内的
+      chartsRef.value.initChart(chartData)
+    } else {
+      chartRef.value.initChart(chartData)
+    }
+
+  }
+  // 检测项目不良数量柏拉图处理方法
+  // 检测项目不良数量柏拉图数据获取
+  function getProdcutQCTestItemPlato(val) {}
 </script>
 
 <style lang="scss" scoped>

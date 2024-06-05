@@ -2,52 +2,74 @@
   <div class="search-box">
     <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="small">
       <el-form-item label="时间范围：" >
-        <el-radio-group v-model="searchForm.timeArea" style="margin-top: -3px;">
-          <el-radio :label="1">全部时间</el-radio>
-          <el-radio :label="2">本年度</el-radio>
-          <el-radio :label="3">本季度</el-radio>
-          <el-radio :label="4">本月度</el-radio>
-          <el-radio :label="5">当天</el-radio>
+        <el-radio-group v-model="searchForm.selectedTime" style="margin-top: -3px;">
+          <el-radio :label="5">全部时间</el-radio>
+          <el-radio :label="1">本年度</el-radio>
+          <el-radio :label="2">本季度</el-radio>
+          <el-radio :label="3">本月度</el-radio>
+          <el-radio :label="4">当天</el-radio>
           <el-radio :label="6">自定义</el-radio>
         </el-radio-group>
-        <el-form-item label="开始时间：">
-          <el-date-picker v-model="searchForm.startTime" type="date"  placeholder="选择日期" style="width: 150px" />
+        <el-form-item label="开始时间：" >
+          <el-date-picker v-model="searchForm.startTime" type="date" value-format="YYYY-MM-DD" :disabled="searchForm.selectedTime !== 6"  placeholder="选择日期" style="width: 150px" />
         </el-form-item>
-        <el-form-item label="结束时间：">
-          <el-date-picker v-model="searchForm.endTime" type="date"  placeholder="选择日期" style="width: 150px" />
+        <el-form-item label="结束时间：" >
+          <el-date-picker v-model="searchForm.endTime" type="date" value-format="YYYY-MM-DD" :disabled="searchForm.selectedTime !== 6" placeholder="选择日期" style="width: 150px" />
         </el-form-item>
       </el-form-item>
       <el-form-item label="时间维度：" >
-        <el-checkbox-group v-model="searchForm.dateArea">
-          <el-checkbox v-for="date in DateOptions" :label="date" :key="date">{{date}}</el-checkbox >
-        </el-checkbox-group>
+        <el-checkbox v-model="searchForm[date.value]" v-for="(date, index) in DateOptions" :key="index">{{date.label}}</el-checkbox>
       </el-form-item>
       <el-form-item label="物料信息：" >
         <el-form-item label="工厂" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            :options="options.factory" 
+            :selectNameArr="searchForm.factory" 
+            @getProductSelectPlato="getProductSelectPlato" 
+            @handleChange='searchForm.factory=$event' />
         </el-form-item>
         <el-form-item label="供应商" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            :options="options.Supplier" 
+            :selectNameArr="searchForm.Supplier" 
+            @getProductSelectPlato="getProductSelectPlato" 
+            @handleChange='searchForm.Supplier=$event' />
         </el-form-item>
         <el-form-item label="物料类型" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            :options="options.materialType" 
+            :selectNameArr="searchForm.materialType" 
+            @getProductSelectPlato="getProductSelectPlato" 
+            @handleChange='searchForm.materialType=$event' />
         </el-form-item>
         <el-form-item label="物料编码" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            :options="options.materialCode" 
+            :selectNameArr="searchForm.materialCode" 
+            @getProductSelectPlato="getProductSelectPlato" 
+            @handleChange='searchForm.materialCode=$event' />
         </el-form-item>
       </el-form-item>
       <el-form-item label="检测信息：" >
         <el-form-item label="特性类型" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            :options="options.propertyType" 
+            :selectNameArr="searchForm.propertyType" 
+            @getProductSelectPlato="getProductSelectPlato" 
+            @handleChange='searchForm.propertyType=$event' />
         </el-form-item>
         <el-form-item label="检测项目" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            :options="options.testItem" 
+            :selectNameArr="searchForm.testItem" 
+            @getProductSelectPlato="getProductSelectPlato" 
+            @handleChange='searchForm.testItem=$event' />
         </el-form-item>
       </el-form-item>
       <el-form-item label="计算纬度：" >
-        <el-radio-group v-model="searchForm.jisuanArea" >
-          <el-radio :label="1">按批次数量计算</el-radio>
-          <el-radio :label="2">按批次重量计算</el-radio>
+        <el-radio-group v-model="searchForm.quantityCalcSwitch">
+          <el-radio :label="true">按批次数量计算</el-radio>
+          <el-radio :label="false">按批次重量计算</el-radio>
         </el-radio-group>
         <el-button type="success" size="small" style="margin-left: 20px" @click="reset">重置</el-button>
         <el-button type="success" size="small"  @click="handleSearch">查询</el-button>
@@ -63,35 +85,83 @@
 <script setup>
   import { defineComponent, onMounted, reactive, ref } from 'vue'
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
+  import {productSelectPlato} from '@/api/quality/product'
+  import MultipleSelect from '@/components/multipleSelect/index.vue'
   const emit = defineEmits(['handleSearch'])
   // parmas
   const defaultParmas = {
-    timeArea: 2,
-    dateArea: ['年', '月'], 
-    kaifaArea: 1,
+    selectedTime: 5,
     startTime: '',
     endTime: '',
-    gongchang: '',
-    jisuanArea: ''
+    yearDemintion: true,
+    seasonDemintion: false,
+    monthDemintion: true,
+    weekDemintion: false,
+    dayDemintion: false,
+    quantityCalcSwitch: true,
+    factory: [],
+    process: [],
+    workshop: [],
+    line: [],
+    materialType: [],
+    materialCode: []
   }
   const searchForm = reactive({...defaultParmas})
   const isExpand = ref(true)
-  const DateOptions = ref(['年', '季', '月', '周', '日'])
-  // function
-  function expandSearch(val) {
-    isExpand.value = val
-  }
+  const DateOptions = reactive([ // 时间维度数组
+    {
+      value: 'yearDemintion',
+      label: '年'
+    },
+    {
+      value: 'seasonDemintion',
+      label: '季度'
+    },
+    {
+      value: 'monthDemintion',
+      label: '月'
+    },
+    {
+      value: 'weekDemintion',
+      label: '周'
+    },
+    {
+      value: 'dayDemintion',
+      label: '日'
+    }
+  ])
+  const options = ref({})// 下拉框数据
+  const searchInput = reactive({// 下拉框搜索条件
+    factory: '',
+    workshop: '',
+    line: '',
+    materialType: '',
+    materialCode: '',
+    propertyType: '',
+    testItem: ''
+  })
   // onmounted
   onMounted(() => {
     handleSearch()
+    getProductSelectPlato()
   })
   // function
+  function getProductSelectPlato(query) {// 检测项检索
+    productSelectPlato({input: query || searchInput}).then(res => {
+      options.value = res.data.productSelectPlato
+    }).catch(error => {
+      console.log(error)
+    })
+  }
   function handleSearch() {
     emit('handleSearch', searchForm)
   }
   function reset() {
     Object.assign(searchForm, { ...defaultParmas })
     handleSearch()
+  }
+  function expandSearch(val) {
+    isExpand.value = val
   }
 </script>
 

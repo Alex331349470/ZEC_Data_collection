@@ -3,6 +3,7 @@
     <el-upload
       class="upload-demo"
       accept=".xls,.xlsx"
+      ref="uploadRef"
       drag
       multiple
       action="#"
@@ -20,32 +21,27 @@
   </div>
 </template>
 <script setup>
-import { reactive } from "vue";
+import { reactive,ref } from "vue";
 import { UploadFilled } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
-// import { uploadFile } from "@/api/spc/analysis";
 import { gql } from "graphql-tag";
 
-defineExpose({
-  handleUpload,
-});
+defineExpose({ handleUpload,openImport});
 
 const emit = defineEmits(["closeAllDialog"]);
+const uploadRef = ref(null)
 const fileLists = reactive([]);
 function handleChange(file, fileList) {
   fileLists.value = fileList;
 }
 
 const UPLOAD_MUTATION = `
-  mutation uploadFile($file: Upload!) {
-    uploadFile(file: $file) {
-      uri
-      filename
-      mimetype
-      encoding
-      fileSize
-    }
+  mutation UploadExcels($files: [Upload!]!) {
+  uploadExcels(files: $files) {
+    message
+    success
   }
+}
 `;
 
 function handleUpload() {
@@ -56,17 +52,17 @@ function handleUpload() {
       JSON.stringify({
         query: UPLOAD_MUTATION,
         variables: {
-          file: null,
+          files: null,
         },
       })
     );
     const obj = {}
-    obj[index] = ["variables.file"]
+    obj[index] = ["variables.files"]
     formData.append("map", JSON.stringify(obj));
     formData.append(index, file.raw);
   });
 
-  fetch("http://10.0.45.20:4000/graphql", {
+  fetch("http://10.0.45.20:8080/graphql", {
     method: "POST",
     body: formData,
     headers: {
@@ -75,11 +71,20 @@ function handleUpload() {
   })
     .then((response) => response.json())
     .then((result) => {
-      console.log("Success:", result);
+      if(result.data.uploadExcels.success) {
+        ElMessage({ message: result.data.uploadExcels.message, type: 'success',plain: true })
+        emit(closeAllDialog)
+      } else {
+        ElMessage({ message:'上传失败，请检查文件是否符合要求！', type: 'info',plain: true })
+      }
     })
     .catch((error) => {
-      console.error("Error:", error);
+      ElMessage({ message:'error', type: 'error', plain: true})
     });
+}
+function openImport() { // 清空缓存文件
+  fileLists.value = []
+  uploadRef.value.clearFiles()
 }
 </script>
 
