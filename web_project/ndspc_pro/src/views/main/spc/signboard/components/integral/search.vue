@@ -3,19 +3,19 @@
     <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="small">
       <el-form-item label="SPC分类：" >
         <el-radio-group v-model="searchForm.fenlei">
-          <el-radio :label="1">过程特性</el-radio>
-          <el-radio :label="2">产品特性（中间品）</el-radio>
-          <el-radio :label="3">产品特性（成品）</el-radio>
+          <el-radio :value="1">过程特性</el-radio>
+          <el-radio :value="2">产品特性（中间品）</el-radio>
+          <el-radio :value="3">产品特性（成品）</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="时间范围：" >
         <el-radio-group v-model="searchForm.timeArea" style="margin-top: -3px;">
-          <el-radio :label="1">全部时间</el-radio>
-          <el-radio :label="2">本年度</el-radio>
-          <el-radio :label="3">本季度</el-radio>
-          <el-radio :label="4">本月度</el-radio>
-          <el-radio :label="5">当天</el-radio> 
-          <el-radio :label="6">自定义</el-radio>
+          <el-radio :value="1">全部时间</el-radio>
+          <el-radio :value="2">本年度</el-radio>
+          <el-radio :value="3">本季度</el-radio>
+          <el-radio :value="4">本月度</el-radio>
+          <el-radio :value="5">当天</el-radio> 
+          <el-radio :value="6">自定义</el-radio>
         </el-radio-group>
         <el-form-item label="开始时间：">
           <el-date-picker v-model="searchForm.startTime" type="date"  placeholder="选择日期" style="width: 150px" />
@@ -36,8 +36,8 @@
       </el-form-item>
       <el-form-item label="开发分类：" >
         <el-radio-group v-model="searchForm.kaifaArea">
-          <el-radio :label="1">过程特性</el-radio>
-          <el-radio :label="2">产品特性（中间品）</el-radio>
+          <el-radio :value="1">过程特性</el-radio>
+          <el-radio :value="2">产品特性（中间品）</el-radio>
         </el-radio-group>
         <el-form-item label="空间分组：" >
           <el-checkbox-group v-model="searchForm.kongjianArea">

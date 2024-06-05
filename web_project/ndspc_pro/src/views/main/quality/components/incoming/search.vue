@@ -3,12 +3,12 @@
     <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="small">
       <el-form-item label="时间范围：" >
         <el-radio-group v-model="searchForm.selectedTime" style="margin-top: -3px;">
-          <el-radio :label="5">全部时间</el-radio>
-          <el-radio :label="1">本年度</el-radio>
-          <el-radio :label="2">本季度</el-radio>
-          <el-radio :label="3">本月度</el-radio>
-          <el-radio :label="4">当天</el-radio>
-          <el-radio :label="6">自定义</el-radio>
+          <el-radio :value="5">全部时间</el-radio>
+          <el-radio :value="1">本年度</el-radio>
+          <el-radio :value="2">本季度</el-radio>
+          <el-radio :value="3">本月度</el-radio>
+          <el-radio :value="4">当天</el-radio>
+          <el-radio :value="6">自定义</el-radio>
         </el-radio-group>
         <el-form-item label="开始时间：" >
           <el-date-picker v-model="searchForm.startTime" type="date" value-format="YYYY-MM-DD" :disabled="searchForm.selectedTime !== 6"  placeholder="选择日期" style="width: 150px" />
@@ -22,9 +22,9 @@
       </el-form-item>
       <el-form-item label="开发纬度：" >
         <el-radio-group v-model="searchForm.developType">
-          <el-radio label="量产+开发">量产+开发</el-radio>
-          <el-radio label="量产">量产</el-radio>
-          <el-radio label="开发">开发</el-radio>
+          <el-radio value="量产+开发">量产+开发</el-radio>
+          <el-radio value="量产">量产</el-radio>
+          <el-radio value="开发">开发</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="物料信息：" >
@@ -75,8 +75,8 @@
       </el-form-item>
       <el-form-item label="计算纬度：" >
         <el-radio-group v-model="searchForm.quantityCalcSwitch">
-          <el-radio :label="true">按批次数量计算</el-radio>
-          <el-radio :label="false">按批次重量计算</el-radio>
+          <el-radio :value="true">按批次数量计算</el-radio>
+          <el-radio :value="false">按批次重量计算</el-radio>
         </el-radio-group>
         <el-button type="success" size="small" style="margin-left: 20px" @click="reset">重置</el-button>
         <el-button type="success" size="small"  @click="handleSearch">查询</el-button>

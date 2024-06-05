@@ -3,9 +3,9 @@
     <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="small">
       <el-form-item label="SPC分类：">
         <el-radio-group v-model="searchForm.fenlei">
-          <el-radio :label="1">过程特性</el-radio>
-          <el-radio :label="2">产品特性（中间品）</el-radio>
-          <el-radio :label="3">产品特性（成品）</el-radio>
+          <el-radio :value="1">过程特性</el-radio>
+          <el-radio :value="2">产品特性（中间品）</el-radio>
+          <el-radio :value="3">产品特性（成品）</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="生产信息：">
