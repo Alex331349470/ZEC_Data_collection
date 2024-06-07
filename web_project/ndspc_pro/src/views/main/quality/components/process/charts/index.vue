@@ -19,8 +19,9 @@ const list = reactive([
   { id: 5, name: '产线合格率' },
   { id: 6, name: '物料类型合格率' },
   { id: 7, name: '物料编码合格率' },
-  { id: 8, name: '物料编码不良数量柏拉图' },
-  { id: 9, name: '检测项目不良数量柏拉图' }
+  { id: 8, name: '检测项目合格率'},
+  { id: 9, name: '物料编码不良数量柏拉图' },
+  { id: 10, name: '检测项目不良数量柏拉图' }
 ])
 // 设置组件引用的函数
 function setComponentRef(el, index) {

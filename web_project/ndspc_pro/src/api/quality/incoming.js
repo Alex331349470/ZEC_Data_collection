@@ -178,3 +178,55 @@ export function materialQC(params) {
 		variables: params
 	})
 }
+export function materialSelect(params) {
+	return apolloClient.mutate({
+		mutation: gql`mutation MaterialSelect($input: MaterialQCInput) {
+			materialSelect(input: $input) {
+				factory
+				supplier
+				materialType
+				materialCode
+				propertyType
+				testItem
+			}
+		}`,
+		variables: params
+	})
+}
+export function materialQCTestItem(params) {
+	return apolloClient.mutate({
+		mutation: gql`mutation MaterialQCTestItem($input: MaterialQCInput) {
+			materialQCTestItem(input: $input) {
+				testItemPlato {
+					quantityTestItemPlato {
+						testItem
+						poorAmount
+						proportion
+					}
+					weightTestItemPlato {
+						testItem
+						poorAmount
+						proportion
+					}
+				}
+				testItemRate {
+					quantityTestItem {
+						testItem
+						amount
+						poorAmount
+						rate
+						purpose
+					}
+					weightTestItem {
+						testItem
+						amount
+						poorAmount
+						rate
+						purpose
+					}
+				}
+			}
+		}`,
+		variables: params
+	})
+}

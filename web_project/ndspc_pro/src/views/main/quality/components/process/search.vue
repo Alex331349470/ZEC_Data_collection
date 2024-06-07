@@ -18,30 +18,45 @@
         </el-form-item>
       </el-form-item>
       <el-form-item label="时间维度：" >
-        <el-checkbox v-model="searchForm[date.value]" v-for="(date, index) in DateOptions" :key="index">{{date.label}}</el-checkbox>
+        <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">全选</el-checkbox>
+        <el-checkbox v-model="searchForm[date.value]" v-for="(date, index) in DateOptions" @change="handleDateChange" :key="index">{{date.label}}</el-checkbox>
       </el-form-item>
-      <el-form-item label="物料信息：" >
+      <el-form-item label="来料信息">
         <el-form-item label="工厂" label-width="80px" >
           <MultipleSelect 
-            :selectNameArr="searchForm.factory" 
+            productType="process"
             selectTypeName="factory"
             @handleChange='searchForm.factory=$event' />
         </el-form-item>
-        <el-form-item label="供应商" label-width="80px" >
+        <el-form-item label="车间" label-width="80px" >
           <MultipleSelect 
-            :selectNameArr="searchForm.Supplier" 
-            selectTypeName="Supplier"
-            @handleChange='searchForm.Supplier=$event' />
+            productType="process"
+            selectTypeName="workshop"
+            @handleChange='searchForm.workshop=$event' />
+        </el-form-item>
+        <el-form-item label="产线" label-width="80px" >
+          <MultipleSelect 
+            productType="process"
+            selectTypeName="line"
+            @handleChange='searchForm.line=$event' />
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="物料信息：" >
+        <el-form-item label="工序" label-width="80px" >
+          <MultipleSelect 
+            productType="process"
+            selectTypeName="process"
+            @handleChange='searchForm.process=$event' />
         </el-form-item>
         <el-form-item label="物料类型" label-width="80px" >
           <MultipleSelect 
-            :selectNameArr="searchForm.materialType" 
+            productType="process"
             selectTypeName="materialType"
             @handleChange='searchForm.materialType=$event' />
         </el-form-item>
         <el-form-item label="物料编码" label-width="80px" >
           <MultipleSelect 
-            :selectNameArr="searchForm.materialCode" 
+            productType="process"
             selectTypeName="materialCode"
             @handleChange='searchForm.materialCode=$event' />
         </el-form-item>
@@ -49,13 +64,13 @@
       <el-form-item label="检测信息：" >
         <el-form-item label="特性类型" label-width="80px" >
           <MultipleSelect 
-            :selectNameArr="searchForm.propertyType" 
+            productType="process"
             selectTypeName="propertyType"
             @handleChange='searchForm.propertyType=$event' />
         </el-form-item>
         <el-form-item label="检测项目" label-width="80px" >
           <MultipleSelect 
-            :selectNameArr="searchForm.testItem" 
+            productType="process"
             selectTypeName="testItem"
             @handleChange='searchForm.testItem=$event' />
         </el-form-item>
@@ -77,9 +92,10 @@
 </template>
 
 <script setup>
-  import { defineComponent, onMounted, reactive, ref } from 'vue'
+  import { onMounted, reactive, ref } from 'vue'
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
   import MultipleSelect from '@/components/multipleSelect/index.vue'
+  import {ProcessSelect} from '@/api/quality/process'
   const emit = defineEmits(['handleSearch'])
   // parmas
   const defaultParmas = {
@@ -99,6 +115,9 @@
     materialType: [],
     materialCode: []
   }
+  onMounted(() => {
+    getInputSelect()
+  })
   const searchForm = reactive({...defaultParmas})
   const isExpand = ref(true)
   const DateOptions = reactive([ // 时间维度数组
@@ -123,29 +142,58 @@
       label: '日'
     }
   ])
-  const searchInput = reactive({// 下拉框搜索条件
+  const inputSelect = { //下拉框搜索条件
     factory: '',
     workshop: '',
     line: '',
-    materialType: '',
+    process: '',
     materialCode: '',
+    materialType: '',
     propertyType: '',
     testItem: ''
-  })
-  // onmounted
-  onMounted(() => {
-    handleSearch()
-  })
-  // function
+  }
+  const demintions = ['yearDemintion', 'seasonDemintion', 'monthDemintion', 'weekDemintion', 'dayDemintion']
+  const checkAll = ref(false)
+  const isIndeterminate = ref(true)
+
+  // 查询
   function handleSearch() {
     emit('handleSearch', searchForm)
   }
+  // 重置
   function reset() {
     Object.assign(searchForm, { ...defaultParmas })
     handleSearch()
   }
+  // 检索查询
+  async function getInputSelect() {
+    const res = await ProcessSelect({input:inputSelect})
+    const data = res.data.processSelect
+    if(data) {
+      Object.keys(searchForm).forEach(key => {
+        if (data.hasOwnProperty(key)) {
+          searchForm[key] = data[key];
+        }
+      })
+      handleSearch()
+    }
+  }
+  // 搜索面板显示隐藏
   function expandSearch(val) {
     isExpand.value = val
+  }
+  // 全选
+  function handleCheckAllChange(val) {
+    isIndeterminate.value = false
+    demintions.forEach(dimension => {
+      searchForm[dimension] = val
+    })
+  }
+  // 监听时间维度选择方法
+  function handleDateChange() {
+    const checkedCount = demintions.filter(dimension => searchForm[dimension]).length
+    checkAll.value = checkedCount === demintions.length
+    isIndeterminate.value = checkedCount > 0 && checkedCount < demintions.length
   }
 </script>
 
@@ -174,7 +222,7 @@
   color: var(--system-primary-color)!important;
   
 }
-:deep(.el-radio__input.is-checked .el-radio__inner), :deep(.el-checkbox__input.is-checked .el-checkbox__inner), :deep(.el-button--success){
+:deep(.el-radio__input.is-checked .el-radio__inner),:deep(.el-checkbox__input.is-indeterminate .el-checkbox__inner), :deep(.el-checkbox__input.is-checked .el-checkbox__inner), :deep(.el-button--success){
   border-color: var(--system-primary-color)!important;;
   background: var(--system-primary-color)!important;
 }

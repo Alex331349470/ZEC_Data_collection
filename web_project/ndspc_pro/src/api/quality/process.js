@@ -210,3 +210,57 @@ export function processQC(params) {
 		variables: params
 	})
 }
+export function ProcessSelect(params) {
+	return apolloClient.mutate({
+		mutation: gql`mutation ProcessSelect($input: ProcessQCInput) {
+			processSelect(input: $input) {
+				factory
+				workshop
+				line
+				materialType
+				process
+				materialCode
+				propertyType
+				testItem
+			}
+		}`,
+		variables: params
+	})
+}
+export function processQCTestItem(params) {
+	return apolloClient.mutate({
+		mutation: gql`mutation ProcessQCTestItem($input: ProcessQCInput) {
+			processQCTestItem(input: $input) {
+				testItemPlato {
+					quantityTestItemPlato {
+						testItem
+						poorAmount
+						proportion
+					}
+					weightTestItemPlato {
+						testItem
+						poorAmount
+						proportion
+					}
+				}
+				testItemRate {
+					quantityTestItem {
+						testItem
+						amount
+						poorAmount
+						rate
+						purpose
+					}
+					weightTestItem {
+						testItem
+						amount
+						poorAmount
+						rate
+						purpose
+					}
+				}
+			}
+		}`,
+		variables: params
+	})
+}

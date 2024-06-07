@@ -24,7 +24,7 @@
   const options = ref(null)
   const isEmpty = ref(false)
   function initChart(data) {
-    if(!data) {
+    if(data.xAxis_data.length === 0 ) {
       isEmpty.value = true
       return
     } else {

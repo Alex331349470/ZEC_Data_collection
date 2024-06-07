@@ -7,14 +7,16 @@
     :max-collapse-tags="1" 
     :loading="loading"
     loading-text="加载中..."
+    @change="handleSingleChange" 
   >
     <template #header>
-      <el-input v-model="searchInput[selectTypeName]" placeholder="关键字搜索" @keyup.enter="getProductSelectPlato">
+      <el-input v-model="searchInput[selectTypeName]" placeholder="关键字搜索" @keyup.enter="refresh">
         <template #append>
-          <el-button :icon="Search" @click="getProductSelectPlato()"/>
+          <el-button :icon="Search" @click="refresh"/>
         </template>
       </el-input>
     </template>
+    <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">全选</el-checkbox>
     <el-option 
       v-for="(item, index) in options[selectTypeName]" 
       :key="index" 
@@ -29,12 +31,14 @@
   import { Search } from '@element-plus/icons-vue'
   import { reactive,ref,onMounted } from 'vue'
   import {productSelectPlato} from '@/api/quality/product'
+  import {materialSelect} from '@/api/quality/incoming'
+  import {ProcessSelect} from '@/api/quality/process'
   const props = defineProps({
-    selectNameArr: {
-      type: Array,
-      default: []
-    },
     selectTypeName: {
+      type: String,
+      default: ''
+    },
+    productType: {
       type: String,
       default: ''
     }
@@ -42,7 +46,10 @@
   const loading = ref(false)
   const options = ref({})
   const emit = defineEmits(['getProductSelectPlato', 'handleChange'])
-  const searchInput = reactive({// 下拉框搜索条件
+  const selectNameArr = ref(null)
+  const checkAll = ref(true)
+  const isIndeterminate = ref(false)
+  const productSelect = {// 成品下拉框搜索条件
     factory: '',
     workshop: '',
     line: '',
@@ -50,23 +57,116 @@
     materialCode: '',
     propertyType: '',
     testItem: ''
-  })
+  }
+  const incomingSelect = { // 来料下拉框搜索条件
+    factory: '',
+    supplier: '',
+    materialCode: '',
+    materialType: '',
+    propertyType: '',
+    testItem: ''
+  }
+  const processSelect = { // 制成下拉框搜索条件
+    factory: '',
+    workshop: '',
+    line: '',
+    process: '',
+    materialCode: '',
+    materialType: '',
+    propertyType: '',
+    testItem: ''
+  }
+  const searchInput = reactive({})
   onMounted(() => {
-    getProductSelectPlato()
+    reduceData()
+    refresh(true)
   })
-  function getProductSelectPlato() {// 检测项检索
+  function isPropertyTypeSelected(item) {
+    emit('handleChange', selectNameArr.value)
+    return selectNameArr.value ? selectNameArr.value.includes(item) : false
+  }
+  // 全选
+  function handleCheckAllChange(val) {
+    selectNameArr.value = val ? options.value[props.selectTypeName] : []
+    isIndeterminate.value = false
+  }
+  //单独选中
+  function handleSingleChange(item) {
+    if(item) {
+      checkAll.value = item.length === options.value[props.selectTypeName].length
+      isIndeterminate.value = item.length > 0 && item.length < options.value[props.selectTypeName].length
+    }
+  }
+  // 检测是哪个页面
+  function reduceData() {
+    switch(props.productType) {
+      case 'incoming':
+        Object.assign(searchInput, { ...incomingSelect })
+        break
+      case 'process':
+        Object.assign(searchInput, { ...processSelect })
+        break
+      case 'product':
+        Object.assign(searchInput, { ...productSelect })
+    }
+  }
+  function refresh(isInint) {
+    switch(props.productType) {
+      case 'incoming':
+        getIncomingSelect(isInint)
+        break
+      case 'process':
+        getProcessSelect(isInint)
+        break
+      case 'product':
+        getProductSelectPlato(isInint)
+    
+    }
+  }
+  // 成品检索
+  function getProductSelectPlato(isInint) {
     loading.value = true
     productSelectPlato({input:searchInput}).then(res => {
       options.value = res.data.productSelectPlato
       loading.value = false
+      if(isInint) {
+        selectNameArr.value = options.value[props.selectTypeName]
+        emit('handleChange', selectNameArr.value)
+      }
     }).catch(error => {
       console.log(error)
       loading.value = false
     })
   }
-  function isPropertyTypeSelected(item) {
-    emit('handleChange', props.selectNameArr)
-    return props.selectNameArr ? props.selectNameArr.includes(item) : false
+  // 来料检索
+  function getIncomingSelect(isInint) {
+    loading.value = true
+    materialSelect({input:searchInput}).then(res => {
+      options.value = res.data.materialSelect
+      loading.value = false
+      if(isInint) {
+        selectNameArr.value = options.value[props.selectTypeName]
+        emit('handleChange', selectNameArr.value)
+      }
+    }).catch(error => {
+      console.log(error)
+      loading.value = false
+    })
+  }
+  // 制成检索
+  function getProcessSelect(isInint) {
+    loading.value = true
+    ProcessSelect({input:searchInput}).then(res => {
+      options.value = res.data.processSelect
+      loading.value = false
+      if(isInint) {
+        selectNameArr.value = options.value[props.selectTypeName]
+        emit('handleChange', selectNameArr.value)
+      }
+    }).catch(error => {
+      console.log(error)
+      loading.value = false
+    })
   }
 </script>
 
@@ -83,11 +183,18 @@
 .select-popover-class .el-scrollbar__view > li::after {
   display: none;
 }
-// 清除默认选中样式
 :deep(.el-checkbox__input.is-checked+.el-checkbox__label){
+  color: var(--system-primary-color)!important;
+}
+:deep(.el-checkbox__input.is-indeterminate .el-checkbox__inner), :deep(.el-checkbox__input.is-checked .el-checkbox__inner), :deep(.el-button--success){
+  border-color: var(--system-primary-color)!important;;
+  background: var(--system-primary-color)!important;
+}
+// 清除自定义默认选中样式
+:deep(.is-box-checked .el-checkbox__input.is-checked+.el-checkbox__label){
   color: #303133;
 }
-:deep(.el-checkbox__input.is-checked .el-checkbox__inner){
+:deep(.is-box-checked .el-checkbox__input.is-checked .el-checkbox__inner){
   border-color: #f2f3f5;
   background: #ffffff;
 }

@@ -92,12 +92,13 @@ import {prodcutQCTestItemPlato} from '@/api/quality/product'
         getMaterialCodeRate(params)
         break
       case '检测项目合格率':
+        getProdcutQCTestItemPlato(params, '检测项目合格率')
         break
       case '物料编码不良数量柏拉图':
         getMaterialCodePlato(params)
         break
       case '检测项目不良数量柏拉图':
-        getProdcutQCTestItemPlato(params)
+        getProdcutQCTestItemPlato(params, '检测项目不良数量柏拉图')
         break
     }
   }
@@ -484,7 +485,7 @@ import {prodcutQCTestItemPlato} from '@/api/quality/product'
 
   }
   // 检测项目不良数量柏拉图处理方法
-  function reduceProdcutQCTestItemPlato(val) {
+  function getTestItemPlato(val) {
     let xAxis_data = []
     let amount = []
     let poorAmount = []
@@ -522,13 +523,60 @@ import {prodcutQCTestItemPlato} from '@/api/quality/product'
       chartRef.value.initChart(chartData)
     }
   }
-  // 获取检测项目不良数量柏拉图数据
-  function getProdcutQCTestItemPlato(val) {
-    prodcutQCTestItemPlato({input: val.params}).then(res => {
-      reduceProdcutQCTestItemPlato({chartData: res.data, params: val.params})
-    }).catch(error => {
-    console.log(error)
-  });
+  // 检测项目合格率处理方法
+  function getTestItemRate(val) {
+    let xAxis_data = []
+    let amount = []
+    let poorAmount = []
+    let rate = []
+    let purpose = []
+    const data = val.chartData.prodcutQCTestItemPlato.testItemRate
+    const parmas = val.params
+    if(parmas.quantityCalcSwitch) { //按批次数量
+      data.quantityTestItem.map(item => {
+        xAxis_data.push(item.testItem)
+        amount.push(item.amount)
+        poorAmount.push(item.poorAmount)
+        rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+        purpose.push(item.purpose)
+        })
+    } else {
+      data.weightTestItem.map(item => {
+        xAxis_data.push(item.testItem)
+        amount.push(item.amount)
+        poorAmount.push(item.poorAmount)
+        rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
+        purpose.push(item.purpose)
+      })
+    }
+    const chartData = {
+      xAxis_data: xAxis_data,
+      yAxis_data: {
+        amount: amount,
+        poorAmount: poorAmount,
+        rate: rate,
+        purpose: purpose
+      },
+      names: [parmas.quantityCalcSwitch ? '生产数量' : '生产重量', parmas.quantityCalcSwitch ? '不良数量' : '不良重量', '合格率', '目标'],
+      type: parmas.quantityCalcSwitch ? '数量' : '重量'
+    }
+    if(chartDialogRef.value.visible) { // 弹窗内的
+      chartsRef.value.initChart(chartData)
+    } else {
+      chartRef.value.initChart(chartData)
+    }
+  }
+  // 检测项目不良数量柏拉图和检测项目合格率数据获取
+  async function getProdcutQCTestItemPlato(val, type) {
+    const res = await prodcutQCTestItemPlato({input: val.params})
+    switch(type) {
+      case '检测项目合格率':
+        getTestItemRate({chartData: res.data, params: val.params})
+        break
+      case '检测项目不良数量柏拉图':
+        getTestItemPlato({chartData: res.data, params: val.params})
+        break
+    }
   }
 </script>
 

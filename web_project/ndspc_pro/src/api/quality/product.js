@@ -210,6 +210,23 @@ export function prodcutQCTestItemPlato(params) {
 						proportion
 					}
 				}
+				testItemRate {
+					quantityTestItem {
+						testItem
+						amount
+						poorAmount
+						rate
+						purpose
+					}
+					weightTestItem {
+						testItem
+						amount
+						poorAmount
+						rate
+						purpose
+					}
+					
+				}
 			}
 		}`,
 		variables: params
