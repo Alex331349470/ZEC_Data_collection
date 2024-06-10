@@ -26,6 +26,7 @@
     "vue-apollo": "^3.1.2",
     "vue-i18n": "9.1.10",
     "vue-router": "^4.2.5",
+    "vue3-json-excel": "^1.0.10-alpha",
     "vuex": "^4.1.0",
     "xlsx": "^0.18.5"
   },

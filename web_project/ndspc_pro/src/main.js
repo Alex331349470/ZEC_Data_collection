@@ -10,6 +10,7 @@ import App from './App.vue'
 import store from './store'
 import router from './router'
 import { getAuthRoutes } from './router/permission'
+import vue3JsonExcel from "vue3-json-excel"
 import i18n from './locale'
 if (import.meta.env.MODE !== 'development') { // 非开发环境调用百度统计
   baidu()
@@ -22,6 +23,7 @@ getAuthRoutes().then(() => {
   app.use(store)
   app.use(router)
   app.use(i18n)
+  app.use(vue3JsonExcel)
   // app.config.performance = true
   app.mount('#app')
 })

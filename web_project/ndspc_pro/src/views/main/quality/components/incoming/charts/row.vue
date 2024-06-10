@@ -6,9 +6,13 @@
         <span class="name">{{ row.name }}</span>
       </div>
       <div style="display: flex; align-items: center;">
-        <el-button size="small" type="info" v-if="row.isExport && selectItem">已选择{{selectItem}}</el-button>
-        <el-button size="small" type="info" v-if="row.isExport && selectItem">导出选中</el-button>
-        <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
+        <el-button size="small" type="primary" v-if="row.isExport && selectItem">已选择{{selectItem}}</el-button>
+        <vue3-json-excel v-if="row.isExport && selectItem" :json-data="select_data" :fields="header_data" :name="`${selectItem}来料合格率数据.xls`">
+          <el-button size="small" type="info" v-if="row.isExport && selectItem">导出选中</el-button>
+        </vue3-json-excel>
+        <vue3-json-excel v-if="row.isExport" :json-data="all_data" :fields="header_data" name="来料合格率全部数据.xls">
+          <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
+        </vue3-json-excel>
         <el-icon @click="handleOpen" style="margin-left: 10px"><Rank /></el-icon>
       </div>
     </div>
@@ -51,6 +55,15 @@ import {materialQCTestItem} from '@/api/quality/incoming'
   const chartRef = ref(null)
   const chartsRef = ref(null)
   const productQC = ref(null)
+  const header_data = reactive({
+    '时间':'time',
+    '生产数量':'amount',
+    '不良数量':'poorAmount',
+    '合格率': 'rate',
+    '目标值': 'purpose'
+  })
+  const all_data = ref(null)
+  const select_data = ref(null)
   function handleClose() {
     chartDialogRef.value.visible = false
     showChart.value = false
@@ -70,6 +83,7 @@ import {materialQCTestItem} from '@/api/quality/incoming'
       selectItem.value = null
     } else {
       selectItem.value = parmas.name
+      select_data.value = all_data.value.filter(item => item.time === parmas.name)
     }
   }
   function refreshData(params) {
@@ -108,6 +122,7 @@ import {materialQCTestItem} from '@/api/quality/incoming'
     const poorAmount = [] // 不良数量
     const rate = [] // 合格率
     const purpose = [] // 目标
+    const trendRateData = [] // 聚合所有数据
     const data = val.chartData.materialQC.trendRate
     const parmas = val.params
     if(parmas.quantityCalcSwitch) { //按批次数量
@@ -118,6 +133,13 @@ import {materialQCTestItem} from '@/api/quality/incoming'
           poorAmount.push(item.poorAmount)
           rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
+          trendRateData.push({
+            time: item.year+'年',
+            amount: item.amount,
+            poorAmount: item.poorAmount,
+            rate: item.rate ? (item.rate.toFixed(2) * 100)+'%' : '0%',
+            purpose: item.purpose
+          })
         })
       }
       if(parmas.seasonDemintion) { // 时间维度季
@@ -127,6 +149,13 @@ import {materialQCTestItem} from '@/api/quality/incoming'
           poorAmount.push(item.poorAmount)
           rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
+          trendRateData.push({
+            time: item.year+'年-'+item.season+'季度',
+            amount: item.amount,
+            poorAmount: item.poorAmount,
+            rate: item.rate ? (item.rate.toFixed(2) * 100)+'%' : '0%',
+            purpose: item.purpose
+          })
         })
       }
       if(parmas.monthDemintion) { // 时间维度月
@@ -136,8 +165,14 @@ import {materialQCTestItem} from '@/api/quality/incoming'
           poorAmount.push(item.poorAmount)
           rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
+          trendRateData.push({
+            time: item.year+'年-'+item.month+'月',
+            amount: item.amount,
+            poorAmount: item.poorAmount,
+            rate: item.rate ? (item.rate.toFixed(2) * 100)+'%' : '0%',
+            purpose: item.purpose
+          })
         })
-        console.log('月')
       }
       if(parmas.weekDemintion) { // 时间维度周
         data.quantityWeekTrend.map(item => {
@@ -146,6 +181,13 @@ import {materialQCTestItem} from '@/api/quality/incoming'
           poorAmount.push(item.poorAmount)
           rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
+          trendRateData.push({
+            time: item.year+'年-'+item.week+'周',
+            amount: item.amount,
+            poorAmount: item.poorAmount,
+            rate: item.rate ? (item.rate.toFixed(2) * 100)+'%' : '0%',
+            purpose: item.purpose
+          })
         })
       }
       if(parmas.dayDemintion) { // 时间维度日
@@ -155,6 +197,13 @@ import {materialQCTestItem} from '@/api/quality/incoming'
           poorAmount.push(item.poorAmount)
           rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
+          trendRateData.push({
+            time: item.year+'年-'+item.month+'月-'+item.day+'日',
+            amount: item.amount,
+            poorAmount: item.poorAmount,
+            rate: item.rate ? (item.rate.toFixed(2) * 100)+'%' : '0%',
+            purpose: item.purpose
+          })
         })
       }
     } else { //按批次重量
@@ -165,6 +214,13 @@ import {materialQCTestItem} from '@/api/quality/incoming'
           poorAmount.push(item.poorAmount)
           rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
+          trendRateData.push({
+            time: item.year+'年',
+            amount: item.amount,
+            poorAmount: item.poorAmount,
+            rate: item.rate ? (item.rate.toFixed(2) * 100)+'%' : '0%',
+            purpose: item.purpose
+          })
         })
       }
       if(parmas.seasonDemintion) { // 时间维度季
@@ -174,6 +230,13 @@ import {materialQCTestItem} from '@/api/quality/incoming'
           poorAmount.push(item.poorAmount)
           rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
+          trendRateData.push({
+            time: item.year+'年-'+item.season+'季度',
+            amount: item.amount,
+            poorAmount: item.poorAmount,
+            rate: item.rate ? (item.rate.toFixed(2) * 100)+'%' : '0%',
+            purpose: item.purpose
+          })
         })
       }
       if(parmas.monthDemintion) { // 时间维度月
@@ -183,8 +246,14 @@ import {materialQCTestItem} from '@/api/quality/incoming'
           poorAmount.push(item.poorAmount)
           rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
+          trendRateData.push({
+            time: item.year+'年-'+item.month+'月',
+            amount: item.amount,
+            poorAmount: item.poorAmount,
+            rate: item.rate ? (item.rate.toFixed(2) * 100)+'%' : '0%',
+            purpose: item.purpose
+          })
         })
-        console.log('月')
       }
       if(parmas.weekDemintion) { // 时间维度周
         data.weightWeekTrend.map(item => {
@@ -193,6 +262,13 @@ import {materialQCTestItem} from '@/api/quality/incoming'
           poorAmount.push(item.poorAmount)
           rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
+          trendRateData.push({
+            time: item.year+'年-'+item.week+'周',
+            amount: item.amount,
+            poorAmount: item.poorAmount,
+            rate: item.rate ? (item.rate.toFixed(2) * 100)+'%' : '0%',
+            purpose: item.purpose
+          })
         })
       }
       if(parmas.dayDemintion) { // 时间维度日
@@ -202,6 +278,13 @@ import {materialQCTestItem} from '@/api/quality/incoming'
           poorAmount.push(item.poorAmount)
           rate.push(item.rate ? item.rate.toFixed(2) * 100 : 0)
           purpose.push(item.purpose)
+          trendRateData.push({
+            time: item.year+'年-'+item.month+'月-'+item.day+'日',
+            amount: item.amount,
+            poorAmount: item.poorAmount,
+            rate: item.rate ? (item.rate.toFixed(2) * 100)+'%' : '0%',
+            purpose: item.purpose
+          })
         })
       }
     }
@@ -216,7 +299,7 @@ import {materialQCTestItem} from '@/api/quality/incoming'
       names: [parmas.quantityCalcSwitch ? '生产数量' : '生产重量', parmas.quantityCalcSwitch ? '不良数量' : '不良重量', '合格率', '目标'],
       type: parmas.quantityCalcSwitch ? '数量' : '重量'
     }
-    console.log(chartData)
+    all_data.value = trendRateData
     if(chartDialogRef.value.visible) { // 弹窗内的
       chartsRef.value.initChart(chartData)
     } else {
@@ -566,7 +649,16 @@ import {materialQCTestItem} from '@/api/quality/incoming'
   :deep(.el-button--info) {
     border-color: #014D64!important;
     background: #014D64!important;
-    padding: 5px;
+    padding: 2px;
+    margin-left: 5px;
+    font-size: 12px;
+  }
+  :deep(.el-button--primary){
+    border-color: #01a2d9!important;
+    background: #01a2d9!important;
+    padding: 2px;
+    margin-left: 5px;
+    font-size: 12px;
   }
   @media screen and ( max-width: 1200px ) {
     .card {
