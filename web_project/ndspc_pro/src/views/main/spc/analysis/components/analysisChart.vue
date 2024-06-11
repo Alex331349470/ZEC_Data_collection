@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <Search @handleSearch="handleSearch" />
+    <Search ref="searchRef" @handleSearch="handleSearch" />
     <Charts ref="chartsRef"/>
   </div>
 </template>
@@ -9,8 +9,14 @@
 import Search from './analysisChart/search.vue'
 import Charts from './analysisChart/charts/index.vue'
 import { ref } from 'vue'
+defineExpose({ getData })
 const chartsRef = ref(null)
+const searchRef = ref(null)
+function getData(data) {
+  searchRef.value.getData(data)
+}
 function handleSearch(params) {
+  console.log(params, 'params')
   if(chartsRef.value) {
     chartsRef.value.handleSearch(params)
   }

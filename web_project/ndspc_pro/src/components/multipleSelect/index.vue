@@ -1,30 +1,57 @@
 <template>
-  <el-select popper-class="select-popover-class" style="width: 200px"
-    v-model="selectNameArr" 
-    multiple 
-    placeholder="请选择" 
-    collapse-tags 
-    :max-collapse-tags="1" 
-    :loading="loading"
-    loading-text="加载中..."
-    @change="handleSingleChange" 
-  >
+  <div v-if="selectType === 'single'">
+    <el-select
+      style="width: 220px"
+      v-model="selectValue"
+      placeholder="请选择" 
+      loading-text="加载中..."
+      :disabled="selectType === 'disabled'"
+      @change="changeSingle"
+    >
     <template #header>
-      <el-input v-model="searchInput[selectTypeName]" placeholder="关键字搜索" @keyup.enter="refresh">
-        <template #append>
-          <el-button :icon="Search" @click="refresh"/>
-        </template>
-      </el-input>
-    </template>
-    <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">全选</el-checkbox>
-    <el-option 
-      v-for="(item, index) in options[selectTypeName]" 
-      :key="index" 
-      :value="item"
-      :label="item">
-      <el-checkbox :class="isPropertyTypeSelected(item) ? 'is-box-checked': ''"  :value="isPropertyTypeSelected(item)" :label="item" />
-    </el-option>
-  </el-select>
+        <el-input v-model="searchInput[selectTypeName]" placeholder="关键字搜索" @keyup.enter="refresh">
+          <template #append>
+            <el-button :icon="Search" @click="refresh"/>
+          </template>
+        </el-input>
+      </template>
+      <el-option
+        v-for="(item, index) in options[selectTypeName]"
+        :key="index" 
+        :value="item"
+        :label="item"
+      />
+    </el-select>
+  </div>
+  <div v-else>
+    <el-select popper-class="select-popover-class" style="width: 220px"
+      v-model="selectNameArr" 
+      multiple 
+      placeholder="请选择" 
+      collapse-tags 
+      :max-collapse-tags="1" 
+      :loading="loading"
+      loading-text="加载中..."
+      @change="handleSingleChange" 
+      :disabled="selectType === 'disabled'"
+    >
+      <template #header>
+        <el-input v-model="searchInput[selectTypeName]" placeholder="关键字搜索" @keyup.enter="refresh">
+          <template #append>
+            <el-button :icon="Search" @click="refresh"/>
+          </template>
+        </el-input>
+      </template>
+      <el-checkbox v-if="selectType !== 'disabled'" v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">全选</el-checkbox>
+      <el-option 
+        v-for="(item, index) in options[selectTypeName]" 
+        :key="index" 
+        :value="item"
+        :label="item">
+        <el-checkbox v-if="selectType !== 'disabled'" :class="isPropertyTypeSelected(item) ? 'is-box-checked': ''"  :value="isPropertyTypeSelected(item)" :label="item" />
+      </el-option>
+    </el-select>
+  </div>
 </template>
 
 <script setup>
@@ -33,12 +60,21 @@
   import {productSelectPlato} from '@/api/quality/product'
   import {materialSelect} from '@/api/quality/incoming'
   import {ProcessSelect} from '@/api/quality/process'
+  import {SpcProductSelect} from '@/api/spc/analysis'
   const props = defineProps({
     selectTypeName: {
       type: String,
       default: ''
     },
     productType: {
+      type: String,
+      default: ''
+    },
+    selectType: {
+      type: String,
+      default: ''
+    },
+    selectValue: {
       type: String,
       default: ''
     }
@@ -76,6 +112,16 @@
     propertyType: '',
     testItem: ''
   }
+  const spcSelect = {// SPC下拉框搜索条件
+    factory: '',
+    workshop: '',
+    line: '',
+    materialCode: '',
+    materialType: '',
+    propertyType: '',
+    testItem: '',
+    review: ''
+  }
   const searchInput = reactive({})
   onMounted(() => {
     reduceData()
@@ -89,6 +135,10 @@
   function handleCheckAllChange(val) {
     selectNameArr.value = val ? options.value[props.selectTypeName] : []
     isIndeterminate.value = false
+  }
+  // 单选下拉框选中
+  function changeSingle(val) {
+    emit('handleChange', val)
   }
   //单独选中
   function handleSingleChange(item) {
@@ -108,6 +158,9 @@
         break
       case 'product':
         Object.assign(searchInput, { ...productSelect })
+        break
+      case 'spc':
+        Object.assign(searchInput, { ...spcSelect })
     }
   }
   function refresh(isInint) {
@@ -120,7 +173,10 @@
         break
       case 'product':
         getProductSelectPlato(isInint)
-    
+        break
+      case 'spc':
+        getSpcProductSelect(isInint)
+        break
     }
   }
   // 成品检索
@@ -131,7 +187,7 @@
       loading.value = false
       if(isInint) {
         selectNameArr.value = options.value[props.selectTypeName]
-        emit('handleChange', selectNameArr.value)
+        emit('handleChange', options.value[props.selectTypeName])
       }
     }).catch(error => {
       console.log(error)
@@ -146,7 +202,7 @@
       loading.value = false
       if(isInint) {
         selectNameArr.value = options.value[props.selectTypeName]
-        emit('handleChange', selectNameArr.value)
+        emit('handleChange', options.value[props.selectTypeName])
       }
     }).catch(error => {
       console.log(error)
@@ -161,7 +217,26 @@
       loading.value = false
       if(isInint) {
         selectNameArr.value = options.value[props.selectTypeName]
-        emit('handleChange', selectNameArr.value)
+        emit('handleChange', options.value[props.selectTypeName])
+      }
+    }).catch(error => {
+      console.log(error)
+      loading.value = false
+    })
+  }
+  // SPC检索
+  function getSpcProductSelect(isInint) {
+    loading.value = true
+    SpcProductSelect({input:searchInput}).then(res => {
+      options.value = res.data.spcProductSelect
+      loading.value = false
+      if(isInint && props.selectType !== 'single') {
+        selectNameArr.value = options.value[props.selectTypeName]
+        emit('handleChange', options.value[props.selectTypeName])
+      }
+      if(props.selectType === 'disabled') {
+        selectNameArr.value = [options.value[props.selectTypeName]]
+        emit('handleChange', options.value[props.selectTypeName])
       }
     }).catch(error => {
       console.log(error)

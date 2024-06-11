@@ -36,7 +36,7 @@
               <el-select v-model="searchForm.xiangmu" placeholder="请选择" style="width: 100px" clearable>
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
-              <el-button class="system-btn" type="success"  style="margin-left: 10px;" >查询</el-button>
+              <el-button class="system-btn" type="success"  style="margin-left: 10px;" @click="getData">查询</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -52,20 +52,20 @@
     <div class="content-box">
       <el-table :data="tableData" style="width: 100%; font-size: 13px; font-size: 13px" ref="multipleTable" @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
         <el-table-column type="selection" width="40" align="center" fixed="left" />
-        <el-table-column prop="bianma" label="分析控制图编码" :show-overflow-tooltip="true" sortable width="160" align="center" />
+        <el-table-column prop="analyze_num" label="分析控制图编码" :show-overflow-tooltip="true" sortable width="160" align="center" />
         <el-table-column prop="status" label="分析状态" sortable :show-overflow-tooltip="true" width="120" align="center" />
-        <el-table-column prop="bianNum" label="变更次数" sortable :show-overflow-tooltip="true" width="120" align="center" />
-        <el-table-column prop="status" label="物料编码" sortable :show-overflow-tooltip="true" width="120" align="center" />
-        <el-table-column prop="bianNum" label="物料名称" sortable :show-overflow-tooltip="true" width="120" align="center" />
-        <el-table-column prop="status" label="检测项目" sortable :show-overflow-tooltip="true" width="120" align="center" />
-        <el-table-column prop="bianNum" label="工厂编码" sortable :show-overflow-tooltip="true" width="120" align="center" />
-        <el-table-column prop="status" label="工厂名称" sortable :show-overflow-tooltip="true" width="120" align="center" />
-        <el-table-column prop="bianNum" label="车间" sortable :show-overflow-tooltip="true" width="100" align="center" />
-        <el-table-column prop="status" label="产线" sortable :show-overflow-tooltip="true" width="100" align="center" />
-        <el-table-column prop="bianNum" label="物料类型" sortable :show-overflow-tooltip="true" width="120" align="center" />
-        <el-table-column prop="status" label="控制图类型" sortable :show-overflow-tooltip="true" width="140" align="center" />
-        <el-table-column prop="bianNum" label="子组件大小" sortable :show-overflow-tooltip="true" width="140" align="center" />
-        <el-table-column prop="status" label="特性类型" sortable :show-overflow-tooltip="true" width="120" align="center" />
+        <el-table-column prop="change_time" label="变更次数" sortable :show-overflow-tooltip="true" width="120" align="center" />
+        <el-table-column prop="material_code" label="物料编码" sortable :show-overflow-tooltip="true" width="120" align="center" />
+        <!-- <el-table-column prop="bianNum" label="物料名称" sortable :show-overflow-tooltip="true" width="120" align="center" /> -->
+        <el-table-column prop="analyze_column" label="检测项目" sortable :show-overflow-tooltip="true" width="120" align="center" />
+        <!-- <el-table-column prop="bianNum" label="工厂编码" sortable :show-overflow-tooltip="true" width="120" align="center" /> -->
+        <el-table-column prop="factory" label="工厂名称" sortable :show-overflow-tooltip="true" width="120" align="center" />
+        <el-table-column prop="workshop" label="车间" sortable :show-overflow-tooltip="true" width="100" align="center" />
+        <el-table-column prop="line" label="产线" sortable :show-overflow-tooltip="true" width="100" align="center" />
+        <el-table-column prop="material_type" label="物料类型" sortable :show-overflow-tooltip="true" width="120" align="center" />
+        <el-table-column prop="control_type" label="控制图类型" sortable :show-overflow-tooltip="true" width="140" align="center" />
+        <el-table-column prop="group_type" label="子组件大小" sortable :show-overflow-tooltip="true" width="140" align="center" />
+        <el-table-column prop="property_type" label="特性类型" sortable :show-overflow-tooltip="true" width="120" align="center" />
         <el-table-column label="操作" width="160" align="center" fixed="right">
           <template #default="scope">
             <el-button @click.prevent="handleAssociation(scope.$index, tableData)" link type="primary" >关联</el-button>
@@ -88,257 +88,319 @@
           <el-divider content-position="center"><span style="color: red">*</span>基础信息</el-divider>
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-form-item label="物料编码：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="工序:" prop="materialCode" label-width="120px">
+                <el-input value="成品" placeholder="请输入内容" disabled style="width: 220px;"></el-input>
               </el-form-item>
-              <el-form-item label="检测项目：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="物料编码：" prop="materialCode" label-width="120px" required>
+                <MultipleSelect 
+                  productType="spc"
+                  selectTypeName="materialCode"
+                  selectType="single"
+                  :selectValue="addForm.materialCode"
+                  @handleChange='addForm.materialCode=$event'
+                />
               </el-form-item>
-              <el-form-item label="工厂：" prop="bianma" label-width="120px">
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="特性类型：" prop="propertyType" label-width="120px">
+                <MultipleSelect 
+                  productType="spc"
+                  selectTypeName="propertyType"
+                  :selectValue="addForm.propertyType"
+                  selectType="single"
+                  @handleChange='addForm.propertyType=$event'
+                />
               </el-form-item>
-              <el-form-item label="车间：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="控制图类型：" prop="controlType" label-width="120px" required>
+                <MultipleSelect 
+                  productType="spc"
+                  selectTypeName="controlType"
+                  selectType="disabled"
+                  @handleChange='addForm.controlType=$event'
+                />
               </el-form-item>
-              <el-form-item label="工序：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="子组大小：" prop="groupType" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.groupType" placeholder="请输入数值" style="width: 220px;"></el-input>
               </el-form-item>
-              <el-form-item label="特性类型：" prop="bianma" label-width="120px">
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
-              </el-form-item>
-              <el-form-item label="控制图类型：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
-              </el-form-item>
-              <el-form-item label="分析控制图编码：" prop="bianma" label-width="120px">
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="分析控制图编码：" prop="analyzeCode" label-width="120px">
+                <el-input v-model="addForm.analyzeCode" placeholder="请输入内容" disabled style="width: 220px;"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="物料名称：" prop="bianma" label-width="120px">
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="工厂：" prop="factory" label-width="120px">
+                <MultipleSelect 
+                  productType="spc"
+                  selectTypeName="factory"
+                  selectType="single"
+                  :selectValue="addForm.factory"
+                  @handleChange='addForm.factory=$event'
+                />
               </el-form-item>
-              <el-form-item label="检测项目名称：" prop="bianma" label-width="120px">
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="车间：" prop="workshop" label-width="120px" required>
+                <MultipleSelect 
+                  productType="spc"
+                  selectTypeName="workshop"
+                  selectType="single"
+                  :selectValue="addForm.workshop"
+                  @handleChange='addForm.workshop=$event'
+                />
               </el-form-item>
-              <el-form-item label="工厂名称：" prop="bianma" label-width="120px">
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="产线：" prop="line" label-width="120px" required>
+                <MultipleSelect 
+                  productType="spc"
+                  selectTypeName="line"
+                  selectType="single"
+                  :selectValue="addForm.line"
+                  @handleChange='addForm.line=$event'
+                />
               </el-form-item>
-              <el-form-item label="产线：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="物料类型：" prop="materialType" label-width="120px">
+                <MultipleSelect 
+                  productType="spc"
+                  selectTypeName="materialType"
+                  selectType="single"
+                  :selectValue="addForm.materialType"
+                  @handleChange='addForm.materialType=$event'
+                />
               </el-form-item>
-              <el-form-item label="物料类型：" prop="bianma" label-width="120px">
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="检测项目：" prop="testItem" label-width="120px" required>
+                <MultipleSelect 
+                  productType="spc"
+                  selectTypeName="testItem"
+                  selectType="single"
+                  :selectValue="addForm.testItem"
+                  @handleChange='addForm.testItem=$event'
+                />
               </el-form-item>
-              <el-form-item label="负责人：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
-              </el-form-item>
-              <el-form-item label="子组大小：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="负责人：" prop="review" label-width="120px" required>
+                <MultipleSelect 
+                  productType="spc"
+                  selectTypeName="review"
+                  selectType="single"
+                  :selectValue="addForm.review"
+                  @handleChange='addForm.review=$event'
+                />
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center">规格</el-divider>
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-form-item label="上限值：" prop="bianma" label-width="120px">
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="上限值：" prop="usl" label-width="120px">
+                <el-input type="number"  v-model.number="addForm.usl" placeholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="下限值：" prop="bianma" label-width="120px">
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="下限值：" prop="lsl" label-width="120px">
+                <el-input type="number"  v-model.number="addForm.lsl" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center"><span style="color: red">*</span>统计目标</el-divider>
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-form-item label="Mean偏移目标线：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="Mean偏移目标线：" prop="mean" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.mean" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
-              <el-form-item label="COV目标线：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="COV目标线：" prop="covPurpose" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.covPurpose" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="Cpk目标线：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="Cpk目标线：" prop="cpk" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.cpk" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center">控制限</el-divider>
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-form-item label="上控制限：" prop="bianma" label-width="120px">
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="上控制限：" prop="ucl" label-width="120px">
+                <el-input type="number"  v-model.number="addForm.ucl" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="下控制限：" prop="bianma" label-width="120px">
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="下控制限：" prop="lcl" label-width="120px">
+                <el-input type="number"  v-model.number="addForm.lcl" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center"><span style="color: red">*</span>判异准则①:1个点距离中心线大于_个标准差</el-divider>
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-form-item label="状态:" prop="bianma" label-width="120px">
-                <el-checkbox v-model="addForm.checked" />
+              <el-form-item label="状态:" prop="rule1Status" label-width="120px">
+                <el-checkbox v-model="addForm.rule1Status" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="参数：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="参数：" prop="rule1" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.rule1" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center"><span style="color: red">*</span>判异准则②:连续_点在中心线的同一侧</el-divider>
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-form-item label="状态:" prop="bianma" label-width="120px">
-                <el-checkbox v-model="addForm.checked" />
+              <el-form-item label="状态:" prop="rule2Status" label-width="120px">
+                <el-checkbox v-model="addForm.rule2Status" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="参数：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="参数：" prop="rule2" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.rule2" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center"><span style="color: red">*</span>判异准则③:连续_点全部递增或者递减</el-divider>
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-form-item label="状态:" prop="bianma" label-width="120px">
-                <el-checkbox v-model="addForm.checked" />
+              <el-form-item label="状态:" prop="rule3Status" label-width="120px">
+                <el-checkbox v-model="addForm.rule3Status" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="参数：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="参数：" prop="rule3" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.rule3" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center"><span style="color: red">*</span>判异准则④:连续_点上下交错</el-divider>
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-form-item label="状态:" prop="bianma" label-width="120px">
-                <el-checkbox v-model="addForm.checked" />
+              <el-form-item label="状态:" prop="rule4Status" label-width="120px">
+                <el-checkbox v-model="addForm.rule4Status" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="参数：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="参数：" prop="rule4" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.rule4" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center"><span style="color: red">*</span>判异准则⑤:_点(K)中存在K-1个点距离中心线(同侧)大于两个标准差</el-divider>
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-form-item label="状态:" prop="bianma" label-width="120px">
-                <el-checkbox v-model="addForm.checked" />
+              <el-form-item label="状态:" prop="rule5Status" label-width="120px">
+                <el-checkbox  v-model="addForm.rule5Status" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="参数：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="参数：" prop="rule5" label-width="120px" required>
+                <el-input type="number" v-model.number="addForm.rule5" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center"><span style="color: red">*</span>判异准则⑥:_点(K)中存在K-1个点距离中心线(同侧)大于一个标准差</el-divider>
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-form-item label="状态:" prop="bianma" label-width="120px">
-                <el-checkbox v-model="addForm.checked" />
+              <el-form-item label="状态:" prop="rule6Status" label-width="120px">
+                <el-checkbox v-model="addForm.rule6Status" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="参数：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="参数：" prop="rule6" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.rule6" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center"><span style="color: red">*</span>判异准则⑦:连续 点距离中心线(任一侧)1个标准差以内</el-divider>
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-form-item label="状态:" prop="bianma" label-width="120px">
-                <el-checkbox v-model="addForm.checked" />
+              <el-form-item label="状态:" prop="rule7Status" label-width="120px">
+                <el-checkbox v-model="addForm.rule7Status" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="参数：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="参数：" prop="rule7" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.rule7" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center"><span style="color: red">*</span>判异准则⑧:连续_点距离中心线(任一侧)大于1个标准差</el-divider>
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-form-item label="状态:" prop="bianma" label-width="120px">
-                <el-checkbox v-model="addForm.checked" />
+              <el-form-item label="状态:" prop="rule8Status" label-width="120px">
+                <el-checkbox v-model="addForm.rule8Status" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="参数：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="参数：" prop="rule8" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.rule8" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center"><span style="color: red">*</span>判异准则⑨:连续_点偏移_个标准差</el-divider>
           <el-row :gutter="10">
             <el-col :span="4">
-              <el-form-item label="状态:" prop="bianma" label-width="120px">
-                <el-checkbox v-model="addForm.checked" />
+              <el-form-item label="状态:" prop="rule9Status" label-width="120px">
+                <el-checkbox v-model="addForm.rule9Status" />
               </el-form-item>
             </el-col>
             <el-col :span="10">
-              <el-form-item label="参数1：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="参数1：" prop="rule9_a1" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.rule9_a1" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="10">
-              <el-form-item label="参数2：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="参数2：" prop="rule9_a2" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.rule9_a2" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center"><span style="color: red">*</span>判异准则⑩:连续_点中存在_点以上距离中心线大于_个标准差</el-divider>
           <el-row :gutter="10">
             <el-col :span="4">
-              <el-form-item label="状态:" prop="bianma" label-width="120px">
-                <el-checkbox v-model="addForm.checked" />
+              <el-form-item label="状态:" prop="rule10Status" label-width="120px">
+                <el-checkbox v-model="addForm.rule10Status" />
               </el-form-item>
             </el-col>
             <el-col :span="7">
-              <el-form-item label="参数1：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="参数1：" prop="rule10_a1" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.rule10_a1" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="7">
-              <el-form-item label="参数2：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="参数2：" prop="rule10_a2" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.rule10_a2" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="参数3：" prop="bianma" label-width="120px" required>
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="参数3：" prop="rule10_a3" label-width="120px" required>
+                <el-input type="number"  v-model.number="addForm.rule10_a3" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-divider content-position="center">判异准则⑪:超出内控线</el-divider>
           <el-row :gutter="10">
             <el-col :span="4">
-              <el-form-item label="状态:" prop="bianma" label-width="120px">
-                <el-checkbox v-model="addForm.checked" />
+              <el-form-item label="状态:" prop="rule11Status" label-width="120px">
+                <el-checkbox v-model="addForm.rule11Status" />
               </el-form-item>
             </el-col>
             <el-col :span="10">
-              <el-form-item label="控制线上限：" prop="bianma" label-width="120px">
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="控制线上限：" prop="rule11_a1" label-width="120px">
+                <el-input type="number"  v-model.number="addForm.rule11_a1" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="10">
-              <el-form-item label="控制线下限：" prop="bianma" label-width="120px">
-                <el-input v-model="addForm.bianma" placeholder="请输入内容" ></el-input>
+              <el-form-item label="控制线下限：" prop="rule11_a2" label-width="120px">
+                <el-input type="number"  v-model.number="addForm.rule11_a2" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-divider content-position="center">判异准则⑫:连续___点的均值偏移大于___均值偏移（K）管控</el-divider>
+          <el-row :gutter="10">
+            <el-col :span="4">
+              <el-form-item label="状态:" prop="rule12Status" label-width="120px">
+                <el-checkbox v-model="addForm.rule12Status" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="10">
+              <el-form-item label="参数1：" prop="rule12_a1" label-width="120px">
+                <el-input type="number"  v-model.number="addForm.rule12_a1" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="10">
+              <el-form-item label="参数2：" prop="rule12_a2" label-width="120px">
+                <el-input type="number"  v-model.number="addForm.rule12_a2" pplaceholder="请输入内容" style="width: 220px;" ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -347,7 +409,7 @@
     </ComDialog>
     <!-- 控制图 -->
     <ComDialog ref="chartDialogRef" dialogTitle="查看分析控制图" :fullScreen="true" :hiddenFooter="true">
-      <AnalysisChart />
+      <AnalysisChart ref="chartRef" />
     </ComDialog>
     <!-- 关联表格 -->
     <el-drawer v-model="drawer" :with-header="false" size="80%">
@@ -372,64 +434,150 @@ import AnalysisChart from './components/analysisChart.vue'
 import AssociationTable from './components/associationTable.vue'
 import DetailForm from './components/detailForm.vue'
 import ImportFile from './components/importFile.vue'
+import MultipleSelect from '@/components/multipleSelect/index.vue'
+import {getSpcDataList, addSPC, updateSPC} from '@/api/spc/analysis'
 /* ------parmas--------- */
 const searchForm = ref({
   pageSize: 2,
   pageNum: 1
 })
 const selectionItem = ref(null)
-const addForm = ref({})
+const defaultForm = {
+  materialCode: '',
+  materialType: '',
+  factory: '',
+  line: '',
+  review: '',
+  propertyType: '',
+  workshop: '',
+  testItem: '',
+  controlType: '',
+  groupType: '',
+  lsl: '',
+  usl: '',
+  lcl: '',
+  ucl: '',
+  covPurpose: '',
+  cpk: '',
+  mean:'',
+  rule1: '',
+  rule1Status: false,
+  rule2: '',
+  rule2Status: false,
+  rule3: '',
+  rule3Status: false,
+  rule4: '',
+  rule4Status: false,
+  rule5: '',
+  rule5Status: false,
+  rule6: '',
+  rule6Status: false,
+  rule7: '',
+  rule7Status: false,
+  rule8: '',
+  rule8Status: false,
+  rule9_a1: '',
+  rule9_a2: '',
+  rule9Status: false,
+  rule10_a1: '',
+  rule10_a2: '',
+  rule10_a3: '',
+  rule10Status: false,
+  rule11_a1: '',
+  rule11_a2: '',
+  rule11Status: false,
+  rule12_a1: '',
+  rule12_a2: '',
+  rule12Status: false
+}
+const addForm = reactive({...defaultForm})
 const dialogTitle = ref('新增分析型控制图')
-const dialogRef = ref(false)
-const chartDialogRef = ref(false)
-const drawer = ref(false)
-const detailDialogRef = ref(false)
-const importDialogRef = ref(false)
-const importRef = ref(null)
+const dialogRef = ref(false) // 新增/修改弹窗
+const chartDialogRef = ref(false) // 控制图弹窗
+const chartRef = ref(null) //控制图组件
+const drawer = ref(false) // 关联表弹窗
+const detailDialogRef = ref(false) // 明细弹窗
+const importDialogRef = ref(false) // 导入弹窗
+const importRef = ref(null) //导入组件
 const total = ref(10)
 const options = ref([{value: '1', label: '全部'}, {value: '2', label: '未分析'}, {value: '3', label: '已分析'}])
-const tableData = ref([
-  {bianma: 'abc2133241', status: '分析中', bianNum: '1' },
-  {bianma: 'abc2133242', status: '分析中', bianNum: '2' },
-  {bianma: 'abc2133243', status: '分析中', bianNum: '3' },
-  {bianma: 'abc2133244', status: '分析中', bianNum: '4' },
-  {bianma: 'abc2133245', status: '分析中', bianNum: '5' }
-])
+const tableData = ref([])
 const workRef = ref(null)
 const rules = ref({
-  data1: [{ required: true, message: '开始时间不能为空', trigger: 'blur' }],
-  data2: [{ required: true, message: '结束时间不能为空', trigger: 'blur' }],
+  data1: [{ required: false, message: '开始时间不能为空', trigger: 'blur' }],
+  data2: [{ required: false, message: '结束时间不能为空', trigger: 'blur' }],
 })
-
+onMounted(() => {
+  getData()
+})
 /* ------function--------- */
 function onChangePage(index) {
   searchForm.pagesNum.value = index
 }
 function addFile() {
+  Object.assign(addForm, { ...defaultForm })
   dialogRef.value.visible = true
 }
 function editFile() {
-  addForm.value = {data1: 'abc2133241', data2: '分析中' }
+  const newForm = reduceData(selectionItem.value[0])
+  Object.assign(addForm, { ...newForm })
   dialogRef.value.visible = true
+}
+function reduceData(option) {
+  const newForm = {...defaultForm}
+  const addFormKeys = Object.keys(newForm)
+  option.materialCode = option.material_code
+  option.materialType = option.material_type
+  option.propertyType = option.property_type
+  option.testItem = option.analyze_column
+  option.groupType = option.group_type
+  option.controlType = option.control_type
+  option.covPurpose = option.cov_purpose
+  option.rule1Status = option.rule1_status
+  option.rule2Status = option.rule2_status
+  option.rule3Status = option.rule3_status
+  option.rule4Status = option.rule4_status
+  option.rule5Status = option.rule5_status
+  option.rule6Status = option.rule6_status
+  option.rule7Status = option.rule7_status
+  option.rule8Status = option.rule8_status
+  option.rule9Status = option.rule9_status
+  option.rule10Status = option.rule10_status
+  option.rule11Status = option.rule11_status
+  option.rule12Status = option.rule12_status
+  for (const key of addFormKeys) {
+    newForm[key] = option[key]
+  }
+  newForm.analyzeCode = option.analyze_num
+  return newForm
 }
 function confirmBtn() {
   workRef.value.validate(async (valid) => {
     if (valid) {
-      dialogRef.value.addLoading = true
-      try {
-        ElMessage({
-          message: addForm.value.id ? '编辑成功' : '新增成功',
-          type: 'success',
+      if(addForm.analyzeCode) { // 更新
+        updateSPC({input: addForm}).then(res => {
+          dialogRef.value.visible = false
+          ElMessage({ message: '操作成功', type: 'success'})
+          getData()
+        }).catch(err => {
+          ElMessage({ message: '操作失败', type: 'error'})
         })
-      } finally {
-        dialogRef.value.visible = false
-        dialogRef.value.addLoading = false
+      } else { // 新增
+        addSPC({input: addForm}).then(res => {
+          dialogRef.value.visible = false
+          ElMessage({ message: '操作成功', type: 'success'})
+          getData()
+        }).catch(err => {
+          ElMessage({ message: '操作失败', type: 'error'})
+        })
       }
     }
   })
 }
-function checkCarts() {
+async function checkCarts() {
   chartDialogRef.value.visible = true
+  await nextTick()
+  chartRef.value.getData(reduceData(selectionItem.value[0]))
 }
 function handleDelete() {
   ElMessage({ message: '删除成功', type: 'success'})
@@ -452,7 +600,14 @@ function confirmImport() {
 function closeAllDialog() {
   importDialogRef.value.visible = false
 }
-function getData() {}
+async function getData() {
+  const res = await getSpcDataList(searchForm.value)
+  const data = res.data?.spcProductTestItemSelectValues || []
+  data.map(item => {
+    item.status = item.status === 0 ? '未接入' : item.status === 1? '分析中' : '分析完成'
+  })
+  tableData.value = data
+}
 function handleSelectionChange(val) {
   selectionItem.value = val
 }

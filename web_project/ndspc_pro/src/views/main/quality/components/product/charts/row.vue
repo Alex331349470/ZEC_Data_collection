@@ -6,7 +6,7 @@
         <span class="name">{{ row.name }}</span>
       </div>
       <div style="display: flex; align-items: center;">
-        <el-button size="small" type="info" v-if="row.isExport && selectItem">已选择{{selectItem}}</el-button>
+        <el-button size="small" type="primary" v-if="row.isExport && selectItem">已选择{{selectItem}}</el-button>
         <vue3-json-excel v-if="row.isExport && selectItem" :json-data="select_data" :fields="header_data" :name="`${selectItem}成品合格率数据.xls`">
           <el-button size="small" type="info" v-if="row.isExport && selectItem">导出选中</el-button>
         </vue3-json-excel>
@@ -697,7 +697,16 @@ import {prodcutQCTestItemPlato} from '@/api/quality/product'
   :deep(.el-button--info) {
     border-color: #014D64!important;
     background: #014D64!important;
-    padding: 5px;
+    padding: 2px;
+    margin-left: 5px;
+    font-size: 12px;
+  }
+  :deep(.el-button--primary){
+    border-color: #01a2d9!important;
+    background: #01a2d9!important;
+    padding: 2px;
+    margin-left: 5px;
+    font-size: 12px;
   }
   @media screen and ( max-width: 1200px ) {
     .card {
