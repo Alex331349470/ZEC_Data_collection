@@ -31,24 +31,28 @@
       <el-form-item label="物料信息：" >
         <el-form-item label="工厂" label-width="80px">
           <MultipleSelect 
+            :selectOption="options"
             productType="incoming"
             selectTypeName="factory"
             @handleChange='searchForm.factory=$event' />
         </el-form-item>
         <el-form-item label="供应商" label-width="80px" >
           <MultipleSelect 
+            :selectOption="options"
             productType="incoming"
             selectTypeName="supplier"
             @handleChange='searchForm.supplier=$event' />
         </el-form-item>
         <el-form-item label="物料类型" label-width="80px" >
           <MultipleSelect 
+            :selectOption="options"
             productType="incoming"
             selectTypeName="materialType"
             @handleChange='searchForm.materialType=$event' />
         </el-form-item>
         <el-form-item label="物料编码" label-width="80px" >
           <MultipleSelect 
+            :selectOption="options"
             productType="incoming"
             selectTypeName="materialCode" 
             @handleChange='searchForm.materialCode=$event' />
@@ -56,13 +60,15 @@
       </el-form-item>
       <el-form-item label="检测信息：" >
         <el-form-item label="特性类型" label-width="80px" >
-          <MultipleSelect 
+          <MultipleSelect
+            :selectOption="options"
             productType="incoming"
             selectTypeName="propertyType"
             @handleChange='searchForm.propertyType=$event' />
         </el-form-item>
         <el-form-item label="检测项目" label-width="80px" >
           <MultipleSelect 
+            :selectOption="options"
             productType="incoming"
             selectTypeName="testItem" 
             @handleChange='searchForm.testItem=$event' />
@@ -89,6 +95,7 @@
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
   import MultipleSelect from '@/components/multipleSelect/index.vue'
   import {materialSelect} from '@/api/quality/incoming'
+  import config from '@/utils/system/config'
   const emit = defineEmits(['handleSearch'])
   // parmas
   const defaultParmas = {
@@ -134,14 +141,8 @@
   const demintions = ['yearDemintion', 'seasonDemintion', 'monthDemintion', 'weekDemintion', 'dayDemintion']
   const checkAll = ref(false)
   const isIndeterminate = ref(true)
-  const inputSelect = { // 来料下拉框搜索条件
-    factory: '',
-    supplier: '',
-    materialCode: '',
-    materialType: '',
-    propertyType: '',
-    testItem: ''
-  }
+  const inputSelect = config.incomingSelect
+  const options = ref({})
   onMounted(() => {
     getInputSelect()
   })
@@ -152,16 +153,17 @@
   // 重置
   function reset() {
     Object.assign(searchForm, { ...defaultParmas })
-    handleSearch()
+    getInputSelect()
   }
   // 检索查询
   async function getInputSelect() {
     const res = await materialSelect({input:inputSelect})
     const data = res.data.materialSelect
     if(data) {
+      options.value = data
       Object.keys(searchForm).forEach(key => {
         if (data.hasOwnProperty(key)) {
-          searchForm[key] = data[key];
+          searchForm[key] = data[key]
         }
       })
       handleSearch()

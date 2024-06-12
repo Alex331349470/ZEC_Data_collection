@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div class="content-box">
-      <el-table :data="tableData" style="width: 100%; font-size: 13px" ref="multipleTable" :header-cell-style="{background:'#f0f2f5'}">
+      <el-table :data="tableData" style="width: 100%; font-size: 13px" ref="multipleTable" :height="500" :header-cell-style="{background:'#f0f2f5'}">
         <el-table-column prop="analyze_num" label="分析控制图编码" :show-overflow-tooltip="true" sortable width="160" align="center" />
         <el-table-column prop="status" label="分析状态" sortable :show-overflow-tooltip="true" width="120" align="center" />
         <el-table-column prop="change_time" label="变更次数" sortable :show-overflow-tooltip="true" width="120" align="center" />
@@ -14,6 +14,7 @@
         <el-table-column prop="control_type" label="控制图类型" sortable :show-overflow-tooltip="true" width="140" align="center" />
         <el-table-column prop="group_type" label="子组件大小" sortable :show-overflow-tooltip="true" width="140" align="center" />
         <el-table-column prop="property_type" label="特性类型" sortable :show-overflow-tooltip="true" width="120" align="center" />
+        <el-table-column prop="backup" label="变更原因" sortable :show-overflow-tooltip="true" width="120" align="center" />
       </el-table>
     </div>
     <!-- <div class="pagination">

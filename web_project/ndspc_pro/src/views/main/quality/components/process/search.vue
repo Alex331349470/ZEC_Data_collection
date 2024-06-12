@@ -23,19 +23,22 @@
       </el-form-item>
       <el-form-item label="来料信息">
         <el-form-item label="工厂" label-width="80px" >
-          <MultipleSelect 
+          <MultipleSelect
+            :selectOption="options"
             productType="process"
             selectTypeName="factory"
             @handleChange='searchForm.factory=$event' />
         </el-form-item>
         <el-form-item label="车间" label-width="80px" >
           <MultipleSelect 
+            :selectOption="options"
             productType="process"
             selectTypeName="workshop"
             @handleChange='searchForm.workshop=$event' />
         </el-form-item>
         <el-form-item label="产线" label-width="80px" >
           <MultipleSelect 
+            :selectOption="options"
             productType="process"
             selectTypeName="line"
             @handleChange='searchForm.line=$event' />
@@ -44,18 +47,21 @@
       <el-form-item label="物料信息：" >
         <el-form-item label="工序" label-width="80px" >
           <MultipleSelect 
+            :selectOption="options"
             productType="process"
             selectTypeName="process"
             @handleChange='searchForm.process=$event' />
         </el-form-item>
         <el-form-item label="物料类型" label-width="80px" >
           <MultipleSelect 
+            :selectOption="options"
             productType="process"
             selectTypeName="materialType"
             @handleChange='searchForm.materialType=$event' />
         </el-form-item>
         <el-form-item label="物料编码" label-width="80px" >
           <MultipleSelect 
+            :selectOption="options"
             productType="process"
             selectTypeName="materialCode"
             @handleChange='searchForm.materialCode=$event' />
@@ -64,12 +70,14 @@
       <el-form-item label="检测信息：" >
         <el-form-item label="特性类型" label-width="80px" >
           <MultipleSelect 
+            :selectOption="options"
             productType="process"
             selectTypeName="propertyType"
             @handleChange='searchForm.propertyType=$event' />
         </el-form-item>
         <el-form-item label="检测项目" label-width="80px" >
           <MultipleSelect 
+            :selectOption="options"
             productType="process"
             selectTypeName="testItem"
             @handleChange='searchForm.testItem=$event' />
@@ -96,6 +104,7 @@
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
   import MultipleSelect from '@/components/multipleSelect/index.vue'
   import {ProcessSelect} from '@/api/quality/process'
+  import config from '@/utils/system/config'
   const emit = defineEmits(['handleSearch'])
   // parmas
   const defaultParmas = {
@@ -142,16 +151,8 @@
       label: '日'
     }
   ])
-  const inputSelect = { //下拉框搜索条件
-    factory: '',
-    workshop: '',
-    line: '',
-    process: '',
-    materialCode: '',
-    materialType: '',
-    propertyType: '',
-    testItem: ''
-  }
+  const inputSelect = config.processSelect
+  const options = ref({})
   const demintions = ['yearDemintion', 'seasonDemintion', 'monthDemintion', 'weekDemintion', 'dayDemintion']
   const checkAll = ref(false)
   const isIndeterminate = ref(true)
@@ -163,13 +164,14 @@
   // 重置
   function reset() {
     Object.assign(searchForm, { ...defaultParmas })
-    handleSearch()
+    getInputSelect()
   }
   // 检索查询
   async function getInputSelect() {
     const res = await ProcessSelect({input:inputSelect})
     const data = res.data.processSelect
     if(data) {
+      options.value = data
       Object.keys(searchForm).forEach(key => {
         if (data.hasOwnProperty(key)) {
           searchForm[key] = data[key];

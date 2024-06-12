@@ -1,7 +1,7 @@
 <template>
   <div v-if="selectType === 'single'">
     <el-select
-      style="width: 220px"
+      :style="{'width': inputWidth}"
       v-model="selectValue"
       placeholder="请选择" 
       loading-text="加载中..."
@@ -24,7 +24,7 @@
     </el-select>
   </div>
   <div v-else>
-    <el-select popper-class="select-popover-class" style="width: 220px"
+    <el-select popper-class="select-popover-class" :style="{'width': inputWidth}"
       v-model="selectNameArr" 
       multiple 
       placeholder="请选择" 
@@ -56,11 +56,12 @@
 
 <script setup>
   import { Search } from '@element-plus/icons-vue'
-  import { reactive,ref,onMounted } from 'vue'
+  import { reactive,ref,onMounted, watch} from 'vue'
   import {productSelectPlato} from '@/api/quality/product'
   import {materialSelect} from '@/api/quality/incoming'
   import {ProcessSelect} from '@/api/quality/process'
   import {SpcProductSelect} from '@/api/spc/analysis'
+  import config from '@/utils/system/config'
   const props = defineProps({
     selectTypeName: {
       type: String,
@@ -77,55 +78,31 @@
     selectValue: {
       type: String,
       default: ''
+    },
+    inputWidth: {
+      type: String,
+      default: '200px'
+    },
+    selectOption: {
+      type: Object,
+      default: {}
     }
   })
+  const emit = defineEmits(['getProductSelectPlato', 'handleChange'])
   const loading = ref(false)
   const options = ref({})
-  const emit = defineEmits(['getProductSelectPlato', 'handleChange'])
   const selectNameArr = ref(null)
   const checkAll = ref(true)
   const isIndeterminate = ref(false)
-  const productSelect = {// 成品下拉框搜索条件
-    factory: '',
-    workshop: '',
-    line: '',
-    materialType: '',
-    materialCode: '',
-    propertyType: '',
-    testItem: ''
-  }
-  const incomingSelect = { // 来料下拉框搜索条件
-    factory: '',
-    supplier: '',
-    materialCode: '',
-    materialType: '',
-    propertyType: '',
-    testItem: ''
-  }
-  const processSelect = { // 制成下拉框搜索条件
-    factory: '',
-    workshop: '',
-    line: '',
-    process: '',
-    materialCode: '',
-    materialType: '',
-    propertyType: '',
-    testItem: ''
-  }
-  const spcSelect = {// SPC下拉框搜索条件
-    factory: '',
-    workshop: '',
-    line: '',
-    materialCode: '',
-    materialType: '',
-    propertyType: '',
-    testItem: '',
-    review: ''
-  }
+  // console.log({...config})
+  const {productSelect, incomingSelect, processSelect,spcSelect} = {...config}
   const searchInput = reactive({})
   onMounted(() => {
     reduceData()
-    refresh(true)
+    getInit(props.selectOption)
+  })
+  watch(() => props.selectOption, (newValue) => {
+    getInit(newValue)
   })
   function isPropertyTypeSelected(item) {
     emit('handleChange', selectNameArr.value)
@@ -163,32 +140,38 @@
         Object.assign(searchInput, { ...spcSelect })
     }
   }
-  function refresh(isInint) {
+  function getInit(data) {
+    if(props.selectType !== 'single') {
+      selectNameArr.value = data[props.selectTypeName]
+    }
+    if(props.selectType === 'disabled') {
+      selectNameArr.value = [data[props.selectTypeName]]
+      emit('handleChange', data[props.selectTypeName])
+    }
+    options.value = data
+  }
+  function refresh() {
     switch(props.productType) {
       case 'incoming':
-        getIncomingSelect(isInint)
+        getIncomingSelect()
         break
       case 'process':
-        getProcessSelect(isInint)
+        getProcessSelect()
         break
       case 'product':
-        getProductSelectPlato(isInint)
+        getProductSelectPlato()
         break
       case 'spc':
-        getSpcProductSelect(isInint)
+        getSpcProductSelect()
         break
     }
   }
   // 成品检索
-  function getProductSelectPlato(isInint) {
+  function getProductSelectPlato() {
     loading.value = true
     productSelectPlato({input:searchInput}).then(res => {
       options.value = res.data.productSelectPlato
       loading.value = false
-      if(isInint) {
-        selectNameArr.value = options.value[props.selectTypeName]
-        emit('handleChange', options.value[props.selectTypeName])
-      }
     }).catch(error => {
       console.log(error)
       loading.value = false
@@ -200,10 +183,6 @@
     materialSelect({input:searchInput}).then(res => {
       options.value = res.data.materialSelect
       loading.value = false
-      if(isInint) {
-        selectNameArr.value = options.value[props.selectTypeName]
-        emit('handleChange', options.value[props.selectTypeName])
-      }
     }).catch(error => {
       console.log(error)
       loading.value = false
@@ -215,10 +194,6 @@
     ProcessSelect({input:searchInput}).then(res => {
       options.value = res.data.processSelect
       loading.value = false
-      if(isInint) {
-        selectNameArr.value = options.value[props.selectTypeName]
-        emit('handleChange', options.value[props.selectTypeName])
-      }
     }).catch(error => {
       console.log(error)
       loading.value = false
@@ -230,10 +205,6 @@
     SpcProductSelect({input:searchInput}).then(res => {
       options.value = res.data.spcProductSelect
       loading.value = false
-      if(isInint && props.selectType !== 'single') {
-        selectNameArr.value = options.value[props.selectTypeName]
-        emit('handleChange', options.value[props.selectTypeName])
-      }
       if(props.selectType === 'disabled') {
         selectNameArr.value = [options.value[props.selectTypeName]]
         emit('handleChange', options.value[props.selectTypeName])

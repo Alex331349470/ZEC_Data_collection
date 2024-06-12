@@ -6,6 +6,8 @@
           <el-form-item label="物料编码：" >
             <MultipleSelect 
               productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
               selectTypeName="materialCode"
               selectType="single"
               :selectValue="searchForm.materialCode"
@@ -15,6 +17,8 @@
           <el-form-item label="检测项目：" >
             <MultipleSelect 
               productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
               selectTypeName="testItem"
               selectType="single"
               :selectValue="searchForm.testItem"
@@ -24,6 +28,8 @@
           <el-form-item label="车间：" >
             <MultipleSelect 
               productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
               selectTypeName="workshop"
               selectType="single"
               :selectValue="searchForm.workshop"
@@ -33,6 +39,8 @@
           <el-form-item label="特性类型：" >
             <MultipleSelect 
               productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
               selectTypeName="propertyType"
               selectType="single"
               :selectValue="searchForm.propertyType"
@@ -42,6 +50,8 @@
           <el-form-item label="控制图类型：" >
             <MultipleSelect 
               productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
               selectTypeName="controlType"
               selectType="disabled"
               @handleChange='searchForm.controlType=$event'
@@ -61,6 +71,8 @@
           <el-form-item label="物料类型：" >
             <MultipleSelect 
               productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
               selectTypeName="materialType"
               selectType="single"
               :selectValue="searchForm.materialType"
@@ -70,6 +82,8 @@
           <el-form-item label="产线：" >
             <MultipleSelect 
               productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
               selectTypeName="line"
               selectType="single"
               :selectValue="searchForm.line"
@@ -79,6 +93,8 @@
           <el-form-item label="工厂：" >
             <MultipleSelect 
               productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
               selectTypeName="factory"
               selectType="single"
               :selectValue="searchForm.factory"
@@ -88,6 +104,8 @@
           <el-form-item label="负责人：" >
             <MultipleSelect 
               productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
               selectTypeName="review"
               selectType="single"
               :selectValue="searchForm.review"
@@ -218,7 +236,7 @@
             <div style="margin-top: 10px;">
               <el-button type="success"  style="margin-left: 8px" @click="handleSearch">重新分析</el-button>
               <el-button type="success"  style="margin-left: 8px" @click="handlereason('save')">保存并结束分析</el-button>
-              <el-button type="success"  style="margin-left: 8px" @click="handlereason('update')">更改数据</el-button>
+              <!-- <el-button type="success"  style="margin-left: 8px" @click="handlereason('update')">更改数据</el-button> -->
               <el-button type="success"  @click="clickHistory">查看变更履历</el-button>
             </div>
           </div>
@@ -248,9 +266,11 @@ import { ArrowDown, ArrowUp } from '@element-plus/icons'
 import ComDialog from '@/components/comDialog/index.vue'
 import HistoryTable from './components/historyTable.vue'
 import MultipleSelect from '@/components/multipleSelect/index.vue'
-import {updateSPC} from '@/api/spc/analysis'
+import config from '@/utils/system/config'
+import {updateSPC,SpcProductSelect} from '@/api/spc/analysis'
+import { ElMessage } from "element-plus";
 defineExpose({getData })
-const emit = defineEmits(['handleSearch'])
+const emit = defineEmits(['handleSearch','closeAllDialog'])
 // parmas
 const searchForm = reactive({})
 const reasonText = ref('')
@@ -258,12 +278,15 @@ const historyRefDialog = ref(false) // 变更履历弹窗
 const historyRef = ref(null) // 变更履历组件
 const reasonRef = ref(false)
 const isExpand = ref(true)
+const inputSelect = config.spcSelect
+const options = ref({})
 // function
 function handleSearch() {
   emit('handleSearch', searchForm)
 }
 function getData(data) {
   Object.assign(searchForm, { ...data })
+  getInputSelect()
   handleSearch()
 }
 function handlereason(type) {
@@ -271,10 +294,13 @@ function handlereason(type) {
 }
 function confirmReason() {
   updateSPC({input: searchForm}).then(res => {
-    reasonRef.value.visible = false
-    ElMessage({ message: '操作成功', type: 'success'})
-  }).catch(err => {
-    ElMessage({ message: '操作失败', type: 'error'})
+    if(res.data.spcProductTestItemUpdate.success) {
+      reasonRef.value.visible = false
+      ElMessage({ message: '保存成功', type: 'success'})
+      emit('closeAllDialog')
+    } else {
+      ElMessage.error('保存失败')
+    }
   })
 }
 async function clickHistory() {
@@ -285,6 +311,14 @@ async function clickHistory() {
 }
 function expandSearch(val) {
   isExpand.value = val
+}
+// 检索查询
+async function getInputSelect() {
+  const res = await SpcProductSelect({input:inputSelect})
+  const data = res.data.spcProductSelect
+  if(data) {
+    options.value = data
+  }
 }
 </script>
 

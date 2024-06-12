@@ -1,46 +1,72 @@
 <template>
   <div class="box">
     <div class="search-box">
-      <el-form ref="form" :model="searchForm" label-width="120px" size="small">
-        <el-row>
-          <el-col :span="4">
-            <el-form-item label="SPC分类：" >
-              <el-select v-model="searchForm.fenlei" placeholder="请选择" clearable>
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="4">
-            <el-form-item label="物料类型：" >
-              <el-select v-model="searchForm.leixing" placeholder="请选择" clearable>
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item label="分析型控制编码：" label-width="130px" clearable>
-              <el-select v-model="searchForm.bianma" placeholder="请选择">
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="4">
-            <el-form-item label="物料代码：" >
-              <el-select v-model="searchForm.daima" placeholder="请选择" clearable>
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item label="项目：" label-width="80px" >
-              <el-select v-model="searchForm.xiangmu" placeholder="请选择" style="width: 100px" clearable>
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-              <el-button class="system-btn" type="success"  style="margin-left: 10px;" @click="getData">查询</el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
+      <el-form ref="form" :model="searchForm" label-width="80px" size="small">
+        <el-form-item label="来料信息：">
+          <el-form-item label="工厂" label-width="40px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="factory"
+              @handleChange='searchForm.factory=$event' />
+          </el-form-item>
+          <el-form-item label="车间" label-width="60px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="workshop"
+              @handleChange='searchForm.workshop=$event' />
+          </el-form-item>
+          <el-form-item label="产线" label-width="80px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="line"
+              @handleChange='searchForm.line=$event' />
+          </el-form-item>
+        </el-form-item>
+        <el-form-item label="物料信息：" >
+          <el-form-item label="物料类型" label-width="60px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="materialType"
+              @handleChange='searchForm.materialType=$event' />
+          </el-form-item>
+          <el-form-item label="物料编码" label-width="80px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="materialCode"
+              @handleChange='searchForm.materialCode=$event' />
+          </el-form-item>
+        </el-form-item>
+        <el-form-item label="检测信息：" >
+          <el-form-item label="特性类型" label-width="60px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="propertyType"
+              @handleChange='searchForm.propertyType=$event' />
+          </el-form-item>
+          <el-form-item label="检测项目" label-width="80px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="testItem"
+              @handleChange='searchForm.testItem=$event' />
+          </el-form-item>
+          <el-button type="success" size="small"  @click="getData" style="margin-left: 25px;margin-top: -10px">查询</el-button>
+        </el-form-item>
         <div class="search-contral">
+          <el-input placeholder="分析型控制图编码" v-model="searchForm.analyze_num"></el-input>
           <el-button class="system-btn" type="success"  @click="addFile">新增控制图</el-button>
           <el-button class="system-btn" type="success"  @click="editFile" :disabled="!selectionItem || selectionItem.length !== 1">修改</el-button>
           <el-button class="system-btn" type="success"  @click="importFile" >数据导入</el-button>
@@ -50,10 +76,14 @@
       </el-form>
     </div>
     <div class="content-box">
-      <el-table :data="tableData" style="width: 100%; font-size: 13px; font-size: 13px" ref="multipleTable" @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
+      <el-table :data="tableData" v-loading="loading" style="width: 100%; font-size: 13px; font-size: 13px" ref="multipleTable" @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
         <el-table-column type="selection" width="40" align="center" fixed="left" />
         <el-table-column prop="analyze_num" label="分析控制图编码" :show-overflow-tooltip="true" sortable width="160" align="center" />
-        <el-table-column prop="status" label="分析状态" sortable :show-overflow-tooltip="true" width="120" align="center" />
+        <el-table-column prop="status" label="分析状态" sortable :show-overflow-tooltip="true" width="120" align="center">
+          <template #default="scope">
+            <span :style="{background: getStatusLabel(scope.row.status).color}" class="table_tag">{{getStatusLabel(scope.row.status).label}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="change_time" label="变更次数" sortable :show-overflow-tooltip="true" width="120" align="center" />
         <el-table-column prop="material_code" label="物料编码" sortable :show-overflow-tooltip="true" width="120" align="center" />
         <!-- <el-table-column prop="bianNum" label="物料名称" sortable :show-overflow-tooltip="true" width="120" align="center" /> -->
@@ -69,7 +99,7 @@
         <el-table-column label="操作" width="160" align="center" fixed="right">
           <template #default="scope">
             <el-button @click.prevent="handleAssociation(scope.$index, tableData)" link type="primary" >关联</el-button>
-            <el-button @click.prevent="handleDetail(scope.$index, tableData)" link type="primary" >明细</el-button>
+            <el-button @click.prevent="handleDetail(scope.row)" link type="primary" >明细</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -84,7 +114,7 @@
     <!-- 新增/修改 -->
     <ComDialog ref="dialogRef" :dialogTitle="dialogTitle" @confirmEmitBtn="confirmBtn" top="0">
       <div style="padding: 20px;height: calc(100vh - 134px);overflow: auto;">
-        <el-form ref="workRef" :model="addForm" width="400px" :rules="rules" style="margin-top: 15px;">
+        <el-form ref="workRef" :model="addForm" width="400px" :rules="rules" style="margin-top: 15px;" :validate-on-rule-change="false">
           <el-divider content-position="center"><span style="color: red">*</span>基础信息</el-divider>
           <el-row :gutter="10">
             <el-col :span="12">
@@ -94,6 +124,8 @@
               <el-form-item label="物料编码：" prop="materialCode" label-width="120px" required>
                 <MultipleSelect 
                   productType="spc"
+                  inputWidth="220px"
+                  :selectOption="options"
                   selectTypeName="materialCode"
                   selectType="single"
                   :selectValue="addForm.materialCode"
@@ -103,15 +135,19 @@
               <el-form-item label="特性类型：" prop="propertyType" label-width="120px">
                 <MultipleSelect 
                   productType="spc"
+                  inputWidth="220px"
+                  :selectOption="options"
                   selectTypeName="propertyType"
                   :selectValue="addForm.propertyType"
                   selectType="single"
                   @handleChange='addForm.propertyType=$event'
                 />
               </el-form-item>
-              <el-form-item label="控制图类型：" prop="controlType" label-width="120px" required>
+              <el-form-item label="控制图类型：" prop="controlType" label-width="120px">
                 <MultipleSelect 
                   productType="spc"
+                  inputWidth="220px"
+                  :selectOption="options"
                   selectTypeName="controlType"
                   selectType="disabled"
                   @handleChange='addForm.controlType=$event'
@@ -128,6 +164,8 @@
               <el-form-item label="工厂：" prop="factory" label-width="120px">
                 <MultipleSelect 
                   productType="spc"
+                  inputWidth="220px"
+                  :selectOption="options"
                   selectTypeName="factory"
                   selectType="single"
                   :selectValue="addForm.factory"
@@ -137,6 +175,8 @@
               <el-form-item label="车间：" prop="workshop" label-width="120px" required>
                 <MultipleSelect 
                   productType="spc"
+                  inputWidth="220px"
+                  :selectOption="options"
                   selectTypeName="workshop"
                   selectType="single"
                   :selectValue="addForm.workshop"
@@ -146,6 +186,8 @@
               <el-form-item label="产线：" prop="line" label-width="120px" required>
                 <MultipleSelect 
                   productType="spc"
+                  inputWidth="220px"
+                  :selectOption="options"
                   selectTypeName="line"
                   selectType="single"
                   :selectValue="addForm.line"
@@ -155,6 +197,8 @@
               <el-form-item label="物料类型：" prop="materialType" label-width="120px">
                 <MultipleSelect 
                   productType="spc"
+                  inputWidth="220px"
+                  :selectOption="options"
                   selectTypeName="materialType"
                   selectType="single"
                   :selectValue="addForm.materialType"
@@ -164,6 +208,8 @@
               <el-form-item label="检测项目：" prop="testItem" label-width="120px" required>
                 <MultipleSelect 
                   productType="spc"
+                  inputWidth="220px"
+                  :selectOption="options"
                   selectTypeName="testItem"
                   selectType="single"
                   :selectValue="addForm.testItem"
@@ -173,6 +219,8 @@
               <el-form-item label="负责人：" prop="review" label-width="120px" required>
                 <MultipleSelect 
                   productType="spc"
+                  inputWidth="220px"
+                  :selectOption="options"
                   selectTypeName="review"
                   selectType="single"
                   :selectValue="addForm.review"
@@ -409,15 +457,17 @@
     </ComDialog>
     <!-- 控制图 -->
     <ComDialog ref="chartDialogRef" dialogTitle="查看分析控制图" :fullScreen="true" :hiddenFooter="true">
-      <AnalysisChart ref="chartRef" />
+      <AnalysisChart ref="chartRef" @closeAllDialog="closeAllDialog"/>
     </ComDialog>
     <!-- 关联表格 -->
     <el-drawer v-model="drawer" :with-header="false" size="80%">
       <AssociationTable />
     </el-drawer>
     <!-- 明细 -->
-    <ComDialog ref="detailDialogRef" dialogTitle="明细" :hiddenFooter="true" >
-      <DetailForm />
+    <ComDialog ref="detailDialogRef" dialogTitle="明细" :hiddenFooter="true"  top="0" >
+      <div style="padding: 20px;height: calc(100vh - 84px);overflow: auto;">
+        <DetailForm ref="detailRef"/>
+      </div>
     </ComDialog>
     <!-- 数据导入 -->
     <ComDialog ref="importDialogRef" dialogTitle="数据导入" @confirmEmitBtn="confirmImport" >
@@ -435,7 +485,9 @@ import AssociationTable from './components/associationTable.vue'
 import DetailForm from './components/detailForm.vue'
 import ImportFile from './components/importFile.vue'
 import MultipleSelect from '@/components/multipleSelect/index.vue'
-import {getSpcDataList, addSPC, updateSPC} from '@/api/spc/analysis'
+import config from '@/utils/system/config'
+import {getSpcDataList, addSPC, updateSPC, SpcProductSelect} from '@/api/spc/analysis'
+
 /* ------parmas--------- */
 const searchForm = ref({
   pageSize: 2,
@@ -497,32 +549,56 @@ const chartDialogRef = ref(false) // 控制图弹窗
 const chartRef = ref(null) //控制图组件
 const drawer = ref(false) // 关联表弹窗
 const detailDialogRef = ref(false) // 明细弹窗
+const detailRef = ref(null) //明细组件
 const importDialogRef = ref(false) // 导入弹窗
 const importRef = ref(null) //导入组件
+const loading = ref(true) // 加载
 const total = ref(10)
-const options = ref([{value: '1', label: '全部'}, {value: '2', label: '未分析'}, {value: '3', label: '已分析'}])
+const StatusOptions = config.status // 状态标签
+const options = ref({})
 const tableData = ref([])
 const workRef = ref(null)
 const rules = ref({
   data1: [{ required: false, message: '开始时间不能为空', trigger: 'blur' }],
   data2: [{ required: false, message: '结束时间不能为空', trigger: 'blur' }],
 })
+const inputSelect = config.spcSelect
 onMounted(() => {
+  getInputSelect()
   getData()
 })
 /* ------function--------- */
 function onChangePage(index) {
   searchForm.pagesNum.value = index
 }
+// 检索查询
+async function getInputSelect() {
+  const res = await SpcProductSelect({input:inputSelect})
+  const data = res.data.spcProductSelect
+  if(data) {
+    options.value = data
+  }
+}
+// 获取状态标签
+function getStatusLabel(status) {
+  const mapping = StatusOptions.find(item => item.value === status)
+  return mapping ? {label: mapping.label, color: mapping.color} : {label: '未接入', color: '#b2091e'};
+}
+// 新增
 function addFile() {
   Object.assign(addForm, { ...defaultForm })
   dialogRef.value.visible = true
+  nextTick(() => {
+    workRef.value.resetFields()
+  })
 }
+// 编辑
 function editFile() {
   const newForm = reduceData(selectionItem.value[0])
   Object.assign(addForm, { ...newForm })
   dialogRef.value.visible = true
 }
+// table数据处理
 function reduceData(option) {
   const newForm = {...defaultForm}
   const addFormKeys = Object.keys(newForm)
@@ -551,6 +627,7 @@ function reduceData(option) {
   newForm.analyzeCode = option.analyze_num
   return newForm
 }
+// 添加/编辑弹窗确认
 function confirmBtn() {
   workRef.value.validate(async (valid) => {
     if (valid) {
@@ -574,40 +651,53 @@ function confirmBtn() {
     }
   })
 }
+// 查看分析型控制图
 async function checkCarts() {
   chartDialogRef.value.visible = true
   await nextTick()
   chartRef.value.getData(reduceData(selectionItem.value[0]))
 }
+// 删除
 function handleDelete() {
   ElMessage({ message: '删除成功', type: 'success'})
 }
+// 关联
 function handleAssociation(row) {
   drawer.value = true
 }
+// 明细
 function handleDetail(row) {
   detailDialogRef.value.visible = true
+  nextTick(() => {
+    detailRef.value.getInfo(reduceData(row))
+  })
 }
+// 导入
 function importFile() {
   importDialogRef.value.visible = true
   nextTick(() => {
     importRef.value.openImport()
   })
 }
+// 导入确认
 function confirmImport() {
   importRef.value.handleUpload()
 }
+// 关闭所有弹窗
 function closeAllDialog() {
   importDialogRef.value.visible = false
+  chartDialogRef.value.visible = false
+  getData()
 }
+// 获取数据
 async function getData() {
+  loading.value = true
   const res = await getSpcDataList(searchForm.value)
   const data = res.data?.spcProductTestItemSelectValues || []
-  data.map(item => {
-    item.status = item.status === 0 ? '未接入' : item.status === 1? '分析中' : '分析完成'
-  })
+  loading.value = false
   tableData.value = data
 }
+// table选择
 function handleSelectionChange(val) {
   selectionItem.value = val
 }
@@ -620,8 +710,13 @@ function handleSelectionChange(val) {
   padding-top: 7px;
   border-bottom: 1px solid #ddd;
   .el-form-item {
-    margin-bottom: 10px!important;
+    margin-bottom: 5px!important;
   }
+}
+.search-box {
+  padding-top: 10px;
+  width: 100%;
+  background: #f2f2f5;
 }
 .search-contral {
   padding: 10px;
@@ -639,6 +734,7 @@ function handleSelectionChange(val) {
   padding-bottom: 7px;
   padding-left: 25px;
   border-top: 1px solid #ddd;
+  z-index: 999;
 }
 .search-contral{
   display: flex;
@@ -651,5 +747,10 @@ function handleSelectionChange(val) {
 .el-button.is-disabled {
   background-color: var(--el-button-disabled-bg-color)!important;
   border-color: var(--el-button-disabled-border-color)!important
+}
+.table_tag {
+  padding: 2px 8px;
+  color: #fff;
+  font-size: 12px;
 }
 </style>  
