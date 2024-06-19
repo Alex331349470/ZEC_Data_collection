@@ -1,69 +1,95 @@
 <template>
   <div class="search-box">
     <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="small">
-      <el-form-item label="SPC分类：" >
-        <el-radio-group v-model="searchForm.fenlei">
-          <el-radio :value="1">过程特性</el-radio>
-          <el-radio :value="2">产品特性（中间品）</el-radio>
-          <el-radio :value="3">产品特性（成品）</el-radio>
-        </el-radio-group>
-      </el-form-item>
       <el-form-item label="时间范围：" >
-        <el-radio-group v-model="searchForm.timeArea" style="margin-top: -3px;">
-          <el-radio :value="1">全部时间</el-radio>
-          <el-radio :value="2">本年度</el-radio>
-          <el-radio :value="3">本季度</el-radio>
-          <el-radio :value="4">本月度</el-radio>
-          <el-radio :value="5">当天</el-radio>
+        <el-radio-group v-model="searchForm.selectedTime" style="margin-top: -3px;" @change="changeRadio">
+          <el-radio :value="5">全部时间</el-radio>
+          <el-radio :value="1">本年度</el-radio>
+          <el-radio :value="2">本季度</el-radio>
+          <el-radio :value="3">本月度</el-radio>
+          <el-radio :value="4">当天</el-radio>
           <el-radio :value="6">自定义</el-radio>
         </el-radio-group>
         <el-form-item label="开始时间：" >
-          <el-date-picker v-model="searchForm.startTime" type="date"  placeholder="选择日期" style="width: 150px" />
+          <el-date-picker v-model="searchForm.startTime" type="date" value-format="YYYY-MM-DD" :disabled="searchForm.selectedTime !== 6"  placeholder="选择日期" style="width: 150px" />
         </el-form-item>
         <el-form-item label="结束时间：" >
-          <el-date-picker v-model="searchForm.endTime" type="date"  placeholder="选择日期" style="width: 150px" />
+          <el-date-picker v-model="searchForm.endTime" type="date" value-format="YYYY-MM-DD" :disabled="searchForm.selectedTime !== 6" placeholder="选择日期" style="width: 150px" />
         </el-form-item>
       </el-form-item>
       <el-form-item label="时间维度：" >
-        <el-checkbox-group v-model="searchForm.dateArea">
-          <el-checkbox v-for="date in DateOptions" :label="date" :key="date">{{date}}</el-checkbox >
-        </el-checkbox-group>
+        <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">全选</el-checkbox>
+        <el-checkbox v-model="searchForm[date.value]" v-for="(date, index) in DateOptions" @change="handleDateChange" :key="index">{{date.label}}</el-checkbox>
       </el-form-item>
       <el-form-item label="来料信息：" >
         <el-form-item label="工厂" label-width="80px">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            productType="spc"
+            inputWidth="220px"
+            :selectOption="options"
+            selectTypeName="factory"
+            @handleChange='searchForm.factory=$event' />
         </el-form-item>
         <el-form-item label="车间" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            productType="spc"
+            inputWidth="220px"
+            :selectOption="options"
+            selectTypeName="workshop"
+            @handleChange='searchForm.workshop=$event' />
         </el-form-item>
         <el-form-item label="产线" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
-        </el-form-item>
-        <el-form-item label="设备编号" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            productType="spc"
+            inputWidth="220px"
+            :selectOption="options"
+            selectTypeName="line"
+            @handleChange='searchForm.line=$event' />
         </el-form-item>
       </el-form-item>
       <el-form-item label="物料信息：" >
         <el-form-item label="工序" label-width="80px">
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            productType="spc"
+            inputWidth="220px"
+            :selectOption="options"
+            selectTypeName="testItem"
+            @handleChange='searchForm.testItem=$event' />
         </el-form-item>
         <el-form-item label="物料类型" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            productType="spc"
+            inputWidth="220px"
+            :selectOption="options"
+            selectTypeName="materialType"
+            @handleChange='searchForm.materialType=$event' />
         </el-form-item>
         <el-form-item label="物料编码" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            productType="spc"
+            inputWidth="220px"
+            :selectOption="options"
+            selectTypeName="materialCode"
+            @handleChange='searchForm.materialCode=$event' />
         </el-form-item>
       </el-form-item>
       <el-form-item label="检测信息：" >
         <el-form-item label="特性类型" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            productType="spc"
+            inputWidth="220px"
+            :selectOption="options"
+            selectTypeName="propertyType"
+            @handleChange='searchForm.propertyType=$event' />
         </el-form-item>
         <el-form-item label="检测项目" label-width="80px" >
-          <el-input v-model="searchForm.gongchang" placeholder="请输入内容" ></el-input>
+          <MultipleSelect 
+            productType="spc"
+            inputWidth="220px"
+            :selectOption="options"
+            selectTypeName="testItem"
+            @handleChange='searchForm.testItem=$event' />
         </el-form-item>
-      </el-form-item>
-      <el-form-item label="判异准则：" >
-        <el-input v-model="searchForm.gongchang" placeholder="请输入内容"  style="width: 150px;"></el-input>
         <el-button type="success" size="small" style="margin-left: 20px" @click="handleSearch">查询</el-button>
         <el-button type="success" size="small">重置</el-button>
       </el-form-item>
@@ -78,57 +104,99 @@
 <script setup>
   import { defineComponent, onMounted, reactive, ref } from 'vue'
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
+  import MultipleSelect from '@/components/multipleSelect/index.vue'
+  import config from '@/utils/system/config'
+  import {SpcProductSelect} from '@/api/spc/analysis'
   const emit = defineEmits(['handleSearch'])
   // parmas
-  const searchForm = reactive({
-    timeArea: 2,
-    dateArea: ['年', '月'],
-    kaifaArea: 1,
+  const defaultParmas = {
+    selectedTime: 5,
     startTime: '',
     endTime: '',
-    gongchang: '',
-    jisuanArea: ''
-  })
+    yearDemintion: true,
+    seasonDemintion: false,
+    monthDemintion: true,
+    weekDemintion: false,
+    dayDemintion: false,
+    quantityCalcSwitch: true
+  }
+  const searchForm = reactive({...defaultParmas})
   const isExpand = ref(true)
-  const DateOptions = ref(['年', '季', '月', '周', '日'])
+  const DateOptions = reactive([ // 时间维度数组
+    {
+      value: 'yearDemintion',
+      label: '年'
+    },
+    {
+      value: 'seasonDemintion',
+      label: '季度'
+    },
+    {
+      value: 'monthDemintion',
+      label: '月'
+    },
+    {
+      value: 'weekDemintion',
+      label: '周'
+    },
+    {
+      value: 'dayDemintion',
+      label: '日'
+    }
+  ])
+  const demintions = ['yearDemintion', 'seasonDemintion', 'monthDemintion', 'weekDemintion', 'dayDemintion']
+  const checkAll = ref(false)
+  const isIndeterminate = ref(true)
+  const options = ref({})
+  const inputSelect = config.spcSelect
   onMounted(() => {
-    handleSearch()
+    getInputSelect()
   })
-  // function
+  // 检索查询
+  async function getInputSelect() {
+    const res = await SpcProductSelect({input:inputSelect})
+    const data = res.data.spcProductSelect
+    if(data) {
+      options.value = data
+      Object.keys(searchForm).forEach(key => {
+        if (data.hasOwnProperty(key)) {
+          searchForm[key] = data[key];
+        }
+      })
+      handleSearch()
+    }
+  }
   function handleSearch() {
     emit('handleSearch', searchForm)
   }
   function expandSearch(val) {
     isExpand.value = val
   }
+  // 重置
+  function reset() {
+    Object.assign(searchForm, { ...defaultParmas })
+    getInputSelect()
+  }
+  // 全选
+  function handleCheckAllChange(val) {
+    isIndeterminate.value = false
+    demintions.forEach(dimension => {
+      searchForm[dimension] = val
+    })
+  }
+  function changeRadio(val) {
+    if(val !== 6) {
+      searchForm.startTime = ''
+      searchForm.endTime = ''
+    }
+  }
+  // 监听时间维度选择方法
+  function handleDateChange() {
+    const checkedCount = demintions.filter(dimension => searchForm[dimension]).length
+    checkAll.value = checkedCount === demintions.length
+    isIndeterminate.value = checkedCount > 0 && checkedCount < demintions.length
+  }
 </script>
 <style lang="scss" scoped>
-.search-box {
-  padding-top: 10px;
-  width: 100%;
-  background: #2c2d31;
-}
-.height {
-  min-height: 80px;
-}
-.maxHeight {
-  height: 0;
-  overflow: hidden;
-}
-.search-box-bottom {
-  background: #2d3340;
-  width: 100%;
-  height: 25px;
-}
-:deep(.el-form-item__label), :deep(.el-form-item__content), :deep(.el-checkbox__label),:deep(.el-radio__label){
-  color: #fff;
-}
-:deep(.el-radio__input.is-checked+.el-radio__label), :deep(.el-checkbox__input.is-checked+.el-checkbox__label){
-  color: var(--system-primary-color)!important;
-  
-}
-:deep(.el-radio__input.is-checked .el-radio__inner), :deep(.el-checkbox__input.is-checked .el-checkbox__inner), :deep(.el-button--success){
-  border-color: var(--system-primary-color)!important;;
-  background: var(--system-primary-color)!important;
-}
+@import '@/assets/style/search.scss';
 </style>

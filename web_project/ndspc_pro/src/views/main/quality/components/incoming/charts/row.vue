@@ -6,8 +6,8 @@
         <span class="name">{{ row.name }}</span>
       </div>
       <div style="display: flex; align-items: center;">
-        <el-button size="small" type="primary" v-if="row.isExport && selectItem">已选择{{selectItem}}</el-button>
-        <vue3-json-excel v-if="row.isExport && selectItem" :json-data="select_data" :fields="header_data" :name="`${selectItem}来料合格率数据.xls`">
+        <el-button size="small" type="primary" v-if="row.isExport && selectItem">已选择{{selectItem.name}}</el-button>
+        <vue3-json-excel v-if="row.isExport && selectItem" :json-data="select_data" :fields="header_data" :name="`${selectItem.name}来料合格率数据.xls`">
           <el-button size="small" type="info" v-if="row.isExport && selectItem">导出选中</el-button>
         </vue3-json-excel>
         <vue3-json-excel v-if="row.isExport" :json-data="all_data" :fields="header_data" name="来料合格率全部数据.xls">
@@ -17,7 +17,7 @@
       </div>
     </div>
     <BarChart ref="chartRef" @changeSelect="changeSelect" :isExport="row.isExport" />
-    <ComDialog ref="chartDialogRef" :dialogTitle="row.name" :fullScreen="true" :hiddenFooter="true">
+    <ComDialog ref="chartDialogRef" :dialogTitle="row.name" :fullScreen="true" :hiddenFooter="true" @handleClose="handleClose">
       <div class="charBox">
         <div class="card-title">
           <div class="left">
@@ -25,9 +25,13 @@
             <span class="name">{{ row.name }}</span>
           </div>
           <div style="display: flex; align-items: center;">
-            <el-button size="small" type="info" v-if="row.isExport && selectItem">已选择{{selectItem}}</el-button>
-            <el-button size="small" type="info" v-if="row.isExport && selectItem">导出选中</el-button>
-            <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
+            <el-button size="small" type="primary" v-if="row.isExport && selectItem">已选择{{selectItem.name}}</el-button>
+            <vue3-json-excel v-if="row.isExport && selectItem" :json-data="select_data" :fields="header_data" :name="`${selectItem.name}来料合格率数据.xls`">
+              <el-button size="small" type="info" v-if="row.isExport && selectItem">导出选中</el-button>
+            </vue3-json-excel>
+            <vue3-json-excel v-if="row.isExport" :json-data="all_data" :fields="header_data" name="来料合格率全部数据.xls">
+              <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
+            </vue3-json-excel>
           </div>
         </div>
         <BarChart v-if="showChart" ref="chartsRef" boxHeight="calc(100vh - 110px)" @changeSelect="changeSelect"  :isExport="row.isExport"/>
@@ -37,7 +41,7 @@
 </template>
 
 <script setup>
-import {ref,reactive, nextTick, onMounted,defineExpose } from 'vue'
+import {ref,reactive, nextTick } from 'vue'
 import {Rank} from '@element-plus/icons-vue'
 import BarChart from './barChart.vue'
 import ComDialog from '@/components/comDialog/index.vue'
@@ -65,10 +69,18 @@ import {materialQCTestItem} from '@/api/quality/incoming'
   const all_data = ref(null)
   const select_data = ref(null)
   function handleClose() {
+    if(selectItem.value) {
+      chartsRef.value.cancelSelected(selectItem.value)
+      selectItem.value = null
+    }
     chartDialogRef.value.visible = false
     showChart.value = false
   }
   function handleOpen() {
+    if(selectItem.value) {
+      chartRef.value.cancelSelected(selectItem.value)
+      selectItem.value = null
+    }
     chartDialogRef.value.visible = true
     showChart.value = true
     nextTick(() => {
@@ -79,10 +91,10 @@ import {materialQCTestItem} from '@/api/quality/incoming'
   }
   // echart选择事件
   function changeSelect(parmas) {
-    if(selectItem.value === parmas.name) {
+    if(selectItem.value && selectItem.value.name === parmas.name) {
       selectItem.value = null
     } else {
-      selectItem.value = parmas.name
+      selectItem.value = parmas
       select_data.value = all_data.value.filter(item => item.time === parmas.name)
     }
   }
@@ -617,57 +629,5 @@ import {materialQCTestItem} from '@/api/quality/incoming'
 </script>
 
 <style lang="scss" scoped>
-  .card{
-    border-radius: 4px;
-    height: 400px;
-    width: calc(33% - 12px);
-    background-color: #c6d3df;
-    margin: 5px;
-    box-shadow: 3px 3px 10px 0 rgba(58, 59, 69, 0.15);
-    font-size: 14px;
-    &-title {
-      margin: 10px;
-      display: flex;
-      justify-content: space-between;
-      .left {
-        text-align: left;
-        display: flex;
-        align-items: center;
-        .tip-dot {
-          height: 9px;
-          width: 18px;
-          background: #7c260b;
-          margin: 0 10px;
-          }
-        }
-      }
-    }
-  .charBox {
-    width: 100%;
-    height: 400px;
-  }
-  :deep(.el-button--info) {
-    border-color: #014D64!important;
-    background: #014D64!important;
-    padding: 2px;
-    margin-left: 5px;
-    font-size: 12px;
-  }
-  :deep(.el-button--primary){
-    border-color: #01a2d9!important;
-    background: #01a2d9!important;
-    padding: 2px;
-    margin-left: 5px;
-    font-size: 12px;
-  }
-  @media screen and ( max-width: 1200px ) {
-    .card {
-      width: calc(50% - 26px);
-    }
-  }
-  @media screen and ( max-width: 500px ) {
-    .card {
-      width: calc(100% - 26px);
-    }
-  }
+  @import '@/assets/style/row.scss';
 </style>

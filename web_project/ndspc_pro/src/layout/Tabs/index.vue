@@ -63,8 +63,8 @@ export default defineComponent({
     const scrollbarDom = ref(null)
     const scrollLeft = ref(0)
     const defaultMenu = {
-      path: '/dashboard',
-      meta: { title: 'message.menu.dashboard.index', hideClose: true }
+      path: '/quality/incoming',
+      meta: { title: 'message.menu.quality.iconming', hideClose: true }
     }
     const contentFullScreen = computed(() => store.state.app.contentFullScreen)
     const currentDisabled = computed(() => route.path === defaultMenu.path)

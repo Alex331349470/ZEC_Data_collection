@@ -1,17 +1,76 @@
 <template>
   <div class="box">
     <div class="search-box">
-      <div class="search-contral">
-        <div class="tabs-contral flex">
-          <div :class="searchForm.typeName == '中间品' ? 'active_tab tab_btn':'tab_btn'">
-            <el-button class="btn_bule" type="primary" size="default" @click="changeTab('中间品')">中间品</el-button>
-          </div>
-          <div :class="searchForm.typeName == '成品' ? 'active_tab tab_btn':'tab_btn'">
-            <el-button class="btn_orange" type="warning" size="default" @click="changeTab('成品')">成品</el-button>
-          </div>
+      <el-form ref="form" :model="searchForm" label-width="80px" size="small">
+        <el-form-item label="来料信息：">
+          <el-form-item label="工厂" label-width="40px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="factory"
+              @handleChange='searchForm.factory=$event' />
+          </el-form-item>
+          <el-form-item label="车间" label-width="60px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="workshop"
+              @handleChange='searchForm.workshop=$event' />
+          </el-form-item>
+          <el-form-item label="产线" label-width="80px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="line"
+              @handleChange='searchForm.line=$event' />
+          </el-form-item>
+        </el-form-item>
+        <el-form-item label="物料信息：" >
+          <el-form-item label="物料类型" label-width="60px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="materialType"
+              @handleChange='searchForm.materialType=$event' />
+          </el-form-item>
+          <el-form-item label="物料编码" label-width="80px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="materialCode"
+              @handleChange='searchForm.materialCode=$event' />
+          </el-form-item>
+        </el-form-item>
+        <el-form-item label="检测信息：" >
+          <el-form-item label="特性类型" label-width="60px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="propertyType"
+              @handleChange='searchForm.propertyType=$event' />
+          </el-form-item>
+          <el-form-item label="检测项目" label-width="80px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="220px"
+              :selectOption="options"
+              selectTypeName="testItem"
+              @handleChange='searchForm.testItem=$event' />
+          </el-form-item>
+          <el-button type="success" size="small"  @click="getData" style="margin-left: 25px;margin-top: -10px">查询</el-button>
+        </el-form-item>
+        <div class="search-contral">
+          <el-input placeholder="分析型控制图编码" v-model="searchForm.analyze_num"></el-input>
+          <el-button class="system-btn" type="success"  @click="checkCarts" :disabled="!selectionItem || selectionItem.length !== 1">查看分析型控制图</el-button>
+          <!-- <el-button type="danger" @click="handleDelete" :disabled="!selectionItem || selectionItem.length === 0">删除</el-button> -->
         </div>
-        <el-button class="system-btn" type="success"  @click="checkCarts" :disabled="!selectionItem || selectionItem.length !== 1">查看分析型控制图</el-button>
-      </div>
+      </el-form>
     </div>
     <div class="content-box">
       <el-table :data="tableData" style="width: 100%; font-size: 13px" size="default" ref="multipleTable" @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
@@ -41,7 +100,7 @@
     <div class="pagination">
       <Pagination :page_num="searchForm.pageNum"
         :page_size="searchForm.pageSize"
-        @update:getData="getData"
+        @update:pageChange="pageChange"
         :total="total"
       />
     </div>
@@ -67,17 +126,21 @@ import Pagination from '@/components/pagination/index.vue'
 import AnalysisChart from './components/analysisChart.vue'
 import AssociationTable from './components/associationTable.vue'
 import DetailForm from './components/detailForm.vue'
+import MultipleSelect from '@/components/multipleSelect/index.vue'
+import config from '@/utils/system/config'
+import {SpcProductSelect} from '@/api/spc/analysis'
 /* ------parmas--------- */
 const searchForm = ref({
   pageSize: 2,
-  pageNum: 1,
-  typeName: '成品'
+  pageNum: 1
 })
 const selectionItem = ref(null)
 const chartDialogRef = ref(false)
 const drawer = ref(false)
 const detailDialogRef = ref(false)
 const total = ref(10)
+const options = ref({})
+const inputSelect = config.spcSelect
 const tableData = ref([
   {bianma: 'abc2133241', status: '分析中', bianNum: '1' },
   {bianma: 'abc2133242', status: '分析中', bianNum: '2' },
@@ -85,8 +148,18 @@ const tableData = ref([
   {bianma: 'abc2133244', status: '分析中', bianNum: '4' },
   {bianma: 'abc2133245', status: '分析中', bianNum: '5' }
 ])
-
+onMounted(() => {
+  getInputSelect()
+})
 /* ------function--------- */
+// 检索查询
+async function getInputSelect() {
+  const res = await SpcProductSelect({input:inputSelect})
+  const data = res.data.spcProductSelect
+  if(data) {
+    options.value = data
+  }
+}
 function checkCarts() {
   chartDialogRef.value.visible = true
 }
@@ -114,10 +187,16 @@ function handleSelectionChange(val) {
   padding-top: 7px;
   border-bottom: 1px solid #ddd;
   .el-form-item {
-    margin-bottom: 10px!important;
+    margin-bottom: 5px!important;
   }
 }
+.search-box {
+  padding-top: 10px;
+  width: 100%;
+  background: #f2f2f5;
+}
 .search-contral {
+  padding: 10px;
   border-top: 1px solid #ddd;
   .el-button {
     margin-left: 10px;
@@ -132,11 +211,10 @@ function handleSelectionChange(val) {
   padding-bottom: 7px;
   padding-left: 25px;
   border-top: 1px solid #ddd;
+  z-index: 999;
 }
 .search-contral{
   display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 .el-button--success {
   border-color: var(--system-primary-color);
@@ -147,21 +225,9 @@ function handleSelectionChange(val) {
   background-color: var(--el-button-disabled-bg-color)!important;
   border-color: var(--el-button-disabled-border-color)!important
 }
-.tab_btn {
-  width: 120px;
-  padding: 8px 0;
-  margin: 0 10px;
-  .el-button {
-    width: 120px;
-  }
-}
-.btn_bule {
-  background: #6f93c6;
-}
-.active_tab {
-  border-top: 2px solid #4dc86f;
-}
-.btn_orange {
-  background: #c2a97e;
+.table_tag {
+  padding: 2px 8px;
+  color: #fff;
+  font-size: 12px;
 }
 </style>  

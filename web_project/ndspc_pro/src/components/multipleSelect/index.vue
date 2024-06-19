@@ -1,14 +1,14 @@
 <template>
-  <div v-if="selectType === 'single'">
+  <div v-if="selectType === 'single'" style="width: 100%;text-align: left">
     <el-select
       :style="{'width': inputWidth}"
       v-model="selectValue"
-      placeholder="请选择" 
+      :placeholder="placeholder" 
       loading-text="加载中..."
       :disabled="selectType === 'disabled'"
       @change="changeSingle"
     >
-    <template #header>
+      <template #header>
         <el-input v-model="searchInput[selectTypeName]" placeholder="关键字搜索" @keyup.enter="refresh">
           <template #append>
             <el-button :icon="Search" @click="refresh"/>
@@ -23,11 +23,11 @@
       />
     </el-select>
   </div>
-  <div v-else>
+  <div v-else style="width: 100%;text-align: left">
     <el-select popper-class="select-popover-class" :style="{'width': inputWidth}"
       v-model="selectNameArr" 
       multiple 
-      placeholder="请选择" 
+      :placeholder="placeholder" 
       collapse-tags 
       :max-collapse-tags="1" 
       :loading="loading"
@@ -60,7 +60,7 @@
   import {productSelectPlato} from '@/api/quality/product'
   import {materialSelect} from '@/api/quality/incoming'
   import {ProcessSelect} from '@/api/quality/process'
-  import {SpcProductSelect} from '@/api/spc/analysis'
+  import {SpcProductSelect, SpcProductSelectQuery} from '@/api/spc/analysis'
   import config from '@/utils/system/config'
   const props = defineProps({
     selectTypeName: {
@@ -86,6 +86,10 @@
     selectOption: {
       type: Object,
       default: {}
+    },
+    placeholder: {
+      type: String,
+      default: '请选择'
     }
   })
   const emit = defineEmits(['getProductSelectPlato', 'handleChange'])
@@ -95,7 +99,7 @@
   const checkAll = ref(true)
   const isIndeterminate = ref(false)
   // console.log({...config})
-  const {productSelect, incomingSelect, processSelect,spcSelect} = {...config}
+  const {productSelect, incomingSelect, processSelect,spcSelect, spcPorSelect} = {...config}
   const searchInput = reactive({})
   onMounted(() => {
     reduceData()
@@ -138,6 +142,10 @@
         break
       case 'spc':
         Object.assign(searchInput, { ...spcSelect })
+        break
+      case 'spc-product':
+        Object.assign(searchInput, { ...spcPorSelect })
+        break
     }
   }
   function getInit(data) {
@@ -162,6 +170,9 @@
         getProductSelectPlato()
         break
       case 'spc':
+        getSpcSelect()
+        break
+      case 'spc-product':
         getSpcProductSelect()
         break
     }
@@ -200,10 +211,25 @@
     })
   }
   // SPC检索
-  function getSpcProductSelect(isInint) {
+  function getSpcSelect(isInint) {
     loading.value = true
     SpcProductSelect({input:searchInput}).then(res => {
       options.value = res.data.spcProductSelect
+      loading.value = false
+      if(props.selectType === 'disabled') {
+        selectNameArr.value = [options.value[props.selectTypeName]]
+        emit('handleChange', options.value[props.selectTypeName])
+      }
+    }).catch(error => {
+      console.log(error)
+      loading.value = false
+    })
+  }
+  // spc列表检索
+  function getSpcProductSelect(isInint) {
+    loading.value = true
+    SpcProductSelectQuery({input:searchInput}).then(res => {
+      options.value = res.data.spcProductSelectQuery
       loading.value = false
       if(props.selectType === 'disabled') {
         selectNameArr.value = [options.value[props.selectTypeName]]

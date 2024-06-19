@@ -24,13 +24,13 @@
             </el-col>
             <el-col :span="10">
               <div class="back_none">
-                <div>203</div>
-                <div>243</div>
-                <div>23</div>
-                <div>12.23</div>
-                <div>54.34</div>
-                <div>0.34</div>
-                <div>0.89</div>
+                <div>{{chartData.usl}}</div>
+                <div>{{chartData.lsl}}</div>
+                <div>{{chartData.amount}}</div>
+                <div>{{chartData.sampleAvg}}</div>
+                <div>{{chartData.sigmaIn}}</div>
+                <div>{{chartData.sigmaTotal}}</div>
+                <div>{{chartData.stablilityIndex}}</div>
               </div>
             </el-col>
           </el-row>
@@ -48,10 +48,10 @@
             </el-col>
             <el-col :span="10">
               <div class="back_none">
-                <div>12.23</div>
-                <div>54.34</div>
-                <div>0.34</div>
-                <div>0.89</div>
+                <div>{{chartData.cp}}</div>
+                <div>{{chartData.cpu}}</div>
+                <div>{{chartData.cpl}}</div>
+                <div>{{chartData.cpk}}</div>
               </div>
             </el-col>
           </el-row>
@@ -69,10 +69,10 @@
             </el-col>
             <el-col :span="10">
               <div class="back_none">
-                <div>12.23</div>
-                <div>54.34</div>
-                <div>0.34</div>
-                <div>0.89</div>
+                <div>{{chartData.pp}}</div>
+                <div>{{chartData.ppu}}</div>
+                <div>{{chartData.ppl}}</div>
+                <div>{{chartData.ppk}}</div>
               </div>
             </el-col>
           </el-row>
@@ -95,25 +95,25 @@
         <el-col :span="5">
           <div class="back_writhe text-right">观测百分比</div>
           <div class="back_none1">
-            <div>12.2</div>
-            <div>12.2</div>
-            <div>12.2</div>
+            <div>{{chartData.poorBelowRate}}</div>
+            <div>{{chartData.poorAboveRate}}</div>
+            <div>{{chartData.poorTotalRate}}</div>
           </div>
         </el-col>
         <el-col :span="5">
           <div class="back_writhe text-right">期望组内百分比</div>
           <div class="back_none1">
-            <div>12.2</div>
-            <div>12.2</div>
-            <div>12.2</div>
+            <div>{{chartData.sigmaInBelowRate}}%</div>
+            <div>{{chartData.sigmaInAboveRate}}%</div>
+            <div>{{chartData.sigmaInTotalRate}}%</div>
           </div>
         </el-col>
         <el-col :span="6">
-          <div class="back_writhe text-right">期望总提百分比</div>
+          <div class="back_writhe text-right">期望总体百分比</div>
           <div class="back_none1">
-            <div>12.2</div>
-            <div>12.2</div>
-            <div>12.2</div>
+            <div>{{chartData.sigmaTotalBelowRate}}%</div>
+            <div>{{chartData.sigmaTotalAboveRate}}%</div>
+            <div>{{chartData.sigmaTotalAllRate}}%</div>
           </div>
         </el-col>
       </el-row>
@@ -122,13 +122,13 @@
           <div class="back_writhe">cov</div>
         </el-col>
         <el-col :span="5">
-          <div class="back_none text-left">0.009</div>
+          <div class="back_none text-left">{{chartData.cov}}</div>
         </el-col>
         <el-col :span="5">
           <div class="back_writhe">Mean偏移</div>
         </el-col>
         <el-col :span="6">
-          <div class="back_none">0.1096</div>
+          <div class="back_none">{{chartData.mean}}</div>
         </el-col>
       </el-row>
     </div>
@@ -143,6 +143,16 @@ const props = defineProps({
     default: {}
   }
 })
+defineExpose({ refreshData })
+const chartData = ref({})
+function refreshData(data) {
+  for (const key in data) {
+    if(typeof data[key] === 'number') {
+      data[key] = data[key].toFixed(2)
+    }
+  }
+  chartData.value = data
+}
 </script>
 
 <style lang="scss" scoped>

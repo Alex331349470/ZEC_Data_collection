@@ -1,16 +1,16 @@
 <template>
   <div class="box" :style="{height: boxHeight}">
     <el-empty :image-size="100"  v-if="isEmpty"/>
-    <Chart :option="options" @onSelect="onSelect" v-else />
+    <Chart ref="chartRef" :option="options" @onSelect="onSelect" v-else />
   </div>
 </template>
 
 <script setup>
-  import { defineComponent, onBeforeUnmount, onMounted, reactive,ref } from 'vue'
+  import { ref } from 'vue'
   import Chart from '@/components/charts/index.vue'
   import {getOption} from './modules/bar.js'
   const emit = defineEmits(['changeSelect'])
-  defineExpose({ initChart })
+  defineExpose({ initChart, cancelSelected })
   const props = defineProps({
     boxHeight: {
       type: String,
@@ -23,6 +23,7 @@
   })
   const options = ref(null)
   const isEmpty = ref(false)
+  const chartRef = ref(null)
   function initChart(data) {
     if(!data.xAxis_data) {
       isEmpty.value = true
@@ -34,6 +35,9 @@
   }
   function onSelect(parmas) {
     emit('changeSelect', parmas)
+  }
+  function cancelSelected(parmas) {
+    chartRef.value.cancelSelected(parmas)
   }
 </script>
 

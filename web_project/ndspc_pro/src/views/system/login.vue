@@ -37,7 +37,7 @@
             </template>
             <template #append>
               <i class="sfont password-icon" :class="passwordType ? 'system-yanjing-guan': 'system-yanjing'"
-                 @click="passwordTypeChange"></i>
+                @click="passwordTypeChange"></i>
             </template>
           </el-input>
 

@@ -46,10 +46,11 @@ const props = defineProps({
 const visible = ref(false)
 const isExpand = ref(false)
 const addLoading = ref(false)
-const emit = defineEmits(['confirmEmitBtn'])
+const emit = defineEmits(['confirmEmitBtn', 'handleClose'])
 function handleClose() {
   visible.value = false
   isExpand.value = false
+  emit('handleClose')
 }
 function openDialog(val) {
   isExpand.value = !val

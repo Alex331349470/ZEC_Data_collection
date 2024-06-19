@@ -100,7 +100,7 @@
             <div>12.2</div>
           </div>
         </el-col>
-        <el-col :span="5">
+        <el-col :span="6">
           <div class="back_writhe text-right">期望组内百分比</div>
           <div class="back_none1">
             <div>12.2</div>
@@ -168,8 +168,11 @@ const props = defineProps({
           margin: 0 10px;
           }
         }
-      }
     }
+    &-box {
+      font-size: 0.8rem;
+    }
+  }
   .charBox {
     width: 100%;
     height: 400px;

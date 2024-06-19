@@ -5,7 +5,7 @@
         <el-form-item label="来料信息：">
           <el-form-item label="工厂" label-width="40px" >
             <MultipleSelect 
-              productType="spc"
+              productType="spc-product"
               inputWidth="220px"
               :selectOption="options"
               selectTypeName="factory"
@@ -13,7 +13,7 @@
           </el-form-item>
           <el-form-item label="车间" label-width="60px" >
             <MultipleSelect 
-              productType="spc"
+              productType="spc-product"
               inputWidth="220px"
               :selectOption="options"
               selectTypeName="workshop"
@@ -21,7 +21,7 @@
           </el-form-item>
           <el-form-item label="产线" label-width="80px" >
             <MultipleSelect 
-              productType="spc"
+              productType="spc-product"
               inputWidth="220px"
               :selectOption="options"
               selectTypeName="line"
@@ -31,7 +31,7 @@
         <el-form-item label="物料信息：" >
           <el-form-item label="物料类型" label-width="60px" >
             <MultipleSelect 
-              productType="spc"
+              productType="spc-product"
               inputWidth="220px"
               :selectOption="options"
               selectTypeName="materialType"
@@ -39,7 +39,7 @@
           </el-form-item>
           <el-form-item label="物料编码" label-width="80px" >
             <MultipleSelect 
-              productType="spc"
+              productType="spc-product"
               inputWidth="220px"
               :selectOption="options"
               selectTypeName="materialCode"
@@ -49,7 +49,7 @@
         <el-form-item label="检测信息：" >
           <el-form-item label="特性类型" label-width="60px" >
             <MultipleSelect 
-              productType="spc"
+              productType="spc-product"
               inputWidth="220px"
               :selectOption="options"
               selectTypeName="propertyType"
@@ -57,7 +57,7 @@
           </el-form-item>
           <el-form-item label="检测项目" label-width="80px" >
             <MultipleSelect 
-              productType="spc"
+              productType="spc-product"
               inputWidth="220px"
               :selectOption="options"
               selectTypeName="testItem"
@@ -66,7 +66,13 @@
           <el-button type="success" size="small"  @click="getData" style="margin-left: 25px;margin-top: -10px">查询</el-button>
         </el-form-item>
         <div class="search-contral">
-          <el-input placeholder="分析型控制图编码" v-model="searchForm.analyze_num"></el-input>
+          <MultipleSelect 
+            productType="spc-product"
+            inputWidth="100%"
+            :selectOption="options"
+            selectTypeName="analyzeNum"
+            placeholder="分析型控制图编码"
+            @handleChange='searchForm.analyzeNum=$event' />
           <el-button class="system-btn" type="success"  @click="addFile">新增控制图</el-button>
           <el-button class="system-btn" type="success"  @click="editFile" :disabled="!selectionItem || selectionItem.length !== 1">修改</el-button>
           <el-button class="system-btn" type="success"  @click="importFile" >数据导入</el-button>
@@ -98,7 +104,7 @@
         <el-table-column prop="property_type" label="特性类型" sortable :show-overflow-tooltip="true" width="120" align="center" />
         <el-table-column label="操作" width="160" align="center" fixed="right">
           <template #default="scope">
-            <el-button @click.prevent="handleAssociation(scope.$index, tableData)" link type="primary" >关联</el-button>
+            <el-button @click.prevent="handleAssociation(scope.row)" link type="primary" >关联</el-button>
             <el-button @click.prevent="handleDetail(scope.row)" link type="primary" >明细</el-button>
           </template>
         </el-table-column>
@@ -107,7 +113,7 @@
     <div class="pagination">
       <Pagination :page_num="searchForm.pageNum"
         :page_size="searchForm.pageSize"
-        @update:getData="getData"
+        @update:pageChange="pageChange"
         :total="total"
       />
     </div>
@@ -125,7 +131,7 @@
                 <MultipleSelect 
                   productType="spc"
                   inputWidth="220px"
-                  :selectOption="options"
+                  :selectOption="options1"
                   selectTypeName="materialCode"
                   selectType="single"
                   :selectValue="addForm.materialCode"
@@ -136,7 +142,7 @@
                 <MultipleSelect 
                   productType="spc"
                   inputWidth="220px"
-                  :selectOption="options"
+                  :selectOption="options1"
                   selectTypeName="propertyType"
                   :selectValue="addForm.propertyType"
                   selectType="single"
@@ -147,7 +153,7 @@
                 <MultipleSelect 
                   productType="spc"
                   inputWidth="220px"
-                  :selectOption="options"
+                  :selectOption="options1"
                   selectTypeName="controlType"
                   selectType="disabled"
                   @handleChange='addForm.controlType=$event'
@@ -165,7 +171,7 @@
                 <MultipleSelect 
                   productType="spc"
                   inputWidth="220px"
-                  :selectOption="options"
+                  :selectOption="options1"
                   selectTypeName="factory"
                   selectType="single"
                   :selectValue="addForm.factory"
@@ -176,7 +182,7 @@
                 <MultipleSelect 
                   productType="spc"
                   inputWidth="220px"
-                  :selectOption="options"
+                  :selectOption="options1"
                   selectTypeName="workshop"
                   selectType="single"
                   :selectValue="addForm.workshop"
@@ -187,7 +193,7 @@
                 <MultipleSelect 
                   productType="spc"
                   inputWidth="220px"
-                  :selectOption="options"
+                  :selectOption="options1"
                   selectTypeName="line"
                   selectType="single"
                   :selectValue="addForm.line"
@@ -198,7 +204,7 @@
                 <MultipleSelect 
                   productType="spc"
                   inputWidth="220px"
-                  :selectOption="options"
+                  :selectOption="options1"
                   selectTypeName="materialType"
                   selectType="single"
                   :selectValue="addForm.materialType"
@@ -209,7 +215,7 @@
                 <MultipleSelect 
                   productType="spc"
                   inputWidth="220px"
-                  :selectOption="options"
+                  :selectOption="options1"
                   selectTypeName="testItem"
                   selectType="single"
                   :selectValue="addForm.testItem"
@@ -220,7 +226,7 @@
                 <MultipleSelect 
                   productType="spc"
                   inputWidth="220px"
-                  :selectOption="options"
+                  :selectOption="options1"
                   selectTypeName="review"
                   selectType="single"
                   :selectValue="addForm.review"
@@ -461,7 +467,7 @@
     </ComDialog>
     <!-- 关联表格 -->
     <el-drawer v-model="drawer" :with-header="false" size="80%">
-      <AssociationTable />
+      <AssociationTable ref="associationRef"/>
     </el-drawer>
     <!-- 明细 -->
     <ComDialog ref="detailDialogRef" dialogTitle="明细" :hiddenFooter="true"  top="0" >
@@ -486,12 +492,21 @@ import DetailForm from './components/detailForm.vue'
 import ImportFile from './components/importFile.vue'
 import MultipleSelect from '@/components/multipleSelect/index.vue'
 import config from '@/utils/system/config'
-import {getSpcDataList, addSPC, updateSPC, SpcProductSelect} from '@/api/spc/analysis'
+import {getSpcDataList, addSPC, updateSPC, SpcProductSelectQuery, SpcProductSelect, getSpcData} from '@/api/spc/analysis'
+import { get } from '@vueuse/core'
 
 /* ------parmas--------- */
-const searchForm = ref({
-  pageSize: 2,
-  pageNum: 1
+const searchForm = reactive({
+  pageSize: 10,
+  pageNum: 1 ,
+  factory: [],
+  workshop: [],
+  line: [],
+  materialCode: [],
+  materialType: [],
+  propertyType: [],
+  testItem: [],
+  analyzeNum: []
 })
 const selectionItem = ref(null)
 const defaultForm = {
@@ -553,30 +568,47 @@ const detailRef = ref(null) //明细组件
 const importDialogRef = ref(false) // 导入弹窗
 const importRef = ref(null) //导入组件
 const loading = ref(true) // 加载
-const total = ref(10)
+const total = ref(0)
 const StatusOptions = config.status // 状态标签
-const options = ref({})
+const options = ref({}) // 列表检索
+const options1 = ref({}) // 表单
+const associationRef = ref(null) // 关联表组件
 const tableData = ref([])
 const workRef = ref(null)
 const rules = ref({
   data1: [{ required: false, message: '开始时间不能为空', trigger: 'blur' }],
   data2: [{ required: false, message: '结束时间不能为空', trigger: 'blur' }],
 })
-const inputSelect = config.spcSelect
+const inputSelect = config.spcPorSelect // 列表检索
+const inputSelect1 = config.spcSelect // 表单检索
 onMounted(() => {
   getInputSelect()
-  getData()
+  getInputSelect1()
 })
 /* ------function--------- */
 function onChangePage(index) {
   searchForm.pagesNum.value = index
 }
-// 检索查询
+// 列表检索查询
 async function getInputSelect() {
-  const res = await SpcProductSelect({input:inputSelect})
+  const res = await SpcProductSelectQuery({input:inputSelect})
+  const data = res.data.spcProductSelectQuery
+  if(data) {
+      options.value = data
+      Object.keys(searchForm).forEach(key => {
+        if (data.hasOwnProperty(key)) {
+          searchForm[key] = data[key];
+        }
+      })
+      getData()
+    }
+}
+// 表单检索查询
+async function getInputSelect1() {
+  const res = await SpcProductSelect({input:inputSelect1})
   const data = res.data.spcProductSelect
   if(data) {
-    options.value = data
+    options1.value = data
   }
 }
 // 获取状态标签
@@ -593,8 +625,8 @@ function addFile() {
   })
 }
 // 编辑
-function editFile() {
-  const newForm = reduceData(selectionItem.value[0])
+async function editFile() {
+  const newForm = await getSpcDataDetail(selectionItem.value[0].analyze_num)
   Object.assign(addForm, { ...newForm })
   dialogRef.value.visible = true
 }
@@ -635,7 +667,7 @@ function confirmBtn() {
         updateSPC({input: addForm}).then(res => {
           dialogRef.value.visible = false
           ElMessage({ message: '操作成功', type: 'success'})
-          getData()
+          getInputSelect()
         }).catch(err => {
           ElMessage({ message: '操作失败', type: 'error'})
         })
@@ -643,7 +675,7 @@ function confirmBtn() {
         addSPC({input: addForm}).then(res => {
           dialogRef.value.visible = false
           ElMessage({ message: '操作成功', type: 'success'})
-          getData()
+          getInputSelect()
         }).catch(err => {
           ElMessage({ message: '操作失败', type: 'error'})
         })
@@ -654,22 +686,25 @@ function confirmBtn() {
 // 查看分析型控制图
 async function checkCarts() {
   chartDialogRef.value.visible = true
-  await nextTick()
-  chartRef.value.getData(reduceData(selectionItem.value[0]))
+  const itemDetail = await getSpcDataDetail(selectionItem.value[0].analyze_num)
+  chartRef.value.getData(itemDetail)
 }
 // 删除
 function handleDelete() {
   ElMessage({ message: '删除成功', type: 'success'})
 }
 // 关联
-function handleAssociation(row) {
+async function handleAssociation(row) {
   drawer.value = true
+  await nextTick()
+  associationRef.value.getInfo(row)
 }
 // 明细
-function handleDetail(row) {
+async function handleDetail(row) {
   detailDialogRef.value.visible = true
+  const itemDetail = await getSpcDataDetail(row.analyze_num)
   nextTick(() => {
-    detailRef.value.getInfo(reduceData(row))
+    detailRef.value.getInfo(itemDetail)
   })
 }
 // 导入
@@ -689,17 +724,31 @@ function closeAllDialog() {
   chartDialogRef.value.visible = false
   getData()
 }
+// 分页选择
+function pageChange(parmas) {
+  searchForm.pageNum = parmas.page_num
+  searchForm.pageSize = parmas.page_size
+  getData()
+}
 // 获取数据
 async function getData() {
+  console.log(searchForm)
   loading.value = true
-  const res = await getSpcDataList(searchForm.value)
+  const res = await getSpcDataList({input: searchForm})
   const data = res.data?.spcProductTestItemSelectValues || []
+  total.value = data?.total || 0
   loading.value = false
-  tableData.value = data
+  tableData.value = data.list
 }
 // table选择
 function handleSelectionChange(val) {
   selectionItem.value = val
+}
+// 根据编码获取详情
+async function getSpcDataDetail(code) {
+  const res = await getSpcData({input: {analyzeCode: code}})
+  const data = res.data?.spcProductSelectValue || {}
+  return reduceData(data)
 }
 </script>
 

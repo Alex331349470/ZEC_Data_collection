@@ -2,7 +2,7 @@
   <div class="search-box">
     <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="small">
       <el-form-item label="时间范围：" >
-        <el-radio-group v-model="searchForm.selectedTime" style="margin-top: -3px;">
+        <el-radio-group v-model="searchForm.selectedTime" style="margin-top: -3px;" @change="changeRadio">
           <el-radio :value="5">全部时间</el-radio>
           <el-radio :value="1">本年度</el-radio>
           <el-radio :value="2">本季度</el-radio>
@@ -21,7 +21,7 @@
         <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">全选</el-checkbox>
         <el-checkbox v-model="searchForm[date.value]" v-for="(date, index) in DateOptions" @change="handleDateChange" :key="index">{{date.label}}</el-checkbox>
       </el-form-item>
-      <el-form-item label="来料信息">
+      <el-form-item label="来料信息：">
         <el-form-item label="工厂" label-width="80px" >
           <MultipleSelect
             :selectOption="options"
@@ -197,35 +197,15 @@
     checkAll.value = checkedCount === demintions.length
     isIndeterminate.value = checkedCount > 0 && checkedCount < demintions.length
   }
+  // 时间范围选择事件
+  function changeRadio(val) {
+    if(val !== 6) {
+      searchForm.startTime = ''
+      searchForm.endTime = ''
+    }
+  }
 </script>
 
 <style lang="scss" scoped>
-.search-box {
-  padding-top: 10px;
-  width: 100%;
-  background: #2c2d31;
-}
-.height {
-  min-height: 80px;
-}
-.maxHeight {
-  height: 0;
-  overflow: hidden;
-}
-.search-box-bottom {
-  background: #2d3340;
-  width: 100%;
-  height: 25px;
-}
-:deep(.el-form-item__label), :deep(.el-form-item__content), :deep(.el-checkbox__label),:deep(.el-radio__label){
-  color: #fff;
-}
-:deep(.el-radio__input.is-checked+.el-radio__label), :deep(.el-checkbox__input.is-checked+.el-checkbox__label){
-  color: var(--system-primary-color)!important;
-  
-}
-:deep(.el-radio__input.is-checked .el-radio__inner),:deep(.el-checkbox__input.is-indeterminate .el-checkbox__inner), :deep(.el-checkbox__input.is-checked .el-checkbox__inner), :deep(.el-button--success){
-  border-color: var(--system-primary-color)!important;;
-  background: var(--system-primary-color)!important;
-}
+@import '@/assets/style/search.scss';
 </style>

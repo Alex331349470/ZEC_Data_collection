@@ -19,7 +19,7 @@ export function getOption(chartData,isExport) {
 					if (i === 0) {
 						htmlStr += xName + '<br/>';//x轴的名称
 					}
-					htmlStr += '<div>';
+					htmlStr += '<div style="text-align: left">';
 					htmlStr += '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:' + color + ';"></span>';//一个点
 					htmlStr += seriesName + '：' + value + units + '<br/>';//图例名称：y轴值圆点后面显示的文本
 					htmlStr += '</div>';

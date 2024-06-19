@@ -58,13 +58,13 @@
             />
           </el-form-item>
           <el-form-item label="下限值：" >
-            <el-input v-model="searchForm.lsl" placeholder="请输入内容" style="width: 220px;" ></el-input>
+            <el-input type="number" v-model.number="searchForm.lsl" placeholder="请输入内容" style="width: 220px;" ></el-input>
           </el-form-item>
           <el-form-item label="Cpk目标线：" >
-            <el-input v-model="searchForm.cpk" placeholder="请输入内容" style="width: 220px;" ></el-input>
+            <el-input type="number" v-model.number="searchForm.cpk" placeholder="请输入内容" style="width: 220px;" ></el-input>
           </el-form-item>
           <el-form-item label="上控制限：" >
-            <el-input v-model="searchForm.ucl" placeholder="请输入内容" style="width: 220px;"></el-input>
+            <el-input type="number" v-model.number="searchForm.ucl" placeholder="请输入内容" style="width: 220px;"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="7">
@@ -113,16 +113,16 @@
             />
           </el-form-item>
           <el-form-item label="子组大小：" >
-            <el-input v-model="searchForm.groupType" placeholder="请输入内容" style="width: 220px;" ></el-input>
+            <el-input type="number" v-model.number="searchForm.groupType" placeholder="请输入内容" style="width: 220px;" ></el-input>
           </el-form-item>
           <el-form-item label="上限值：" >
-            <el-input v-model="searchForm.usl" placeholder="请输入内容" style="width: 220px;" ></el-input>
+            <el-input type="number" v-model.number="searchForm.usl" placeholder="请输入内容" style="width: 220px;" ></el-input>
           </el-form-item>
           <el-form-item label="Mean偏移目标线：" >
-            <el-input v-model="searchForm.mean" placeholder="请输入内容" style="width: 220px;" ></el-input>
+            <el-input type="number" v-model.number="searchForm.mean" placeholder="请输入内容" style="width: 220px;" ></el-input>
           </el-form-item>
           <el-form-item label="cov目标线：" >
-            <el-input v-model="searchForm.covPurpose" placeholder="请输入内容" style="width: 220px;" ></el-input>
+            <el-input type="number" v-model.number="searchForm.covPurpose" placeholder="请输入内容" style="width: 220px;" ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="10">
@@ -323,49 +323,5 @@ async function getInputSelect() {
 </script>
 
 <style lang="scss" scoped>
-.search-box {
-  width: 100%;
-  background: #2c2d31;
-}
-.height {
-  min-height: 80px;
-  padding: 10px;
-}
-.maxHeight {
-  height: 0px;
-  overflow: hidden;
-}
-.search-box-bottom {
-  background: #2d3340;
-  width: 100%;
-  height: 25px;
-}
-.pane-input {
-  margin-bottom: 8px;
-  margin-left: 15px;
-  align-items: center;
-  color: #fff;
-  font-size: 12px;
-  .input {
-    align-items: center;
-    margin-left: 8px;
-  }
-}
-.pane-bottom {
-  padding-right: 25px;
-  text-align: right;
-}
-.form {
-  :deep(.el-form-item__label), :deep(.el-form-item__content), :deep(.el-checkbox__label),:deep(.el-radio__label){
-    color: #fff;
-  }
-}
-:deep(.el-radio__input.is-checked+.el-radio__label), :deep(.el-checkbox__input.is-checked+.el-checkbox__label){
-  color: var(--system-primary-color)!important;
-  
-}
-:deep(.el-radio__input.is-checked .el-radio__inner), :deep(.el-checkbox__input.is-checked .el-checkbox__inner), :deep(.el-button--success){
-  border-color: var(--system-primary-color)!important;;
-  background: var(--system-primary-color)!important;
-}
+@import '@/assets/style/search.scss';
 </style>

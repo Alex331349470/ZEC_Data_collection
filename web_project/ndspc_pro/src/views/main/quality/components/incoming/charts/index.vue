@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { reactive,defineExpose,ref, nextTick } from 'vue'
+import { reactive,ref, nextTick } from 'vue'
 import {materialQC} from '@/api/quality/incoming'
 import Row from './row.vue'
 defineExpose({ handleSearch })

@@ -1,8 +1,4 @@
-/**
-* 使用说明：用户只需传入options即可，options请参照官网示例中的options
-* 本组件采用整包引入echarts的方法，用于适配所有的echarts控件
-* 如需按需加载引入echarts，可参照写法：echarts官网/在打包环境中使用ECharts
-*/
+
 <template>
   <div ref="chart" class="chart" />
 </template>
@@ -14,12 +10,12 @@ import { useEventListener } from '@vueuse/core'
 const props = defineProps({
   option: Object
 })
+defineExpose({ cancelSelected })
+const emit = defineEmits(['onSelect'])
 const seriesName = ['生产数量','生产重量']
 const chart = ref(null)
+const highlightedIndex = ref(null)
 let myChart = null
-
-const emit = defineEmits(['onSelect'])
-
 onMounted(async () => {
   const dom = chart.value
   if (dom) {
@@ -30,8 +26,17 @@ onMounted(async () => {
     myChart.setOption(props.option || {})
     // 监听点击事件
     myChart.on('click', function (params) {
+      var dataIndex = params.dataIndex
       if(seriesName.includes(params.seriesName)) {
         emit('onSelect', params)
+      }
+      console.log(params)
+      if(params.componentType === 'series' && params.seriesType === 'line' && params.seriesName == 'I值' && params.data.jugeStatus) {
+        if (highlightedIndex.value === dataIndex) {// 取消拐点高亮
+          cancelHighlight(params)
+        } else { // 设置高亮
+          setHighlight(params)
+        }
       }
     })
     window.addEventListener('resize', resizeHandler)
@@ -46,8 +51,83 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', resizeHandler)
   myChart && myChart.dispose()
 })
+// 取消折线图拐点高亮
+function cancelHighlight(params) {
+  var dataIndex = params.dataIndex
+  myChart.dispatchAction({
+    type: 'downplay',
+    seriesIndex: 0,
+    dataIndex: highlightedIndex.value
+  })
+  myChart.setOption({
+    series: [{
+      data: props.option.series[0].data.map((item, index) => {
+        return {
+          ...item,
+          itemStyle: {
+            color: item.jugeStatus ? '#782d19' : '#014d64'
+          }
+        }
+      })
+    }]
+  })
+  highlightedIndex.value = null
+  emit('onSelect', false)
+}
+// 设置折线图拐点高亮
+function setHighlight(params) {
+  var dataIndex = params.dataIndex
+  // 如果点击的是其他点，先恢复之前变化颜色的点，然后改变当前点的颜色
+  if (highlightedIndex.value !== null) {
+    myChart.dispatchAction({
+      type: 'downplay',
+      seriesIndex: 0,
+      dataIndex: highlightedIndex.value
+    })
+    myChart.setOption({
+      series: [{
+        data: props.option.series[0].data.map((item, index) => {
+          return {
+            ...item,
+            itemStyle: {
+              color: item.jugeStatus ? '#782d19' : '#014d64'
+            }
+          }
+        })
+      }]
+    })
+  }
+  myChart.setOption({
+    series: [{
+      data: props.option .series[0].data.map((item, index) => {
+        return {
+          ...item,
+          itemStyle: {
+            color: index === dataIndex ? '#ff0000' : item.jugeStatus ? '#782d19' : '#014d64'
+          }
+        }
+      })
+    }]
+  })
+  highlightedIndex.value = dataIndex
+  // 获取拐点位置
+  const pointPosition = myChart.convertToPixel({ seriesIndex: params.seriesIndex }, [params.dataIndex, params.value]);
+  emit('onSelect', {data: params, position: {top: pointPosition[1], left: pointPosition[0] + 10 }})
+}
+// 取消所有系列的选中状态
+function cancelSelected(params) {
+  console.log(params)
+  if(params.componentType === 'series' && params.seriesType === 'line' && params.seriesName == 'I值' && params.data.jugeStatus) {
+    cancelHighlight(params)
+  } else {
+    myChart.dispatchAction({
+      type: 'unselect',
+      seriesIndex: params.seriesIndex,
+      dataIndex: params.dataIndex
+    })
+  }
+}
 watch(() => props.option, (newVal) => {
-  // 当 props.option 改变时更新图表数据
   if (myChart) {
     myChart.setOption(newVal)
   }

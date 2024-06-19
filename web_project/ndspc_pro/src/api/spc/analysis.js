@@ -1,15 +1,43 @@
 import apolloClient from '../graphql'
 import gql from 'graphql-tag'
-// 获取SPC数据列表
+// 多个分析型条目查询
 export function getSpcDataList(params) {
-	return apolloClient.query({
-		query: gql`query SpcProductTestItemSelectValues {
-      spcProductTestItemSelectValues {
+	return apolloClient.mutate({
+		mutation: gql`mutation SpcProductTestItemSelectValues($input: SpcProductInput) {
+      spcProductTestItemSelectValues(input: $input) {
+        total
+        list {
+          analyze_num
+          factory
+          change_time
+          workshop
+          status
+          line
+          material_type
+          material_code
+          property_type
+          analyze_column
+          control_type
+          group_type
+        }
+      }
+    }`,
+		variables: params
+	})
+}
+// 单个分析型条目查询
+export function getSpcData(params) {
+  return apolloClient.mutate({
+		mutation: gql`mutation SpcProductSelectValue($input: SpcProductTestItemAnalyzeInput) {
+      spcProductSelectValue(input: $input) {
         analyze_num
+        poor_amount
+        backup
         factory
         workshop
-        line
         status
+        line
+        source_type
         material_type
         material_code
         property_type
@@ -161,8 +189,118 @@ export function SpcHistory(params) {
         rule12_a2
         rule12_status
         change_time
+        date_time
       }
     }`,
     variables: params
   })
+}
+// 查看单个spc数据
+export function spcProductAnalyze(params) {
+  return apolloClient.mutate({
+    mutation: gql`mutation SpcProductAnalyze($input: SpcProductTestItemAnalyzeInput) {
+      spcProductAnalyze(input: $input) {
+        iControl {
+          productPatch
+          productI
+          usl
+          lsl
+          ucl
+          cl
+          lcl
+          jugeStatus
+          jugeArr
+        }
+        mrControl {
+          productPatch
+          productMR
+          uclr
+          lclr
+          clr
+        }
+        processCapability {
+          lsl
+          usl
+          amount
+          sampleAvg
+          sigmaIn
+          sigmaTotal
+          stablilityIndex
+          cpk
+          cpl
+          cpu
+          cp
+          ppk
+          ppl
+          ppu
+          pp
+          poorBelowRate
+          poorAboveRate
+          poorTotalRate
+          sigmaInBelowRate
+          sigmaInAboveRate
+          sigmaInTotalRate
+          sigmaTotalBelowRate
+          sigmaTotalAboveRate
+          sigmaTotalAllRate
+          cov
+          mean
+        }
+        normalDistribution {
+          ndMap {
+            group
+            group_value
+            frequency
+            totalFit
+            inFit
+          }
+          ndXArr
+          lsl
+          usl
+          p_value
+          a2_value
+        }
+      }
+    }`,
+    variables: params
+  })
+}
+// 列表检索
+export function SpcProductSelectQuery(params) {
+	return apolloClient.mutate({
+		mutation: gql`mutation SpcProductSelectQuery($input: SpcProductInput) {
+      spcProductSelectQuery(input: $input) {
+        factory
+        workshop
+        line
+        materialCode
+        materialType
+        propertyType
+        testItem
+        analyzeNum
+      }
+    }`,
+		variables: params
+	})
+}
+// 单个关联数据
+export function SpcProductSelectConnectValue(params) {
+  return apolloClient.mutate({
+		mutation: gql`mutation SpcProductSelectConnectValue($input: SpcProductInput) {
+      spcProductSelectConnectValue(input: $input) {
+        total
+        list {
+          status
+          change_time
+          serial_num
+          product_value
+          sigma_in
+          r_value
+          control_type
+          group_type
+        }
+      }
+    }`,
+		variables: params
+	})
 }

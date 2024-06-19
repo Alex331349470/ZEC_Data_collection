@@ -18,7 +18,7 @@ import { computed } from 'vue'
 const emit = defineEmits([
   'update:page_num',
   'update:page_size',
-  'update:getData',
+  'update:pageChange',
 ])
 const props = defineProps({
   //页码
@@ -62,11 +62,11 @@ const pageSize = computed({
 })
 //每页条数
 const handleSizeChange = (val) => {
-  emit('update:getData', { page_num: currentPage.value, page_size: val })
+  emit('update:pageChange', { page_num: currentPage.value, page_size: val })
 }
 //页码
 const handleCurrentChange = (val) => {
-  emit('update:getData', { page_num: val, page_size: pageSize.value })
+  emit('update:pageChange', { page_num: val, page_size: pageSize.value })
 }
 </script>
 <style lang="scss" scoped>
