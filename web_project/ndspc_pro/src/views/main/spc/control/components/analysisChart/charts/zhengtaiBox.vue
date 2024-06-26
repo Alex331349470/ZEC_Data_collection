@@ -6,11 +6,10 @@
         <span class="name">{{ row.name }}</span>
       </div>
       <div style="display: flex; align-items: center;">
-        <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
         <el-icon @click="handleOpen" style="margin-left: 10px"><Rank /></el-icon>
       </div>
     </div>
-    <Chart />
+    <Chart ref="chartRef"/>
     <el-dialog v-model="dialogVisible" width="80%" :before-close="handleClose" :close-on-click-modal="false">
       <div class="charBox">
         <div class="card-title">
@@ -18,53 +17,43 @@
             <div class="tip-dot" />
             <span class="name">{{ row.name }}</span>
           </div>
-          <div style="display: flex; align-items: center;">
-          <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
         </div>
-        </div>
-        <Chart v-if="showChart"/>
+        <Chart v-if="showChart" ref="chartRef"/>
       </div>
     </el-dialog>
   </div>
 </template>
 
-<script lang="js">
-import { defineComponent, ref, nextTick } from 'vue'
+<script setup>
+import { ref, nextTick } from 'vue'
 import {Rank} from '@element-plus/icons-vue'
 import Chart from './myCharts/zhengtaiChart.vue'
-export default defineComponent({
-  components: {Rank, Chart},
-  props: {
-    row: {
-      type: Object,
-      default: () => {
-        return {
-
-        }
-      }
-    }
-  },
-  setup(props) {
-    let dialogVisible = ref(false)
-    let showChart = ref(false)
-    const handleClose = () => {
-      dialogVisible.value = false
-      showChart.value = false
-    }
-    const handleOpen = () => {
-      dialogVisible.value = true
-      nextTick(() => {
-        showChart.value = true
-      })
-    }
-    return {
-      dialogVisible,
-      handleOpen,
-      handleClose,
-      showChart
-    }
+const props = defineProps({
+  row: {
+    type: Object,
+    default: {} 
   }
 })
+defineExpose({ refreshData })
+const dialogVisible = ref(false)
+const showChart = ref(false)
+const chartRef = ref(null)
+const chartData = ref(null)
+function handleClose() {
+  dialogVisible.value = false
+  showChart.value = false
+}
+function handleOpen() {
+  dialogVisible.value = true
+  showChart.value = true
+  nextTick(() => {
+    chartRef.value.initChart(chartData.value)
+  })
+}
+function refreshData(data) {
+  chartData.value = data
+  chartRef.value.initChart(data)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -110,15 +99,5 @@ export default defineComponent({
   :deep(.el-button--info) {
     border-color: #014D64!important;
     background: #014D64!important;
-  }
-  @media screen and ( max-width: 1200px ) {
-    .card {
-      width: calc(50% - 26px);
-    }
-  }
-  @media screen and ( max-width: 500px ) {
-    .card {
-      width: calc(100% - 26px);
-    }
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="search-box">
+  <div class="search-box form">
     <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="small">
       <el-form-item label="时间范围：" >
         <el-radio-group v-model="searchForm.selectedTime" style="margin-top: -3px;" @change="changeRadio">

@@ -1,20 +1,29 @@
 <template>
   <div class="box">
-    <Search @handleSearch="handleSearch" />
+    <Search ref="searchRef" @handleSearch="handleSearch" @closeAllDialog="closeAllDialog"/>
     <Charts ref="chartsRef"/>
   </div>
 </template>
 
 <script setup>
-import { defineComponent } from 'vue'
 import Search from './analysisChart/search.vue'
 import Charts from './analysisChart/charts/index.vue'
 import { ref } from 'vue'
+defineExpose({ getData })
+const emit = defineEmits(['closeAllDialog'])
 const chartsRef = ref(null)
+const searchRef = ref(null)
+function getData(data) {
+  searchRef.value.getData(data)
+}
 function handleSearch(params) {
   if(chartsRef.value) {
     chartsRef.value.handleSearch(params)
   }
+}
+// 关闭弹窗
+function closeAllDialog() {
+  emit('closeAllDialog')
 }
 </script>
 

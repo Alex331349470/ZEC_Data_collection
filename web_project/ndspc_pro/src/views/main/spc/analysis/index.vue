@@ -470,10 +470,8 @@
       <AssociationTable ref="associationRef"/>
     </el-drawer>
     <!-- 明细 -->
-    <ComDialog ref="detailDialogRef" dialogTitle="明细" :hiddenFooter="true"  top="0" >
-      <div style="padding: 20px;height: calc(100vh - 84px);overflow: auto;">
-        <DetailForm ref="detailRef"/>
-      </div>
+    <ComDialog ref="detailDialogRef" dialogTitle="明细" :hiddenFooter="true" >
+      <DetailForm ref="detailRef"/>
     </ComDialog>
     <!-- 数据导入 -->
     <ComDialog ref="importDialogRef" dialogTitle="数据导入" @confirmEmitBtn="confirmImport" >
@@ -493,7 +491,6 @@ import ImportFile from './components/importFile.vue'
 import MultipleSelect from '@/components/multipleSelect/index.vue'
 import config from '@/utils/system/config'
 import {getSpcDataList, addSPC, updateSPC, SpcProductSelectQuery, SpcProductSelect, getSpcData} from '@/api/spc/analysis'
-import { get } from '@vueuse/core'
 
 /* ------parmas--------- */
 const searchForm = reactive({
@@ -586,9 +583,6 @@ onMounted(() => {
   getInputSelect1()
 })
 /* ------function--------- */
-function onChangePage(index) {
-  searchForm.pagesNum.value = index
-}
 // 列表检索查询
 async function getInputSelect() {
   const res = await SpcProductSelectQuery({input:inputSelect})
@@ -732,10 +726,9 @@ function pageChange(parmas) {
 }
 // 获取数据
 async function getData() {
-  console.log(searchForm)
   loading.value = true
   const res = await getSpcDataList({input: searchForm})
-  const data = res.data?.spcProductTestItemSelectValues || []
+  const data = res.data?.spcProductTestItemSelectValues || {}
   total.value = data?.total || 0
   loading.value = false
   tableData.value = data.list
@@ -748,7 +741,7 @@ function handleSelectionChange(val) {
 async function getSpcDataDetail(code) {
   const res = await getSpcData({input: {analyzeCode: code}})
   const data = res.data?.spcProductSelectValue || {}
-  return reduceData(data)
+  return data
 }
 </script>
 

@@ -217,6 +217,8 @@ export function spcProductAnalyze(params) {
           uclr
           lclr
           clr
+          jugeStatus
+          jugeArr
         }
         processCapability {
           lsl

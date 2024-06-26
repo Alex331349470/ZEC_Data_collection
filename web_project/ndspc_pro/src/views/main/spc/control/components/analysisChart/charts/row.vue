@@ -11,7 +11,7 @@
       </div>
     </div>
     <BarChart ref="chartRef" @changeSelect="changeSelect" />
-    <ComDialog ref="chartDialogRef" :dialogTitle="row.name" :fullScreen="true" :hiddenFooter="true" @handleClose="handleClose">
+    <el-dialog v-model="dialogVisible" width="80%" :before-close="handleClose" :close-on-click-modal="false">
       <div class="charBox">
         <div class="card-title">
           <div class="left">
@@ -22,7 +22,7 @@
             <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
           </div>
         </div>
-        <BarChart v-if="showChart" ref="chartsRef" boxHeight="calc(100vh - 110px)" @changeSelect="changeSelect" />
+        <BarChart v-if="showChart" ref="chartsRef" @changeSelect="changeSelect" />
         <div class="rule-box" v-show="showRule1"  :style="{ top: `${dialogPosition.top}px`, left: `${dialogPosition.left}px` }">
           <div class="rule-header">
             <div>规则</div>
@@ -30,16 +30,16 @@
           </div>
           <div class="rule-content">
             <p>高亮异常点</p>
-            <div class="flex pane-input">
-              <el-checkbox v-model="ruleStatus" />
+            <div class="flex pane-input" v-for="(item, index) in ruleArr" :key="index">
+              <el-checkbox v-model="isCheck" disabled />
               <div class="flex input">
-                <span>判异准则⑤:3点(K)中存在K-1个点距离中心线(同侧)大于两个标准差</span>
+                <div >{{item}}</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </ComDialog>
+    </el-dialog>
     <div class="rule-box" v-show="showRule"  :style="{ top: `${dialogPosition.top}px`, left: `${dialogPosition.left}px` }">
       <div class="rule-header">
         <div>规则</div>
@@ -47,10 +47,10 @@
       </div>
       <div class="rule-content">
         <p>高亮异常点</p>
-        <div class="flex pane-input">
-          <el-checkbox v-model="ruleStatus" />
+        <div class="flex pane-input" v-for="(item, index) in ruleArr" :key="index">
+          <el-checkbox v-model="isCheck" disabled />
           <div class="flex input">
-            <span>判异准则⑤:3点(K)中存在K-1个点距离中心线(同侧)大于两个标准差</span>
+            <div >{{item}}</div>
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-  import { ref, nextTick,onMounted,reactive } from 'vue'
+  import { ref, nextTick,onMounted,reactive, onBeforeUnmount} from 'vue'
   import {Rank,Close} from '@element-plus/icons-vue'
   import BarChart from './myCharts/barChart.vue'
   import ComDialog from '@/components/comDialog/index.vue'
@@ -69,7 +69,8 @@
       default: {} 
     }
   })
-  const chartDialogRef = ref(false)
+  defineExpose({ refreshData })
+  const dialogVisible = ref(false)
   const showRule = ref(false)
   const showRule1 = ref(false)
   const showChart = ref(false)
@@ -77,23 +78,33 @@
   const chartsRef = ref(null)
   const selectItem = ref(null)
   const ruleStatus = ref(false)
+  const isCheck = ref(true)
+  const ruleArr = ref([])
+  const chartData = ref(null)
   const dialogPosition = reactive({
     top: 0,
     left: 0
   })
-  onMounted(() => {
-    nextTick(() => {
-      chartRef.value.initChart()
-    })
+  onBeforeUnmount(() => {
+    document.removeEventListener('click', handleClickOutside)
   })
+  onMounted(() => {
+    document.addEventListener('click', handleClickOutside)
+  })
+  // 点击外部关闭规则
+  function handleClickOutside(event) {
+    if (event.target.nodeName !== 'CANVAS') {
+      handleRuleClose()
+    }
+  }
   // echart选择事件
   function changeSelect(parmas) {
-    console.log(parmas)
     if(parmas) {
+      ruleArr.value = parmas.data.data.jugeArr
       selectItem.value = parmas.data
       dialogPosition.top = parmas.position.top
       dialogPosition.left = parmas.position.left
-      if(chartDialogRef.value.visible) {
+      if(dialogVisible.value) {
         showRule1.value = true
       } else {
         showRule.value = true
@@ -104,24 +115,107 @@
     }
   }
   function handleClose() {
-    chartDialogRef.value.visible = false
+    dialogVisible.value = false
     showChart.value = false
   }
   function handleRuleClose() {
     showRule.value = false
     showRule1.value = false
-    if(showChart.value) {
-      chartsRef.value.cancelSelected(selectItem.value)
-    } else {
-      chartRef.value.cancelSelected(selectItem.value)
+    if(selectItem.value) {
+      if(showChart.value) {
+        chartsRef.value.cancelSelected(selectItem.value)
+      } else {
+        chartRef.value.cancelSelected(selectItem.value)
+      }
     }
   }
   function handleOpen () {
-    chartDialogRef.value.visible = true
+    dialogVisible.value = true
     showChart.value = true
+    showRule.value = false
     nextTick(() => {
-      chartsRef.value.initChart()
+      refreshData(chartData.value)
     })
+  }
+  function refreshData(params) {
+    chartData.value = params
+    switch (props.row.name) {
+      case 'I控制图':
+        getIControl(params)
+        break
+      case 'MR控制图':
+        getMrControl(params)
+        break
+    }
+  }
+  // 处理I控制图数据
+  function getIControl(params) {
+    const xAxis_data = []
+    const productI = []
+    const usl = []
+    const lsl = []
+    const ucl = []
+    const cl = []
+    const lcl = []
+    const data = params.chartData.iControl
+    data.forEach(item => {
+      xAxis_data.push(item.productPatch)
+      productI.push({value: item.productI || 0, jugeStatus: item.jugeStatus, jugeArr: item.jugeArr})
+      usl.push(item.usl)
+      lsl.push(item.lsl)
+      ucl.push(item.ucl)
+      cl.push(item.cl)
+      lcl.push(item.lcl)
+    })
+    const chartData = {
+      xAxis_data: xAxis_data,
+      yAxis_data: {
+        productI: productI,
+        usl: usl,
+        lsl: lsl,
+        ucl: ucl,
+        cl: cl,
+        lcl: lcl
+      },
+      names: ['I值', 'UCL', 'CL', 'LCL', 'USL', 'LSL'],
+      type: ''
+    }
+    if(dialogVisible.value) { // 弹窗内的
+      chartsRef.value.initChart(chartData)
+    } else {
+      chartRef.value.initChart(chartData)
+    }
+  }
+  function getMrControl(params) {
+    const xAxis_data = []
+    const productI = []
+    const ucl = []
+    const lcl = []
+    const cl = []
+    const data = params.chartData.mrControl
+    data.forEach(item => {
+      xAxis_data.push(item.productPatch)
+      productI.push({value: item.productMR || 0, jugeStatus: item.jugeStatus, jugeArr: item.jugeArr})
+      ucl.push(item.uclr)
+      cl.push(item.clr)
+      lcl.push(item.lclr)
+    })
+    const chartData = {
+      xAxis_data: xAxis_data,
+      yAxis_data: {
+        productI: productI,
+        ucl: ucl,
+        cl: cl,
+        lcl: lcl
+      },
+      names: ['MR值', 'UCL', 'CL', 'LCL'],
+      type: ''
+    }
+    if(dialogVisible.value) { // 弹窗内的
+      chartsRef.value.initChart(chartData)
+    } else {
+      chartRef.value.initChart(chartData)
+    }
   }
 </script>
 
@@ -183,6 +277,17 @@
         }
       }
     }
+  }
+  :deep( .el-dialog__header) {
+    padding: var(--el-dialog-padding-primary)!important;
+    margin-right: 10px!important;
+    display: block!important;
+    justify-content: unset;
+    background: #fff!important;
+    color: #333;
+  }
+  :deep( .el-dialog__body) {
+    padding: 10!important;
   }
   :deep(.el-button--info) {
     border-color: #014D64!important;

@@ -1,19 +1,20 @@
 import Layout from '@/layout/index.vue'
 import { createNameComponent } from '../createNode'
 const route = [
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/dashboard',
-  //   meta: { title: 'message.menu.dashboard.name', icon: 'sfont system-home' },
-  //   children: [
-  //     {
-  //       path: 'dashboard',
-  //       component: createNameComponent(() => import('@/views/main/dashboard/index.vue')),
-  //       meta: { title: 'message.menu.dashboard.index', icon: 'sfont system-home', hideClose: true }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/quality',
+    meta: { title: 'message.menu.quality.name', icon: 'sfont system-home' },
+    hideMenu: true,
+    children: [
+      {
+        path: 'incoming',
+        component: createNameComponent(() => import('@/views/main/quality/incoming.vue')),
+        meta: { title: 'message.menu.quality.iconming'}
+      }
+    ]
+  },
   {
     path: '/quality',
     component: Layout,

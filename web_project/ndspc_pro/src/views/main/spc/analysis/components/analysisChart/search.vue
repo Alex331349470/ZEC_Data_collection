@@ -305,7 +305,6 @@ function confirmReason() {
 }
 async function clickHistory() {
   historyRefDialog.value.visible = true
-  console.log(searchForm)
   await nextTick()
   historyRef.value.getData({analyzeCode: searchForm.analyzeCode})
 }

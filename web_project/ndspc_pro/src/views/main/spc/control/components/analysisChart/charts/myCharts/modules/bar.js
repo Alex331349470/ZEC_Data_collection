@@ -1,13 +1,4 @@
 export function getOption(chartData) {
-  var xAxis_data = ["01月", "02月", "03月", "04月", "05月", "06月", "07月", "08月", "09月", "10月", "11月", "12月"]
-  var data_A = [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
-  var data_B = [0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04]
-  var data_C = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  var data_D = [0.03, 0.06, 0.02, 0.03, 0.04, 0.02, 0.03, 0.04, 0.02, 0.03, 0.04, 0.02]
-  var data_E = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  var names = ['I值', 'UCL', 'CL', 'LCL', 'USL']
-  var color = ['#014d64', '#20a9d9', '#782d19']
-
   const option = {
     backgroundColor: '#c6d3df',
     tooltip: {
@@ -22,7 +13,7 @@ export function getOption(chartData) {
           var value = param.value;//y轴值
           var color = param.color;//图例颜色
           if (i === 0) {
-            htmlStr += '选中异常点' + '<span style="margin-left: 20px;">34</span>'+'<br/>';//x轴的名称
+            htmlStr += '选中异常点' + `<span style="margin-left: 20px;">${xName}</span><br/>`;//x轴的名称
           }
           htmlStr += '<div style="text-align: left">';
           htmlStr += '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:' + color + ';"></span>';//一个点
@@ -69,13 +60,13 @@ export function getOption(chartData) {
       containLabel: true
     },
     legend: {      // 图例
-      top: '5%',
-      data: names
+      top: '1%',
+      data: chartData.names
     },
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      data: xAxis_data,
+      data: chartData.xAxis_data,
       axisLine: {//坐标线
         lineStyle: {
           type: 'solid',
@@ -100,7 +91,7 @@ export function getOption(chartData) {
     },
     yAxis: {
       type: 'value',
-      name: '数量',
+      name: '',
       axisLine: { //轴线
         show: true,
         lineStyle: {
@@ -130,11 +121,11 @@ export function getOption(chartData) {
     series: [
       {
         type: 'line',
-        name: names[0],
-        data: data_D,
+        name: chartData.names[0],
+        data: chartData.yAxis_data.productI,
         symbolSize: 9, //设置拐点大小
         symbol: 'circle',
-        color: color[0], //设置颜色
+        color: '#014d64', //设置颜色
         lineStyle: {
           width: 2,
           type: 'solid'  //'dotted'虚线 'solid'实线
@@ -143,10 +134,10 @@ export function getOption(chartData) {
           normal: {
               color: function(params) {
                   // 根据数据值设置颜色条件
-                  if (params.value > data_A[0]) {
-                      return color[2]  // 数据大于1000时为红色
+                  if (params.data.jugeStatus) {
+                      return '#782d19'  // 数据大于1000时为红色
                   } else {
-                      return color[0] // 其他数据为绿色
+                      return '#014d64' // 其他数据为绿色
                   }
               }
           }
@@ -154,9 +145,9 @@ export function getOption(chartData) {
       }, 
       {
         type: 'line',
-        name: names[1],
-        data: data_B,
-        color: color[1], //设置颜色
+        name: chartData.names[1],
+        data: chartData.yAxis_data.ucl,
+        color: '#20a9d9', //设置颜色
         smooth: false, // 是否平滑曲线显示
         symbolSize: 0, //设置拐点大小
         lineStyle: {
@@ -166,9 +157,9 @@ export function getOption(chartData) {
       },
       {
         type: 'line',
-        name: names[2],
-        data: data_E,
-        color: color[1], //设置颜色
+        name: chartData.names[2],
+        data: chartData.yAxis_data.cl,
+        color: '#20a9d9', //设置颜色
         smooth: false, // 是否平滑曲线显示
         symbolSize: 0, //设置拐点大小
         lineStyle: {
@@ -178,9 +169,9 @@ export function getOption(chartData) {
       },
       {
         type: 'line',
-        name: names[3],
-        data: data_A,
-        color: color[2], //设置颜色
+        name: chartData.names[3],
+        data: chartData.yAxis_data.lcl,
+        color: '#20a9d9', //设置颜色
         smooth: false, // 是否平滑曲线显示
         symbolSize: 0, //设置拐点大小
         lineStyle: {
@@ -188,6 +179,30 @@ export function getOption(chartData) {
           type: 'dashed'  //'dotted'虚线 'solid'实线
         }
       },
+      {
+        type: 'line',
+        name: chartData.names[4],
+        data: chartData.yAxis_data.usl,
+        color: '#782d19', //设置颜色
+        smooth: false, // 是否平滑曲线显示
+        symbolSize: 0, //设置拐点大小
+        lineStyle: {
+          width: 3,
+          type: 'dashed'  //'dotted'虚线 'solid'实线
+        }
+      },
+      {
+        type: 'line',
+        name: chartData.names[5],
+        data: chartData.yAxis_data.lsl,
+        color: '#782d19', //设置颜色
+        smooth: false, // 是否平滑曲线显示
+        symbolSize: 0, //设置拐点大小
+        lineStyle: {
+          width: 3,
+          type: 'dashed'  //'dotted'虚线 'solid'实线
+        }
+      }
     ]
   }
   return option

@@ -11,36 +11,24 @@
         <div>模拟的P值</div>
       </el-col>
       <el-col :span="8">
-        <div>0.8988</div>
-        <div>0.7546</div>
+        <div>{{chartData.a2_value}}</div>
+        <div>{{chartData.p_value}}</div>
       </el-col>
     </el-row>
   </div>
 </template>
 
-<script>
-import { defineComponent, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+<script setup>
+import {ref} from 'vue'
 import Chart from '@/components/charts/index.vue'
-import option from './modules/zhengtai'
-export default defineComponent({
-  components: { Chart },
-  setup() {
-    let timer = null;
-    const options = ref(null)
-    // 模拟异步请求
-    timer = setTimeout(() => {
-      options.value = reactive(option)
-    },1000)
-    // 组件销毁时清除定时器
-    onBeforeUnmount(() => {
-      clearInterval(timer)
-      timer = null;
-    })
-    return {
-      options
-    }
-  }
-})
+import {getOption} from './modules/zhengtai.js'
+defineExpose({ initChart})
+const options = ref(null)
+const chartData = ref({})
+function initChart(data) {
+  chartData.value = data
+  options.value = getOption(data)
+}
 </script>
 
 <style lang="scss" scoped>

@@ -29,6 +29,10 @@
 .pane-bottom {
   padding-right: 25px;
   text-align: right;
+  color: #ebebeb;
+  font-size: 13px;
+  line-height: 25px;
+  display: flex;
 }
 .form :deep(.el-form-item__label), :deep(.el-form-item__content), :deep(.el-checkbox__label),:deep(.el-radio__label){
   color: #fff;

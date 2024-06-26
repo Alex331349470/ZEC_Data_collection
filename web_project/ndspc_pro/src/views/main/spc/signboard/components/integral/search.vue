@@ -1,5 +1,5 @@
 <template>
-  <div class="search-box">
+  <div class="search-box form">
     <el-form ref="form" :model="searchForm" label-width="100px" :class="isExpand ? 'height' : 'maxHeight'" size="small">``
       <el-form-item label="时间范围：" >
         <el-radio-group v-model="searchForm.selectedTime" style="margin-top: -3px;" @change="changeRadio">
@@ -54,14 +54,6 @@
         </el-form-item>
       </el-form-item>
       <el-form-item label="物料信息：" >
-        <el-form-item label="工序" label-width="80px">
-          <MultipleSelect 
-            productType="spc"
-            inputWidth="220px"
-            :selectOption="options"
-            selectTypeName="testItem"
-            @handleChange='searchForm.testItem=$event' />
-        </el-form-item>
         <el-form-item label="物料类型" label-width="80px" >
           <MultipleSelect 
             productType="spc"

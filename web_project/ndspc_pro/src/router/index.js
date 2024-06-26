@@ -48,7 +48,7 @@ router.beforeEach((to, _from, next) => {
   if (store.state.user.token) {
     to.meta.title ? (changeTitle(to.meta.title)) : "" // 动态title
     if (to.path === '/login') {
-      next('/quality/incoming')
+      next('/')
       return
     }
     next()

@@ -11,7 +11,6 @@ import {reactive, ref} from 'vue'
 defineExpose({ handleSearch })
 const list = reactive([
   { id: 1, name: 'OOC数量趋势图'},
-  { id: 2, name: '工序OOC数量'},
   { id: 3, name: '工厂OOC数量'},
   { id: 4, name: '车间OOC数量'},
   { id: 5, name: '产线OOC数量'},

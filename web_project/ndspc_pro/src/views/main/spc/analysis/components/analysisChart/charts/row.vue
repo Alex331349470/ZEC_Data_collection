@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-  import { ref, nextTick,onMounted,reactive } from 'vue'
+  import { ref, nextTick,onMounted,reactive, onBeforeUnmount} from 'vue'
   import {Rank,Close} from '@element-plus/icons-vue'
   import BarChart from './myCharts/barChart.vue'
   import ComDialog from '@/components/comDialog/index.vue'
@@ -85,6 +85,18 @@
     top: 0,
     left: 0
   })
+  onBeforeUnmount(() => {
+    document.removeEventListener('click', handleClickOutside)
+  })
+  onMounted(() => {
+    document.addEventListener('click', handleClickOutside)
+  })
+  // 点击外部关闭规则
+  function handleClickOutside(event) {
+    if (event.target.nodeName !== 'CANVAS') {
+      handleRuleClose()
+    }
+  }
   // echart选择事件
   function changeSelect(parmas) {
     if(parmas) {
@@ -109,10 +121,12 @@
   function handleRuleClose() {
     showRule.value = false
     showRule1.value = false
-    if(showChart.value) {
-      chartsRef.value.cancelSelected(selectItem.value)
-    } else {
-      chartRef.value.cancelSelected(selectItem.value)
+    if(selectItem.value) {
+      if(showChart.value) {
+        chartsRef.value.cancelSelected(selectItem.value)
+      } else {
+        chartRef.value.cancelSelected(selectItem.value)
+      }
     }
   }
   function handleOpen () {
@@ -181,7 +195,7 @@
     const data = params.chartData.mrControl
     data.forEach(item => {
       xAxis_data.push(item.productPatch)
-      productI.push(item.productMR)
+      productI.push({value: item.productMR || 0, jugeStatus: item.jugeStatus, jugeArr: item.jugeArr})
       ucl.push(item.uclr)
       cl.push(item.clr)
       lcl.push(item.lclr)

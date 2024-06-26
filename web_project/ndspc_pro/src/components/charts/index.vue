@@ -31,7 +31,7 @@ onMounted(async () => {
         emit('onSelect', params)
       }
       console.log(params)
-      if(params.componentType === 'series' && params.seriesType === 'line' && params.seriesName == 'I值' && params.data.jugeStatus) {
+      if((params.seriesName == 'I值' || params.seriesName =='MR值') && params.componentType === 'series' && params.seriesType === 'line' && params.data.jugeStatus) {
         if (highlightedIndex.value === dataIndex) {// 取消拐点高亮
           cancelHighlight(params)
         } else { // 设置高亮
@@ -116,8 +116,7 @@ function setHighlight(params) {
 }
 // 取消所有系列的选中状态
 function cancelSelected(params) {
-  console.log(params)
-  if(params.componentType === 'series' && params.seriesType === 'line' && params.seriesName == 'I值' && params.data.jugeStatus) {
+  if((params.seriesName == 'I值' || params.seriesName =='MR值') && params.componentType === 'series' && params.seriesType === 'line' && params.data.jugeStatus) {
     cancelHighlight(params)
   } else {
     myChart.dispatchAction({

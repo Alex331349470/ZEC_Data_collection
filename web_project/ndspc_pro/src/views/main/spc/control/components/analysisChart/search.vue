@@ -25,87 +25,98 @@
         <el-form-item label="工厂" label-width="80px">
           <MultipleSelect 
             productType="spc"
-            inputWidth="220px"
+            inputWidth="200px"
             :selectOption="options"
             selectTypeName="factory"
+            selectType="single"
+            :selectValue="searchForm.factory"
             @handleChange='searchForm.factory=$event' />
         </el-form-item>
         <el-form-item label="车间" label-width="80px" >
           <MultipleSelect 
             productType="spc"
-            inputWidth="220px"
+            inputWidth="200px"
             :selectOption="options"
             selectTypeName="workshop"
+            selectType="single"
+            :selectValue="searchForm.workshop"
             @handleChange='searchForm.workshop=$event' />
         </el-form-item>
         <el-form-item label="产线" label-width="80px" >
           <MultipleSelect 
             productType="spc"
-            inputWidth="220px"
+            inputWidth="200px"
             :selectOption="options"
             selectTypeName="line"
+            selectType="single"
+            :selectValue="searchForm.line"
             @handleChange='searchForm.line=$event' />
         </el-form-item>
       </el-form-item>
       <el-form-item label="物料信息：" >
-        <el-form-item label="工序" label-width="80px">
-          <MultipleSelect 
-            productType="spc"
-            inputWidth="220px"
-            :selectOption="options"
-            selectTypeName="testItem"
-            @handleChange='searchForm.testItem=$event' />
-        </el-form-item>
         <el-form-item label="物料类型" label-width="80px" >
           <MultipleSelect 
             productType="spc"
-            inputWidth="220px"
+            inputWidth="200px"
             :selectOption="options"
             selectTypeName="materialType"
+            selectType="single"
+            :selectValue="searchForm.materialType"
             @handleChange='searchForm.materialType=$event' />
         </el-form-item>
         <el-form-item label="物料编码" label-width="80px" >
           <MultipleSelect 
             productType="spc"
-            inputWidth="220px"
+            inputWidth="200px"
             :selectOption="options"
             selectTypeName="materialCode"
+            selectType="single"
+            :selectValue="searchForm.materialCode"
             @handleChange='searchForm.materialCode=$event' />
         </el-form-item>
       </el-form-item>
-      <el-form-item label="检测信息：" >
-        <el-form-item label="特性类型" label-width="80px" >
-          <MultipleSelect 
-            productType="spc"
-            inputWidth="220px"
-            :selectOption="options"
-            selectTypeName="propertyType"
-            @handleChange='searchForm.propertyType=$event' />
+      <div style="display: flex;justify-content: space-between;">
+        <el-form-item label="检测信息：" >
+          <el-form-item label="特性类型" label-width="80px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="200px"
+              :selectOption="options"
+              selectTypeName="propertyType"
+              selectType="single"
+              :selectValue="searchForm.propertyType"
+              @handleChange='searchForm.propertyType=$event' />
+          </el-form-item>
+          <el-form-item label="检测项目" label-width="80px" >
+            <MultipleSelect 
+              productType="spc"
+              inputWidth="200px"
+              :selectOption="options"
+              selectTypeName="testItem"
+              selectType="single"
+              :selectValue="searchForm.testItem"
+              @handleChange='searchForm.testItem=$event' />
+          </el-form-item>
+          <el-button type="success" size="small" style="margin-left: 20px"  @click="handleSearch">查询</el-button> 
         </el-form-item>
-        <el-form-item label="检测项目" label-width="80px" >
-          <MultipleSelect 
-            productType="spc"
-            inputWidth="220px"
-            :selectOption="options"
-            selectTypeName="testItem"
-            @handleChange='searchForm.testItem=$event' />
-        </el-form-item>
-        <el-button type="success" size="small" style="margin-left: 20px" @click="reset">重置</el-button>
-        <el-button type="success" size="small"  @click="handleSearch">查询</el-button> 
-      </el-form-item>
+        <div class="pane-bottom">
+          <div>分析控制图编码:{{searchForm.analyzeNum}}</div>
+          <el-button type="success" style="margin-left: 10px;" @click="clickHistory">查看变更履历</el-button>
+        </div>
+      </div>
     </el-form>
     <div class="search-box-bottom">
       <el-icon color="#fff" size="22" v-show="!isExpand" @click="expandSearch(true)"><ArrowDown /></el-icon>
       <el-icon color="#fff" size="22" v-show="isExpand" @click="expandSearch(false)"><ArrowUp /></el-icon>
     </div>
-    <ComDialog ref="historyRef" dialogTitle="履历" popupWidth="80%" :hiddenFooter="true">
-      <HistoryTable :tableData="historyList" />
+    <ComDialog ref="historyRefDialog" dialogTitle="履历" popupWidth="80%" :hiddenFooter="true">
+      <HistoryTable ref="historyRef" />
     </ComDialog>
   </div>
 </template>
 
 <script setup>
-import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { reactive, ref, nextTick  } from 'vue'
 import { ArrowDown, ArrowUp } from '@element-plus/icons'
 import ComDialog from '@/components/comDialog/index.vue'
 import HistoryTable from './components/historyTable.vue'
@@ -113,6 +124,7 @@ import MultipleSelect from '@/components/multipleSelect/index.vue'
 import config from '@/utils/system/config'
 import {SpcProductSelect} from '@/api/spc/analysis'
 const emit = defineEmits(['handleSearch'])
+defineExpose({getData })
 // parmas
 const defaultParmas = {
   selectedTime: 5,
@@ -122,15 +134,15 @@ const defaultParmas = {
   seasonDemintion: false,
   monthDemintion: true,
   weekDemintion: false,
-  dayDemintion: false,
-  quantityCalcSwitch: true
+  dayDemintion: false
 }
 const searchForm = reactive({...defaultParmas})
 const historyList = [
   {bianma: 'abc2133241', status: '分析中', bianNum: '1' },
   {bianma: 'abc2133242', status: '分析中', bianNum: '2' }
 ]
-const historyRef = ref(false)
+const historyRefDialog = ref(false)
+const historyRef = ref(null)
 const isExpand = ref(true)
 const DateOptions = reactive([ // 时间维度数组
   {
@@ -159,13 +171,15 @@ const checkAll = ref(false)
 const isIndeterminate = ref(true)
 const options = ref({})
 const inputSelect = config.spcSelect
-// onmounted
-onMounted(() => {
-  getInputSelect()
-})
 // function
 function handleSearch() {
   emit('handleSearch', searchForm)
+}
+function getData(data) {
+  Object.assign(searchForm, { ...data })
+  console.log(searchForm)
+  getInputSelect()
+  handleSearch()
 }
 // 检索查询
 async function getInputSelect() {
@@ -173,19 +187,15 @@ async function getInputSelect() {
   const data = res.data.spcProductSelect
   if(data) {
     options.value = data
-    Object.keys(searchForm).forEach(key => {
-      if (data.hasOwnProperty(key)) {
-        searchForm[key] = data[key];
-      }
-    })
-    handleSearch()
   }
 }
 function expandSearch(val) {
   isExpand.value = val
 }
-function clickHistory() {
-  historyRef.value.visible = true
+async function clickHistory() {
+  historyRefDialog.value.visible = true
+  await nextTick()
+  historyRef.value.getData({analyzeCode: searchForm.analyzeNum})
 }
 // 重置
 function reset() {
@@ -215,4 +225,7 @@ function handleDateChange() {
 
 <style lang="scss" scoped>
 @import '@/assets/style/search.scss';
+:deep(.el-form-item__label) {
+  color: #fff;
+}
 </style>
