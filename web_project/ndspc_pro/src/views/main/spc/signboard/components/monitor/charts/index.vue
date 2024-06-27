@@ -6,34 +6,37 @@
         <div class="card-title defalt-width">车间</div>
         <div class="card-title auto-width" ref="autoRef">产线</div>
       </div>
-      <div class="charBox flex" v-for="(item, index) in list" :key="index">
-        <div class="chart" :style="{width: boxWidth +'px'}">
-          <div class="left">
-            <div class="tip">{{item.name}}</div>
-            <div v-for="(item, index) in colorList" :key="index" class="flex" style="font-size: 12px; margin-top: 5px;">
-              <div :style="{background: item.color}" class="shape"></div>
-              <div>{{item.name}}</div>
-            </div>
-          </div>
-          <div class="center-flex">
-            <BarChart :boxWidth="300"/>
-          </div>
-        </div>
-        <div>
-          <div class="charBox flex" v-for="(row, idx) in item.workshop" :key="idx">
-            <div class="chart" :style="{width: boxWidth +'px'}">
-              <div class="tip left">{{row.name}}</div>
-              <div class="center-flex">
-                <BarChart :boxWidth="300"/>
+      <el-empty v-if="factories.length === 0 && !loading" />
+      <div v-else>
+        <div class="charBox flex" v-for="(factory, index) in factories" :key="index">
+          <div class="chart" :style="{width: boxWidth +'px'}">
+            <div class="left">
+              <div class="tip">{{factory.factory}}</div>
+              <div v-for="(status, idx) in factory.colorList" :key="idx" class="flex" style="font-size: 12px; margin-top: 5px;">
+                <div :style="{background: status.color}" class="shape"></div>
+                <div>{{status.name}}</div>
               </div>
             </div>
-            <div :style="{width: autoWidth +'px', overflow: 'auto'}" class="flex">
-              <div v-for="(row1, idx1) in row.producLine" :key="idx1">
-                <div class="chart" >
-                    <div class="tip">{{row1.name}}</div>
+            <div class="center-flex">
+              <BarChart :boxWidth="300" :chartData="factory"/>
+            </div>
+          </div>
+          <div>
+            <div class="charBox flex" v-for="(workshop, idx) in factory.workshops" :key="idx">
+              <div class="chart" :style="{width: boxWidth +'px'}">
+                <div class="tip left">{{workshop.workshop}}</div>
+                <div class="center-flex">
+                  <BarChart :boxWidth="300" :chartData="workshop"/>
+                </div>
+              </div>
+              <div :style="{width: autoWidth +'px', overflow: 'auto'}" class="flex">
+                <div v-for="(line, idxx) in workshop.lines" :key="idxx">
+                  <div class="chart">
+                    <div class="tip">{{line.line}}</div>
                     <div class="center-flex">
-                      <BarChart :boxWidth="300"/>
+                      <BarChart :boxWidth="300" :chartData="line"/>
                     </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -48,25 +51,16 @@
 import BarChart from './charts.vue'
 import { useStore } from "vuex";
 import {ref, onMounted, nextTick, onBeforeUnmount, watch, computed } from 'vue'
+import {SpcProductConnect} from '@/api/spc/signboard'
 defineExpose({ handleSearch })
 const store = useStore()
-const colorList = [
-  {name: '总数', color: '#10904a'},
-  {name: '正常运行', color: '#2fc06f'},
-  {name: '停止运行', color: '#da998c'},
-  {name: '未运行', color: '#f7e89b'}
-]
-const list = [
-  {id: 1, name: '1000', workshop: [{id: 1-1, name: 'M15', producLine: [{id: 1-1-1, name: 'Bo1'}]}]},
-  {id: 2, name: 'FST', workshop: [{id: 2-1, name: 'SJ1', producLine: [{id: 2-1-1, name: 'Ao1'}, {id: 2-1-2, name: 'Ao2'},{id: 2-1-3, name: 'Ao5'}]},{id: 2-2, name: 'SJ2', producLine: [{id: 2-2-1, name: 'Ao3'},{id: 2-2-2, name: 'Ao4'}]}]},
-]
+const factories = ref([])
 const loading = ref(true)
 let boxWidth = ref(0)
 let boxRef = ref(null)
 let autoRef = ref(null)
 let autoWidth = ref(0)
 const isCollapse = computed(() => store.state.app.isCollapse)
-
 watch(isCollapse, (newVal) => {
   setTimeout(() => {
     resizeHandler()
@@ -90,12 +84,60 @@ function resizeHandler() {
     boxWidth.value = boxRef.value.offsetWidth
   })
 }
-function handleSearch(params) {
+async function handleSearch(params) {
   loading.value = true
-  setTimeout(() => {
+  await nextTick()
+  SpcProductConnect({input: params}).then(res => {
+    processResponseData(res.data.spcProductConnect)
     loading.value = false
-  }, 400);
-  console.log(params.value)
+  }).catch(error => {
+    console.log(error)
+    loading.value = false
+  });
+}
+function processResponseData(data) {
+  const factoryConnectStatus = data.factoryConnectStatus.map(factory => ({
+    factory: factory.factory,
+    connect: factory.connect,
+    disconnect: factory.disconnect,
+    noDataConnect: factory.noDataConnect,
+    total: factory.connect + factory.disconnect + factory.noDataConnect,
+    workshops: data.workshopConnectStatus.map(workshop => ({
+      workshop: workshop.workshop,
+      connect: workshop.connect,
+      disconnect: workshop.disconnect,
+      noDataConnect: workshop.noDataConnect,
+      total: workshop.connect + workshop.disconnect + workshop.noDataConnect,
+      lines: data.lineConnectStatus.map(line => ({
+        line: line.line,
+        connect: line.connect,
+        disconnect: line.disconnect,
+        noDataConnect: line.noDataConnect,
+        total: line.connect + line.disconnect + line.noDataConnect
+      }))
+    }))
+  }))
+  factoryConnectStatus.map(factory => {
+    factory.colorList = getColor0(factory)
+  })
+  console.log(factoryConnectStatus)
+  factories.value = factoryConnectStatus
+}
+function getColor0(item) {
+  const colorList = [
+    {name: '总数', color: '#10904a'},
+    {name: '正常运行', color: '#2fc06f'},
+    {name: '停止运行', color: '#da998c'},
+    {name: '未运行', color: '#f7e89b'}
+  ]
+  if (item.noDataConnect > item.disconnect + item.connect) {
+    colorList[0].color = '#FF0000' // 红色
+  } else if (item.noDataConnect < item.disconnect && item.noDataConnect < item.connect) {
+    colorList[0].color = '#00FF00' // 绿色
+  } else {
+    colorList[0].color = '#FFFF00' // 黄色
+  }
+  return colorList
 }
 </script>
 

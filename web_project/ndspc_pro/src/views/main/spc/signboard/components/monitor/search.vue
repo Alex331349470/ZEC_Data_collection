@@ -4,7 +4,7 @@
       <el-form-item label="来料信息：" >
         <el-form-item label="工厂" label-width="80px">
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="factory"
@@ -12,7 +12,7 @@
         </el-form-item>
         <el-form-item label="车间" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="workshop"
@@ -20,7 +20,7 @@
         </el-form-item>
         <el-form-item label="产线" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="line"
@@ -30,7 +30,7 @@
       <el-form-item label="物料信息：" >
         <el-form-item label="物料类型" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="materialType"
@@ -38,7 +38,7 @@
         </el-form-item>
         <el-form-item label="物料编码" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="materialCode"
@@ -48,7 +48,7 @@
       <el-form-item label="检测信息：" >
         <el-form-item label="特性类型" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="propertyType"
@@ -56,7 +56,7 @@
         </el-form-item>
         <el-form-item label="检测项目" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="testItem"
@@ -78,43 +78,21 @@
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
   import MultipleSelect from '@/components/multipleSelect/index.vue'
   import config from '@/utils/system/config'
-  import {SpcProductSelect} from '@/api/spc/analysis'
+  import {SpcProductAbnormalSelect} from '@/api/spc/signboard'
   const emit = defineEmits(['handleSearch'])
   // parmas
   const defaultParmas = {}
   const searchForm = reactive({...defaultParmas})
   const isExpand = ref(true)
-  const DateOptions = reactive([ // 时间维度数组
-    {
-      value: 'yearDemintion',
-      label: '年'
-    },
-    {
-      value: 'seasonDemintion',
-      label: '季度'
-    },
-    {
-      value: 'monthDemintion',
-      label: '月'
-    },
-    {
-      value: 'weekDemintion',
-      label: '周'
-    },
-    {
-      value: 'dayDemintion',
-      label: '日'
-    }
-  ])
   const options = ref({})
-  const inputSelect = config.spcSelect
+  const inputSelect = config.abnormalSelect
   onMounted(() => {
     getInputSelect()
   })
   // 检索查询
   async function getInputSelect() {
-    const res = await SpcProductSelect({input:inputSelect})
-    const data = res.data.spcProductSelect
+    const res = await SpcProductAbnormalSelect({input:inputSelect})
+    const data = res.data.spcProductAbnormalSelect
     if(data) {
       options.value = data
       Object.keys(searchForm).forEach(key => {

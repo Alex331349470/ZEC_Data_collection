@@ -30,7 +30,6 @@ onMounted(async () => {
       if(seriesName.includes(params.seriesName)) {
         emit('onSelect', params)
       }
-      console.log(params)
       if((params.seriesName == 'I值' || params.seriesName =='MR值') && params.componentType === 'series' && params.seriesType === 'line' && params.data.jugeStatus) {
         if (highlightedIndex.value === dataIndex) {// 取消拐点高亮
           cancelHighlight(params)
@@ -128,7 +127,8 @@ function cancelSelected(params) {
 }
 watch(() => props.option, (newVal) => {
   if (myChart) {
-    myChart.setOption(newVal)
+    myChart.setOption(newVal, true)
+    myChart.resize()
   }
 }, { deep: true })
 </script>

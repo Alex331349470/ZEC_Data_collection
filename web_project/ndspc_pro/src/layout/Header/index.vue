@@ -11,12 +11,12 @@
       <!-- 快捷功能按钮 -->
       <div class="function-list">
         <div class="function-list-item hidden-sm-and-down"><Full-screen /></div>
-        <div class="function-list-item"><Word /></div>
-        <div class="function-list-item"><SizeChange /></div>
+        <!-- <div class="function-list-item"><Word /></div> -->
+        <!-- <div class="function-list-item"><SizeChange /></div> -->
         <div class="function-list-item hidden-sm-and-down"><Theme /></div>
       </div>
       <!-- 用户信息 -->
-      <div class="user-info">
+      <!-- <div class="user-info">
         <el-dropdown>
           <span class="el-dropdown-link">
             {{ $t('message.system.user') }}
@@ -29,7 +29,7 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-      </div>
+      </div> -->
       <password-layer :layer="layer" v-if="layer.show" />
     </div>
   </header>

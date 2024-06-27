@@ -21,7 +21,11 @@
   const isEmpty = ref(false)
   const chartRef = ref(null)
   function initChart(data) {
-    options.value = getOption(data)
+    if(data.xAxis_data.length) {
+      options.value = getOption(data)
+    } else {
+      options.value = {}
+    }
   }
   function onSelect(parmas) {
     emit('changeSelect', parmas)

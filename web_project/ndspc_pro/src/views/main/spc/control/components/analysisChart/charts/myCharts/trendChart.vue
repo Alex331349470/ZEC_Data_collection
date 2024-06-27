@@ -25,13 +25,11 @@
   const isEmpty = ref(false)
   const chartRef = ref(null)
   function initChart(data) {
-    if(!data.xAxis_data) {
-      isEmpty.value = true
-      return
+    if(data.xAxis_data.length) {
+      options.value = getOption(data, props.isExport)
     } else {
-      isEmpty.value = false
+      options.value = {}
     }
-    options.value = getOption(data, props.isExport)
   }
   function onSelect(parmas) {
     emit('changeSelect', parmas)

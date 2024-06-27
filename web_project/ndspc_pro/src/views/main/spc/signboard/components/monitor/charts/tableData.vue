@@ -1,7 +1,6 @@
 <template>
   <div class="box">
-    <el-table :data="tableData" style="width: 100%; font-size: 13px;height: calc(100vh - 40px)" ref="multipleTable" @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
-      <el-table-column type="selection" width="40" align="center" fixed="left" />
+    <el-table :data="tableData" style="width: 100%; font-size: 13px;height: calc(100vh - 40px)" ref="multipleTable" :header-cell-style="{background:'#f0f2f5'}">
       <el-table-column prop="bianma" label="控制图编码" :show-overflow-tooltip="true" sortable width="160" align="center" />
       <el-table-column prop="status" label="运行状态" sortable :show-overflow-tooltip="true" width="120" align="center" />
       <el-table-column prop="bianNum" label="最后接入数据时间" sortable :show-overflow-tooltip="true" width="160" align="center" />

@@ -46,6 +46,15 @@
     "propertyType":"",
     "testItem":""
   },
+  "abnormalSelect": {
+    "testItem": "",
+    "materialCode": "",
+    "materialType": "",
+    "line": "",
+    "factory": "",
+    "propertyType": "",
+    "workshop": ""
+  },
   "status": [
     {"value": "", "label": "全部"},
     {"value": 0, "label": "未接入", "color": "#b2091e"}, 
@@ -175,5 +184,36 @@
     "propertyType": "",
     "testItem": "",
     "review": ""
+  },
+  "default_rule": {
+    "rule1": 3,
+    "rule1Status": true,
+    "rule2": 9,
+    "rule2Status": true,
+    "rule3": 6,
+    "rule3Status": true,
+    "rule4": 14,
+    "rule4Status": true,
+    "rule5": 3,
+    "rule5Status": true,
+    "rule6": 5,
+    "rule6Status": true,
+    "rule7": 15,
+    "rule7Status": true,
+    "rule8": 8,
+    "rule8Status": true,
+    "rule9_a1": 10,
+    "rule9_a2": 1.5,
+    "rule9Status": true,
+    "rule10_a1": 20,
+    "rule10_a2": 2,
+    "rule10_a3": 3,
+    "rule10Status": true,
+    "rule11_a1": 4.9,
+    "rule11_a2": 3.2,
+    "rule11Status": true,
+    "rule12_a1": 4,
+    "rule12_a2": 30,
+    "rule12Status": true
   }
 }

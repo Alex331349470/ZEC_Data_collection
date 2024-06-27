@@ -61,6 +61,7 @@
   import {materialSelect} from '@/api/quality/incoming'
   import {ProcessSelect} from '@/api/quality/process'
   import {SpcProductSelect, SpcProductSelectQuery} from '@/api/spc/analysis'
+  import {SpcProductAbnormalSelect} from '@/api/spc/signboard'
   import config from '@/utils/system/config'
   const props = defineProps({
     selectTypeName: {
@@ -99,7 +100,7 @@
   const checkAll = ref(true)
   const isIndeterminate = ref(false)
   // console.log({...config})
-  const {productSelect, incomingSelect, processSelect,spcSelect, spcPorSelect} = {...config}
+  const {productSelect, incomingSelect, processSelect,spcSelect, spcPorSelect, abnormalSelect} = {...config}
   const searchInput = reactive({})
   onMounted(() => {
     reduceData()
@@ -146,6 +147,9 @@
       case 'spc-product':
         Object.assign(searchInput, { ...spcPorSelect })
         break
+      case 'abnormal':
+        Object.assign(searchInput, { ...abnormalSelect })
+        break
     }
   }
   function getInit(data) {
@@ -174,6 +178,9 @@
         break
       case 'spc-product':
         getSpcProductSelect()
+        break
+      case 'abnormal':
+        getAbnormalSelect()
         break
     }
   }
@@ -230,6 +237,21 @@
     loading.value = true
     SpcProductSelectQuery({input:searchInput}).then(res => {
       options.value = res.data.spcProductSelectQuery
+      loading.value = false
+      if(props.selectType === 'disabled') {
+        selectNameArr.value = [options.value[props.selectTypeName]]
+        emit('handleChange', options.value[props.selectTypeName])
+      }
+    }).catch(error => {
+      console.log(error)
+      loading.value = false
+    })
+  }
+  // 异常点检索
+  function getAbnormalSelect(isInint) {
+    loading.value = true
+    SpcProductAbnormalSelect({input:searchInput}).then(res => {
+      options.value = res.data.spcProductAbnormalSelect
       loading.value = false
       if(props.selectType === 'disabled') {
         selectNameArr.value = [options.value[props.selectTypeName]]

@@ -1,38 +1,52 @@
 <template>
-  <div class="box">
-    <Chart :option="options" />
+  <div class="box" :style="{height: boxHeight}">
+    <el-empty :image-size="100"  v-if="isEmpty"/>
+    <Chart ref="chartRef" :option="options" @onSelect="onSelect" v-else />
   </div>
 </template>
 
-<script>
-import { defineComponent, onBeforeUnmount, onMounted, reactive } from 'vue'
-import Chart from '@/components/charts/index.vue'
-import option from './modules/bar'
-export default defineComponent({
-  components: { Chart },
-  setup() {
-    const datar = [100,200,300,400,500,600,700,800,900,1000,1100,1200]
-    const datar1 = [130,230,300,400,500,600,700,800,900,1000,1100,1200]
-    const options = reactive(option)
-    onMounted(() => {
-      options.series[0].data = datar
-    })
-    const initChart = () => {
-      options.series[0].data = datar1
+<script setup>
+  import { ref } from 'vue'
+  import Chart from '@/components/charts/index.vue'
+  import {getOption} from './modules/bar.js'
+  const emit = defineEmits(['changeSelect'])
+  defineExpose({ initChart, cancelSelected })
+  const props = defineProps({
+    boxHeight: {
+      type: String,
+      default: '350px'
+    },
+    isExport: {
+      type: Boolean,
+      default: false
     }
-    return {
-      options,
-      initChart
+  })
+  const options = ref(null)
+  const isEmpty = ref(false)
+  const chartRef = ref(null)
+  function initChart(data) {
+    if(!data.xAxis_data) {
+      isEmpty.value = true
+      return
+    } else {
+      isEmpty.value = false
     }
+    options.value = getOption(data, props.isExport)
   }
-})
+  function onSelect(parmas) {
+    emit('changeSelect', parmas)
+  }
+  function cancelSelected(parmas) {
+    chartRef.value.cancelSelected(parmas)
+  }
 </script>
 
 <style lang="scss" scoped>
   .box {
     width: 100%;
-    height: 350px;
     background: #c6d3df;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
   }
 </style>

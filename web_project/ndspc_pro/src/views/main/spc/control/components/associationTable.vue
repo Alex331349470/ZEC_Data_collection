@@ -1,8 +1,8 @@
 <template>
   <div class="box">
     <div class="content-box">
-      <el-table :data="tableData" v-loading="loading" style="width: 100%; font-size: 13px; font-size: 13px" ref="multipleTable" @selection-change="handleSelectionChange" :header-cell-style="{background:'#f0f2f5'}">
-        <el-table-column type="selection" width="40" align="center" fixed="left" />
+      <el-table :data="tableData" v-loading="loading" style="width: 100%; font-size: 13px; font-size: 13px" :header-cell-style="{background:'#f0f2f5'}">
+        <el-table-column type="index" width="55" label="序号" align="center" />
         <el-table-column prop="status" label="分析状态" sortable :show-overflow-tooltip="true" width="120" align="center">
           <template #default="scope">
             <span  class="table_tag">{{getStatusLabel(scope.row.status).label}}</span>

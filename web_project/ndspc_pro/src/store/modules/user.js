@@ -1,6 +1,6 @@
 import { loginApi, getInfoApi, loginOutApi } from '@/api/user'
 const state = () => ({
-  token: '', // 登录token
+  token: 'defaultToken', // 登录token
   info: {},  // 用户信息
 })
 

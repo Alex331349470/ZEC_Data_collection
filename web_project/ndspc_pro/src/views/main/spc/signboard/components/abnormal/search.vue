@@ -24,7 +24,7 @@
       <el-form-item label="来料信息：" >
         <el-form-item label="工厂" label-width="80px">
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="factory"
@@ -32,7 +32,7 @@
         </el-form-item>
         <el-form-item label="车间" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="workshop"
@@ -40,7 +40,7 @@
         </el-form-item>
         <el-form-item label="产线" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="line"
@@ -50,7 +50,7 @@
       <el-form-item label="物料信息：" >
         <el-form-item label="物料类型" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="materialType"
@@ -58,7 +58,7 @@
         </el-form-item>
         <el-form-item label="物料编码" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="materialCode"
@@ -68,7 +68,7 @@
       <el-form-item label="检测信息：" >
         <el-form-item label="特性类型" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="propertyType"
@@ -76,12 +76,15 @@
         </el-form-item>
         <el-form-item label="检测项目" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="testItem"
-            @handleChange='searchForm.testItem=$event' />
+            @handleChange='searchForm.analyzeColumn=$event' />
         </el-form-item>
+      </el-form-item>
+      <el-form-item label="判异准则：">
+        <RuleSelect @handleChange="handleRuleChange"/>
         <el-button type="success" size="small" style="margin-left: 20px" @click="handleSearch">查询</el-button>
         <el-button type="success" size="small">重置</el-button>
       </el-form-item>
@@ -97,8 +100,9 @@
   import { defineComponent, onMounted, reactive, ref } from 'vue'
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
   import MultipleSelect from '@/components/multipleSelect/index.vue'
+  import RuleSelect from '@/components/ruleSelect/index.vue'
   import config from '@/utils/system/config'
-  import {SpcProductSelect} from '@/api/spc/analysis'
+  import {SpcProductAbnormalSelect} from '@/api/spc/signboard'
   const emit = defineEmits(['handleSearch'])
   // parmas
   const defaultParmas = {
@@ -109,10 +113,9 @@
     seasonDemintion: false,
     monthDemintion: true,
     weekDemintion: false,
-    dayDemintion: false,
-    quantityCalcSwitch: true
+    dayDemintion: false
   }
-  const searchForm = reactive({...defaultParmas})
+  const searchForm = reactive({...defaultParmas, ...config.default_rule})
   const isExpand = ref(true)
   const DateOptions = reactive([ // 时间维度数组
     {
@@ -140,19 +143,23 @@
   const checkAll = ref(false)
   const isIndeterminate = ref(true)
   const options = ref({})
-  const inputSelect = config.spcSelect
+  const inputSelect = config.abnormalSelect
   onMounted(() => {
     getInputSelect()
   })
   // 检索查询
   async function getInputSelect() {
-    const res = await SpcProductSelect({input:inputSelect})
-    const data = res.data.spcProductSelect
+    const res = await SpcProductAbnormalSelect({input:inputSelect})
+    const data = res.data.spcProductAbnormalSelect
     if(data) {
       options.value = data
       Object.keys(searchForm).forEach(key => {
         if (data.hasOwnProperty(key)) {
-          searchForm[key] = data[key];
+          if(key === 'testItem') { // 检测项目
+            searchForm['analyzeColumn'] = data[key]
+          } else {
+            searchForm[key] = data[key];
+          }
         }
       })
       handleSearch()
@@ -166,7 +173,7 @@
   }
   // 重置
   function reset() {
-    Object.assign(searchForm, { ...defaultParmas })
+    Object.assign(searchForm, { ...defaultParmas, ...config.default_rule })
     getInputSelect()
   }
   // 全选
@@ -187,6 +194,10 @@
     const checkedCount = demintions.filter(dimension => searchForm[dimension]).length
     checkAll.value = checkedCount === demintions.length
     isIndeterminate.value = checkedCount > 0 && checkedCount < demintions.length
+  }
+  // 监听判异准则选择方法
+  function handleRuleChange(row) {
+    Object.assign(searchForm, { ...row })
   }
 </script>
 <style lang="scss" scoped>

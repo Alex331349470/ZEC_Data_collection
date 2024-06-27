@@ -18,19 +18,15 @@
         </el-form-item>
       </el-form-item>
       <el-form-item label="时间分组：" >
-        <el-radio-group v-model="searchForm.date">
-          <el-radio v-for="key in DateOptions" :label="key" :key="key">{{key}}</el-radio>
-        </el-radio-group>
+        <el-radio v-model="radioParmas.dateDemintion" v-for="key in DateOptions" :label="key.value" :key="key">{{key.label}}</el-radio>
         <el-form-item label="空间分组:" >
-          <el-radio-group v-model="searchForm.kongjian">
-          <el-radio v-for="key in KongjianOptions" :label="key" :key="key">{{key}}</el-radio>
-        </el-radio-group>
+          <el-radio v-model="radioParmas.kongjianDemintion" v-for="key in KongjianOptions" :label="key.value" :key="key">{{key.label}}</el-radio>
         </el-form-item>
       </el-form-item>
       <el-form-item label="来料信息：" >
         <el-form-item label="工厂" label-width="80px">
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="factory"
@@ -38,7 +34,7 @@
         </el-form-item>
         <el-form-item label="车间" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="workshop"
@@ -46,7 +42,7 @@
         </el-form-item>
         <el-form-item label="产线" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="line"
@@ -56,7 +52,7 @@
       <el-form-item label="物料信息：" >
         <el-form-item label="物料类型" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="materialType"
@@ -64,7 +60,7 @@
         </el-form-item>
         <el-form-item label="物料编码" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="materialCode"
@@ -74,7 +70,7 @@
       <el-form-item label="检测信息：" >
         <el-form-item label="特性类型" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="propertyType"
@@ -82,15 +78,17 @@
         </el-form-item>
         <el-form-item label="检测项目" label-width="80px" >
           <MultipleSelect 
-            productType="spc"
+            productType="abnormal"
             inputWidth="220px"
             :selectOption="options"
             selectTypeName="testItem"
-            @handleChange='searchForm.testItem=$event' />
+            @handleChange='searchForm.analyzeColumn=$event' />
         </el-form-item>
-        <el-checkbox v-model="searchForm.checked1" style="margin-left:20px;">是否进入看板模式</el-checkbox>
-          <el-button type="success" size="small" style="margin-left: 20px" @click="handleSearch">查询</el-button>
-          <el-button type="success" size="small">重置</el-button>
+      </el-form-item>
+      <el-form-item label="判异准则：">
+        <RuleSelect @handleChange="handleRuleChange"/>
+        <el-button type="success" size="small" style="margin-left: 20px" @click="handleSearch">查询</el-button>
+        <el-button type="success" size="small" @click="reset">重置</el-button>
       </el-form-item>
     </el-form>
     <div class="search-box-bottom">
@@ -104,34 +102,98 @@
   import { onMounted, reactive, ref } from 'vue'
   import { ArrowDown, ArrowUp } from '@element-plus/icons'
   import MultipleSelect from '@/components/multipleSelect/index.vue'
+  import RuleSelect from '@/components/ruleSelect/index.vue'
   import config from '@/utils/system/config'
-  import {SpcProductSelect} from '@/api/spc/analysis'
+  import {SpcProductAbnormalSelect} from '@/api/spc/signboard'
   const emit = defineEmits(['handleSearch'])
   // parmas
   const defaultParmas = {
     selectedTime: 5,
     startTime: '',
-    endTime: '',
-    quantityCalcSwitch: true
+    endTime: ''
   }
-  const searchForm = reactive({...defaultParmas})
+  const dateDemintion = {
+    yearDemintion: true,
+    seasonDemintion: false,
+    monthDemintion: false,
+    weekDemintion: false,
+    dayDemintion: false,
+  }
+  const kongjianDemintion = {
+    factoryDemintion: true,
+    workshopDemintion: false,
+    lineDemintion: false,
+    materialTypeDemintion: false,
+    materialCodeDemintion: false
+  }
+  const radioParmas = reactive({
+    dateDemintion: 'yearDemintion',
+    kongjianDemintion: 'factoryDemintion'
+  })
+  const searchForm = reactive({...defaultParmas, ...config.default_rule})
   const isExpand = ref(true)
-  const DateOptions = ref(['年', '季', '月', '周', '日'])
-  const KongjianOptions = ref(['工厂', '车间', '产线', '物料类型', '物料编码'])
+  const DateOptions = reactive([ // 时间维度数组
+    {
+      value: 'yearDemintion',
+      label: '年'
+    },
+    {
+      value: 'seasonDemintion',
+      label: '季度'
+    },
+    {
+      value: 'monthDemintion',
+      label: '月'
+    },
+    {
+      value: 'weekDemintion',
+      label: '周'
+    },
+    {
+      value: 'dayDemintion',
+      label: '日'
+    }
+  ])
+  const KongjianOptions = reactive([
+    {
+      value: 'factoryDemintion',
+      label: '工厂'
+    },
+    {
+      value: 'workshopDemintion',
+      label: '车间'
+    },
+    {
+      value: 'lineDemintion',
+      label: '产线'
+    },
+    {
+      value: 'materialTypeDemintion',
+      label: '物料类型'
+    },
+    {
+      value: 'materialCodeDemintion',
+      label: '物料编码'
+    }
+  ])
   const options = ref({})
-  const inputSelect = config.spcSelect
+  const inputSelect = config.abnormalSelect
   onMounted(() => {
     getInputSelect()
   })
   // 检索查询
   async function getInputSelect() {
-    const res = await SpcProductSelect({input:inputSelect})
-    const data = res.data.spcProductSelect
+    const res = await SpcProductAbnormalSelect({input:inputSelect})
+    const data = res.data.spcProductAbnormalSelect
     if(data) {
       options.value = data
       Object.keys(searchForm).forEach(key => {
         if (data.hasOwnProperty(key)) {
-          searchForm[key] = data[key];
+          if(key === 'testItem') { // 检测项目
+            searchForm['analyzeColumn'] = data[key]
+          } else {
+            searchForm[key] = data[key];
+          }
         }
       })
       handleSearch()
@@ -139,11 +201,17 @@
   }
   // 重置
   function reset() {
-    Object.assign(searchForm, { ...defaultParmas })
+    Object.assign(searchForm, { ...defaultParmas, ...config.default_rule})
+    radioParmas.dateDemintion = 'yearDemintion'
+    radioParmas.kongjianDemintion = 'factoryDemintion'
+    changeDateRadio()
+    changeKongjianRadio()
     getInputSelect()
   }
   function handleSearch() {
-    emit('handleSearch', searchForm)
+    changeDateRadio()
+    changeKongjianRadio()
+    emit('handleSearch', {searchForm: searchForm, radioParmas: radioParmas})
   }
   function expandSearch(val) {
     isExpand.value = val
@@ -153,6 +221,24 @@
       searchForm.startTime = ''
       searchForm.endTime = ''
     }
+  }
+  // 监听判异准则选择方法
+  function handleRuleChange(row) {
+    Object.assign(searchForm, { ...row })
+  }
+  function changeDateRadio() {
+    Object.keys(dateDemintion).forEach(key => {
+      dateDemintion[key] = false
+    })
+    dateDemintion[radioParmas.dateDemintion] = true
+    Object.assign(searchForm, { ...searchForm, ...config.default_rule, ...dateDemintion, ...kongjianDemintion })
+  }
+  function changeKongjianRadio(val) {
+    Object.keys(kongjianDemintion).forEach(key => {
+      kongjianDemintion[key] = false
+    })
+    kongjianDemintion[radioParmas.kongjianDemintion] = true
+    Object.assign(searchForm, { ...searchForm, ...config.default_rule, ...dateDemintion, ...kongjianDemintion })
   }
 </script>
 
