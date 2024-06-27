@@ -681,7 +681,7 @@ function confirmBtn() {
 async function checkCarts() {
   chartDialogRef.value.visible = true
   const itemDetail = await getSpcDataDetail(selectionItem.value[0].analyze_num)
-  chartRef.value.getData(itemDetail)
+  chartRef.value.getData(reduceData(itemDetail))
 }
 // 删除
 function handleDelete() {

@@ -80,6 +80,7 @@ async function handleSearch(parmas) {
     total.value = res.data.spcProductAbnormalBoard[dateDemintion.value][kongjianDemintion.value].total
     await nextTick()
     chartData.value = transformData(res.data.spcProductAbnormalBoard[dateDemintion.value][kongjianDemintion.value])
+    console.log(chartData.value)
     if(total.value === 0) {
       loading.value = false
       return
@@ -102,7 +103,7 @@ function transformData(inputData) {
     if (!yAxisMap[yAxis_str]) {
       yAxisMap[yAxis_str] = { xAxis_data: [], data: [] };
     }
-    yAxisMap[yAxis_str].xAxis_data.push(kongjianDemintion.value.split('AbnormalData')[0])
+    yAxisMap[yAxis_str].xAxis_data.push(item[kongjianDemintion.value.split('AbnormalData')[0]])
     yAxisMap[yAxis_str].data.push(item.poorAmount)
   })
   for (const day in yAxisMap) {

@@ -26,7 +26,7 @@ defineExpose({ initChart})
 const options = ref(null)
 const chartData = ref({})
 function initChart(data) {
-  if(data.xAxis_data.length) {
+  if(data.ndXArr.length) {
     chartData.value = data
     options.value = getOption(data)
   } else {

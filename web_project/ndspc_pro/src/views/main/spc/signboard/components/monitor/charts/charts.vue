@@ -1,9 +1,9 @@
 <template>
   <div class="box">
     <div ref="chart" :style="{width: boxWidth + 'px', height: '100px'}"></div>
-    <ComDialog ref="dialogRef" dialogTitle="控制图清单" :fullScreen="true" :hiddenFooter="true">
+    <!-- <ComDialog ref="dialogRef" dialogTitle="控制图清单" :fullScreen="true" :hiddenFooter="true">
       <TableData :data="tableData"/>
-    </ComDialog>
+    </ComDialog> -->
   </div>
 </template>
 
@@ -108,7 +108,7 @@ function initEcharts() {
   myChart.setOption(option.value)
   myChart.on('click', params => {
     console.log('点击', params)
-    dialogRef.value.visible = true
+    // dialogRef.value.visible = true
   })
 }
 
