@@ -5,10 +5,10 @@
         <div class="tip-dot" />
         <span class="name">{{ row.name }}</span>
       </div>
-      <div style="display: flex; align-items: center;">
+      <!-- <div style="display: flex; align-items: center;">
         <el-button size="small" type="info" v-if="row.isExport">全部导出</el-button>
         <el-icon @click="handleOpen" style="margin-left: 10px"><Rank /></el-icon>
-      </div>
+      </div> -->
     </div>
     <BarChart ref="chartRef" @changeSelect="changeSelect" />
     <el-dialog v-model="dialogVisible" width="80%" :before-close="handleClose" :close-on-click-modal="false">

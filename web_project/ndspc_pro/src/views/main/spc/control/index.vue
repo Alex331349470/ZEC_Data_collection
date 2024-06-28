@@ -7,7 +7,7 @@
             <el-button :icon="Search" @click="getData"/>
           </template>
         </el-input>
-        <el-button class="system-btn" type="success" style="margin-left: 10px;"  @click="checkCarts" :disabled="!selectionItem || selectionItem.length !== 1">查看分析型控制图</el-button>
+        <el-button class="system-btn" type="success" style="margin-left: 10px;"  @click="checkCarts" :disabled="!selectionItem || selectionItem.length !== 1">查看控制型控制图</el-button>
       </div>
     </div>
     <div class="content-box">

@@ -16,25 +16,25 @@ export function getOption(data) {
         var htmlStr = '';
         for (var i = 0; i < params.length; i++) {
           var param = params[i];
-          if(param.seriesType !== 'bar') {
+          // if(param.seriesType !== 'bar') {
             var xName = param.name;//x轴的名称
             var seriesName = param.seriesName;//图例名称
             var value = param.value;//y轴值
             var color = param.color;//图例颜色
-            if (i === 1) {
+            if (i === 0) {
               htmlStr += xName + '<br/>';//x轴的名称
             }
             htmlStr += '<div style="text-align: left">';
             htmlStr += '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:' + color + ';"></span>';//一个点
             htmlStr += seriesName + '：' + value;//圆点后面显示的文本
             htmlStr += '</div>';
-          }
+          // }
         }
         return htmlStr;
       }
     },
     legend: {
-      data: ['拟合曲线(整体)', '拟合曲线(组内)'],
+      data: ['频率','拟合曲线(整体)', '拟合曲线(组内)'],
       top: '1%',
       left: 'center',
     },
@@ -53,7 +53,7 @@ export function getOption(data) {
     },
     series: [
       {
-        name: '实际频率分布',
+        name: '频率',
         type: 'bar',
         data: frequencyData,
         barWidth: '100%',
@@ -104,7 +104,11 @@ export function getOption(data) {
         data: totalFitData,
         smooth: true,
         symbolSize: 0, //设置拐点大小
-        color: '#014d64'
+        lineStyle: {
+					width: 2,
+					type: 'dashed'  //'dotted'虚线 'solid'实线
+				},
+        color: '#20a9d9'
       },
       {
         name: '拟合曲线(组内)',
@@ -112,7 +116,7 @@ export function getOption(data) {
         symbolSize: 0, //设置拐点大小
         data: inFitData,
         smooth: true,
-        color: '#20a9d9'
+        color: '#014d64'
       },
     ],
   }

@@ -95,9 +95,9 @@
         <el-col :span="5">
           <div class="back_writhe text-right">观测百分比</div>
           <div class="back_none1">
-            <div>{{chartData.poorBelowRate}}</div>
-            <div>{{chartData.poorAboveRate}}</div>
-            <div>{{chartData.poorTotalRate}}</div>
+            <div>{{chartData.poorBelowRate}}%</div>
+            <div>{{chartData.poorAboveRate}}%</div>
+            <div>{{chartData.poorTotalRate}}%</div>
           </div>
         </el-col>
         <el-col :span="5">
@@ -145,9 +145,10 @@ const props = defineProps({
 })
 defineExpose({ refreshData })
 const chartData = ref({})
+const defautkey = ['poorBelowRate', 'poorAboveRate', 'poorTotalRate', 'sigmaInBelowRate', 'sigmaInAboveRate', 'sigmaInTotalRate', 'sigmaTotalBelowRate', 'sigmaTotalAboveRate', 'sigmaTotalAllRate', 'amount']
 function refreshData(data) {
   for (const key in data) {
-    if(typeof data[key] === 'number') {
+    if(typeof data[key] === 'number' && !defautkey.includes(key)) {
       data[key] = data[key].toFixed(2)
     }
   }
