@@ -1,0 +1,52 @@
+DROP TABLE IF EXISTS yl_disc_mill;
+create external table yl_disc_mill(
+host_frequency_actual_value string,
+host_voltage_actual_value string,
+host_current_actual_value string,
+host_speed_actual_value string,
+grinding_disc_actual_temperature string,
+inverter_frequency_setting string,
+reverse_speed_setting string,
+chute_valve_out_open_delay_time_setting string,
+chute_valve_out_close_delay_time_setting string,
+feed_valve_retreat_to_position_delay_time_setting string,
+grinding_disc_upper_limit_temperature_setting string,
+air_hammer_hold_time_1_setting string,
+air_hammer_reset_time_1_setting string,
+manual_auto_switch string,
+system_startup_indication string,
+host_forward_manual_indication string,
+host_reverse_manual_indication string,
+air_hammer_action_indication string,
+inverter_forward_indication string,
+inverter_reverse_indication string,
+feed_valve_action_indication string,
+chute_valve_out_action_indication string,
+feed_valve_sensor_fault string,
+inverter_fault_signal string,
+fault string,
+grinding_disc_temperature_too_high string,
+scheduled_maintenance_time_alarm string,
+communication_fault string,
+speed_sensor_input string,
+reserved string,
+level_sensor_signal string,
+feed_valve_forward_limit string,
+feed_valve_backward_limit string,
+inverter_fault string,
+signal_switching string,
+host_power_supply string,
+feed_valve string,
+chute_valve string,
+air_hammer string,
+alarm string,
+inverter_forward string,
+inverter_reverse string,
+inverter_reset string,
+spare string
+
+
+)
+partitioned by (rtd_date string, rtd_hour string, rtd_line string, rtd_name string)
+ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+location '/zec_data_yl/disc_mill';

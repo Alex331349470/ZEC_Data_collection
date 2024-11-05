@@ -1,0 +1,15 @@
+runcharts:
+  - title: CPU usage
+    position: [[0, 0], [79, 19]]
+    rate-ms: 5000
+    scale: 2
+    items:
+      - label: CPU(Avg)
+        sample: ps -A -o %cpu | awk '{s+=$1} END {print s/32}'
+  - title: Free memory pages
+    position: [[0, 20], [79, 19]]
+    rate-ms: 5000
+    scale: 2
+    items:
+      - label: free(GB)
+        sample: free -g | grep 'Mem' | awk '{print $4}'

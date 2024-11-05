@@ -1,0 +1,31 @@
+"zec_yl_data_2-fluid_mixer-21" #2-1流体混合机 LT
+"zec_yl_data_2-fluid_mixer-2223" #2-2&3流体混合机 LT
+"zec_yl_data_2-filter_press-2223" #2-2&3板框压滤机 BK
+"zec_yl_data_2-filter_press-21" #2-1板框压滤机 BK
+"zec_yl_data_2-crusher_feeding_frequency-21" #2-1粉碎机喂料频率
+"zec_yl_data_2-sintering_feeding_frequency-2223" #2-2&3烧结喂料频率
+"zec_yl_data_2-micro_wave" #微波干燥机 WB
+"zec_yl_data_2-coulter_mixer-2223" #2-2&2-3犁刀混合机 LH
+"zec_yl_data_2-coulter_mixer-21" #2-1犁刀混合机 LH
+"zec_yl_data_2-roller" #对辊机 DG
+"zec_yl_data_2-pneumatic_convery" #气力输送系统 LX
+"zec_yl_data_2-vortex_mill-f1f2" #F1&F2机械粉碎机 WL
+"zec_yl_data_2-vortex_mill-s" #CF机械粉碎机SENMENS WL
+"zec_yl_data_2-vortex_mill-o" #CF机械粉碎机OMRON WL
+"zec_yl_data_2-jet_mill-21" #2-1沈飞流化床式气流粉 QL
+"zec_yl_data_2-jet_mill-23" #2-3沈飞流化床式气流粉 QL
+"zec_yl_data_2-jet_mill-22" #2-2埃尔派流化床式气流粉 QL
+"zec_yl_data_2-iron_remover" #除铁机 ER
+"zec_yl_data_2-ribbon_mixer-silver" #包装螺带混合机（申银） SM
+"zec_yl_data_2-ribbon_mixer" #2-1螺带混合机 SM
+"zec_yl_data_2-dehumidifier" #转轮除湿机 DE
+"zec_yl_data_2-autoline-21-n1" #2-1N1线体 SS
+"zec_yl_data_2-autoline-21-n2s1" #2-1N2S1线体 SS
+"zec_yl_data_2-autoline-2223" #2-2&3线体 SS
+"zec_yl_data_2-kiln-21-n1" #2-1一烧窑炉 GQ
+"zec_yl_data_2-kiln-21-n2s1" #2-1二三烧窑炉 GQ
+"zec_yl_data_2-kiln-22-n1" #2-2一烧窑炉 GQ
+"zec_yl_data_2-kiln-22-n2s1" #2-2二三烧窑炉 GQ
+"zec_yl_data_2-kiln-23-n1" #2-3一烧窑炉 GQ
+"zec_yl_data_2-kiln-23-n2s1" #2-3二三烧窑炉 GQ
+"zec_yl_data_2-kiln_22-48" #二期48所DCS数据 GQ
