@@ -1,0 +1,22 @@
+zec_yl_data_1-kiln 窑炉温控室 GQ GK
+zec_yl_data_1-autoline_n1 线体N1 SS
+zec_yl_data_1-autoline_n2 线体N2 SS
+zec_yl_data_1-autoline_s1 线体S1 SS
+zec_yl_data_1-pl_mixer PL HL
+zec_yl_data_1-roller 对辊机 DG
+zec_yl_data_1-pneumatic_convery_n1_1 N1浓相 LX
+zec_yl_data_1-pneumatic_convery_n1_2 N1浓相2 LX
+zec_yl_data_1-pneumatic_convery_n2s1f1f2 浓相N2S1F1F2 LX
+zec_yl_data_1-disc_mill 旋轮磨 XL
+zec_yl_data_1-jet_mill JF气流粉碎机 QL
+zec_yl_data_1-vortex_mill F1F2CF粉碎 WL
+zec_yl_data_1-filter_press 板框压滤机 BK
+zec_yl_data_1-micro_wave 微波干燥机 WB
+zec_yl_data_1-pneumatic_convery_b B工序浓相 LX
+zec_yl_data_1-iron_remover 除铁器 ER
+zec_yl_data_1-pneumatic_convery_cf CF浓相
+zec_yl_data_1-dehumidifier_12 1-2号包装间除湿机 DE
+zec_yl_data_1-dehumidifier_345 3-5号包装间除湿机 DE
+zec_yl_data_1-pack_mixer 包装混料机 GD
+zec_yl_data_1-coulter_mixer 一期C工序犁刀 LH
+zec_yl_data_1-hygrothermograph 温湿度计 ACQA QCQC
